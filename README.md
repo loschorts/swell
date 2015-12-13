@@ -1,24 +1,32 @@
-# FresherNote
+Project Proposal: "Swell"
 
-[Heroku link][heroku] **NB:** This should be a link to your production site
+[Heroku Link][heroku]
 
-[heroku]: http://www.herokuapp.com
+[heroku]: http://surfswell.herokuapp.com
 
 ## Minimum Viable Product
 
-FresherNote is a web application inspired by Evernote built using Ruby on Rails
-and React.js. FresherNote allows users to:
+Swell is a web application meant to combine the functionality of Surfline and Magic Seaweed with the layout and style of AirBnB.
 
-<!-- This is a Markdown checklist. Use it to keep track of your progress! -->
+Swell provides spot-specific forecasts for over 200 sites along the California coast.
 
-- [ ] Create an account
-- [ ] Log in / Log out
-- [ ] Create, read, edit, and delete notes
-- [ ] Organize notes within Notebooks
-- [ ] Tag notes with multiple tags and search notes by tag
-- [ ] Search through notes for blocks of text
-- [ ] Apply complex styling to notes while editing
-- [ ] Set reminders on notes
+**FEATURES**
+
+Forecast features:  
+- [ ] Current Conditions for a Spot
+- [ ] Weekly Forecasts for a Spot
+- [ ] Interactive charts displaying Swell Height, Swell Period, Wave Quality, Wind, Tide, Air and Water Temperature, Sunrise and Sunset
+- [ ] Display Distance from User's location
+
+Searchable Spots Feed:
+- [ ] Main page features a scrollable list of spots ordered by proximity (changeable by user preference)
+- [ ] Spots are shown on an interactive Google map
+- [ ] Filterable by type, region, and (bonus) best conditions
+
+Users can create custom profiles:
+- [ ] Favorite spots to be displayed on Login
+- [ ] Forecast display preferences: break type
+- [ ] (bonus) 
 
 ## Design Docs
 * [View Wireframes][view]
