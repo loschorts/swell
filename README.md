@@ -12,7 +12,7 @@ Swell provides spot-specific forecasts for over 200 sites along the California c
 
 **FEATURES**
 
-Forecast features:  
+Forecasts feature:  
 - [ ] Current Conditions for a Spot
 - [ ] Weekly Forecasts for a Spot
 - [ ] Interactive charts displaying Swell Height, Swell Period, Wave Quality, Wind, Tide, Air and Water Temperature, Sunrise and Sunset
