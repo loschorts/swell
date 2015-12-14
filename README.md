@@ -16,17 +16,16 @@ Forecasts feature:
 - [ ] Current Conditions for a Spot
 - [ ] Weekly Forecasts for a Spot
 - [ ] Interactive charts displaying Swell Height, Swell Period, Wave Quality, Wind, Tide, Air and Water Temperature, Sunrise and Sunset
-- [ ] Display Distance from User's location
 
-Searchable Spots Feed:
+Searchable Spots Feed: 
 - [ ] Main page features a scrollable list of spots ordered by proximity (changeable by user preference)
-- [ ] Spots are shown on an interactive Google map
-- [ ] Filterable by type, region, and (bonus) best conditions
+- [ ] Users' favorite spots are pushed to the top of the feed
+- [ ] Spots can optionally be shown on a Google map
+- [ ] Filterable by type, region, and (bonus) quality for the current conditions
 
 Users can create custom profiles:
 - [ ] Favorite spots to be displayed on Login
 - [ ] Forecast display preferences: break type
-- [ ] (bonus) 
 
 ## Design Docs
 * [View Wireframes][view]
