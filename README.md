@@ -38,7 +38,7 @@ Users can create custom profiles:
 * [Database Schema][db-schema]
 * [API Schema][api-schema]
 
-[view]: ./docs/views.png
+[view]: ![views] (./docs/views.png)
 [elements]: ./docs/elements.md
 [db-schema]: ./docs/db-schema.md
 [api-schema]: ./docs/api-schema.md
