@@ -27,12 +27,21 @@ Users can create custom profiles:
 - [ ] Favorite spots to be displayed on Login
 - [ ] Forecast display preferences: break type
 
+## External API Dependencies
+- Spitcast API (spitcast.com/api/docs)
+- Openweather API (http://openweathermap.org/api)
+- Google Maps API (https://developers.google.com/maps/)
+
 ## Design Docs
 * [View Wireframes][view]
-* [DB schema][schema]
+* [Component Hierarchy][elements]
+* [Database Schema][db-schema]
+* [API Schema][api-schema]
 
-[view]: ./docs/views.md
-[schema]: ./docs/schema.md
+[view]: ./docs/views.png
+[elements]: ./docs/elements.md
+[db-schema]: ./docs/db-schema.md
+[api-schema]: ./docs/api-schema.md
 
 ## Implementation Timeline
 
