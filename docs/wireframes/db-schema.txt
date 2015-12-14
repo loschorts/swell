@@ -1,12 +1,78 @@
-* Spots
-	* integer: id
-	* integer: spitcast_id
-	* integer: latitude
-	* integer: longitude
-	* string: name
-	* string: description
-	* integer: county_id
-	* string: swells
-	* string: tides
-	* string: wind
-	* string: water_temp
+#FORECAST SCHEMA
+
+create_table :spots do |t|
+	#api ids
+	t.integer :spitcast_id, null: false
+	t.string :spitcast_county, null: false
+
+	#static data
+	t.integer :latitude, null: false
+	t.integer :longitude, null: false
+	t.string :name, null: false
+	t.string :description, null: false
+	t.string :image_path
+
+  	t.timestamps, null: false
+end
+
+add_index :spots, :spitcast_id, unique: true
+add_index :spots, :spitcast_county
+add_index :spots, :latitude
+add_index :spots, :longitude
+
+create_table :counties do |t|
+	#api id
+	t.string :spitcast_county, null: false
+
+	#foreign key
+	t.integer :region_id
+
+	#static data
+	t.string :name, null: false
+	t.string :description
+
+	#cached data
+	t.string :swells  
+	t.string :tides
+	t.string :wind
+	t.string :water_temp
+	t.datetime :sunrise
+	t.datetime :sunset
+
+	t.timestamps null: false
+end
+
+add_index :counties, :spitcast_county, unique: true
+add_index :counties, :name, unique: true
+add_index :counties, :region_id
+
+create_table :regions, do |t|
+	#static data
+	t.string :name, null: false
+	t.string :description, null: false
+
+	t.timestamps, null: false
+
+end
+
+add_index :regions, :name, unique: true
+
+#USERS SCHEMA
+
+create_table :users do |t|
+	#auth
+	t.string :username, null: false
+	t.string :password_digest, null: false
+	t.string :session_token, null: false
+
+	#account settings
+	t.string :preferences
+	t.string :favorites
+
+	t.timestamps, null: false
+
+end
+
+add_index :users, :username, unique: true
+add_index :session_token, unique: true
+add_index :password_digest, unique: true

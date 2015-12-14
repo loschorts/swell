@@ -35,13 +35,11 @@ Users can create custom profiles:
 ## Design Docs
 * [View Wireframes][view]
 * [Component Hierarchy][elements]
-* [Database Schema][db-schema]
-* [API Schema][api-schema]
+* [Schema][schema]
 
 [view]: ./docs/wireframes/views.png
 [elements]: ./docs/wireframes/elements.txt
 [db-schema]: ./docs/wireframes/db-schema.txt
-[api-schema]: ./docs/wireframes/api-schema.txt
 
 ## Implementation Timeline
 
