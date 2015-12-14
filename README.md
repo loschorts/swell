@@ -6,26 +6,33 @@ Project Proposal: "Swell"
 
 ## Minimum Viable Product
 
-Swell is a web application meant to combine the functionality of Surfline and Magic Seaweed with the layout and style of AirBnB.
+Swell is a web application that lets surfers check wave forecasts. It is meant to combine the functionality of Spitcast and Surfline with the layout and style of AirBnB.
 
 Swell provides surfing forecasts for 300 sites along the California coast.
 
 **FEATURES**
 
-Forecasts feature:  
-- [ ] Current Conditions for a Spot
-- [ ] Weekly Forecasts for a Spot
-- [ ] Interactive charts displaying Swell Height, Swell Period, Wave Quality, Wind, Tide, Air and Water Temperature, Sunrise and Sunset
+A Main Page with:
+- [ ] A Jumbotron-sized SpotFocus display of a user's home spot containing current forecast data and dynamic styling to reflect the conditions
+- [ ] SpotPreview thumbnails of other spots including the user's favorites and nearby spots
+- [ ] A search bar that can find spot forecasts by spot name, county, region, and description
+- [ ] Highlighted links designed to encourage users to discover other spots
 
-Searchable Spots Feed: 
-- [ ] Main page features a scrollable list of spots ordered by proximity (changeable by user preference)
-- [ ] Users' favorite spots are at the top of the feed
-- [ ] Spots can optionally be shown on a Google map
-- [ ] Filterable by type, region, and (bonus) quality for the current conditions
+Spot Forecast Pages Have:
+- [ ] curent conditions for a spot
+- [ ] daily and weekly forecasts for the spot
+- [ ] Interactive charts displaying weather, swell height, swell period, wave quality, wind, tide, air and water temperature, sunrise and sunset
+- [ ] A map of nearby spots
 
-Users can create custom profiles:
-- [ ] Favorite spots to be displayed on Login
-- [ ] Forecast display preferences: break type
+Search: 
+- [ ] A dynamic search bar that updates the results page as the user types
+- [ ] search results cover spot name, county, region and description
+- [ ] filterable by spot type, proximity, and region
+
+Custom User Profiles:
+- [ ] Users can set home spots and star their favorites
+- [ ] Users can set display preferences
+
 
 ## External API Dependencies
 - Spitcast API (http://spitcast.com/api/docs)
@@ -52,19 +59,19 @@ Users can create custom profiles:
 
 ### Phase 2: Flux Architecture (4 days)
 
-	* Create Dispatcher and Stores
-		*SpotStore
-		*CountyStore
-	*API Actions:
-			*getSpotForecast(options)
-			*getCountyForecast(options)
-			*getWeatherForecast(coords)
-			*(options hash to specify location, daily vs. weekly)
-		*Helper Actions
-			*SpitcastQuery(options)
-			*OpenweatherQuery(options)
+*Create Dispatcher and Stores
+	*SpotStore
+	*CountyStore
+*API Actions:
+		*getSpotForecast(options)
+		*getCountyForecast(options)
+		*getWeatherForecast(coords)
+		*(options hash to specify location, daily vs. weekly)
+	*Helper Actions
+		*SpitcastQuery(options)
+		*OpenweatherQuery(options)
 
-* Create React Elements in this order. See [elements][elements].
+*Create React Elements in this order. See [elements][elements].
 	*HomePage
 		*LinkBox: simply a box with text that links
 		*FeatureBox: container for LinkBoxes and SpotPreviews
@@ -88,6 +95,7 @@ Users can create custom profiles:
 			*AccountMenu
 			*HomeLink
 		*Footer
+			*powered by Spitcast
 	*ForecastPage
 		*Chart: receives data and time props to render:
 			*swell height, wind, or tide
@@ -110,8 +118,8 @@ Users can create custom profiles:
 
 ### Phase 3: Photos (1 day)
 
-*for LinkBox, SpotPreview and SpotFocus backgrounds
-*Setup File System that organizes photos by spotid
+*For LinkBox, SpotPreview and SpotFocus backgrounds
+*Setup file system on server that organizes photos by spotid
 *Create associations (or something?) for Counties/Regions to have photos 
 
 ### Phase 3: STYLE HTML AND CSS (2 days)
