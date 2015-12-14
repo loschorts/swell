@@ -8,7 +8,7 @@ Project Proposal: "Swell"
 
 Swell is a web application meant to combine the functionality of Surfline and Magic Seaweed with the layout and style of AirBnB.
 
-Swell provides spot-specific forecasts for over 200 sites along the California coast.
+Swell provides surfing forecasts for 300 sites along the California coast.
 
 **FEATURES**
 
