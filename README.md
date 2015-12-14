@@ -38,10 +38,10 @@ Users can create custom profiles:
 * [Database Schema][db-schema]
 * [API Schema][api-schema]
 
-[view]: ![views] (./docs/views.png)
-[elements]: ./docs/elements.md
-[db-schema]: ./docs/db-schema.md
-[api-schema]: ./docs/api-schema.md
+[view]: ./docs/wireframes/views.png
+[elements]: ./docs/wireframes/elements.md
+[db-schema]: ./docs/wirefreames/db-schema.md
+[api-schema]: ./docs/wireframes/api-schema.md
 
 ## Implementation Timeline
 
