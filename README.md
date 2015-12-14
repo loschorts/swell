@@ -42,7 +42,7 @@ Custom User Profiles:
 ## Design Docs
 * [View Wireframes][view]
 * [Component Hierarchy][elements]
-* [Schema][schema]
+* [Schema][db-schema]
 
 [view]: ./docs/wireframes/views.png
 [elements]: ./docs/wireframes/elements.txt
