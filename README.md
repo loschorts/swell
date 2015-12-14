@@ -19,7 +19,7 @@ Forecasts feature:
 
 Searchable Spots Feed: 
 - [ ] Main page features a scrollable list of spots ordered by proximity (changeable by user preference)
-- [ ] Users' favorite spots are pushed to the top of the feed
+- [ ] Users' favorite spots are at the top of the feed
 - [ ] Spots can optionally be shown on a Google map
 - [ ] Filterable by type, region, and (bonus) quality for the current conditions
 
@@ -43,16 +43,14 @@ Users can create custom profiles:
 
 ## Implementation Timeline
 
-### Phase 1: User Authentication, Spot/County/Region/User Models, JSON API, LandingPage
+### Phase 1: User Authentication, Spot/County/Region/User Models, JSON API, LandingPage (2 days)
 
 * Implement database schema.
 * User signup/auth(models and controllers w/ basic html views).
 * Data models and associations (models and controllers w/ json views).
 * Implement a basic html landing page
 
-[Details][phase-one]
-
-### Phase 2: Flux Architecture (2.5 days)
+### Phase 2: Flux Architecture (4 days)
 
 	* Create Dispatcher and Stores
 		*SpotStore
@@ -61,28 +59,32 @@ Users can create custom profiles:
 			*getSpotForecast(options)
 			*getCountyForecast(options)
 			*getWeatherForecast(coords)
+			*(options hash to specify location, daily vs. weekly)
 		*Helper Actions
-			*SpitcastQuery(options, callback)
-			*OpenweatherQuery(options, callback)
+			*SpitcastQuery(options)
+			*OpenweatherQuery(options)
 
 * Create React Elements in this order. See [elements][elements].
 	*HomePage
-		*LinkBox: simply a box that with text that links
+		*LinkBox: simply a box with text that links
 		*FeatureBox: container for LinkBoxes and SpotPreviews
 		*Spot Preview: a LinkBox with limited forecast info
 			*Swell Height and quality
 			*Styled based on quality and possibly weather
+			*Star to add to Favorites
 		*HighlightsBox: editorialized FeatureBox
 			*Best Choice Today: SpotPreview of best forecast
 			*LinkBox "Search by Region" to RegionsPage
-		*SpotFocus: a Jumbotron-sized Spot Preview with more info
+		*SpotFocus: a Jumbotron version of Spot Preview
 			*Styled based on weather
 			*Detail: Shows Tide, Wind, Swell Details
-				*Dynamically Styled based on conditions
-			*MiniDetail: Detail with less info and less styling
+				*Icons
+				*List relevant data in each
+			*MiniDetail: Detail with less info, less styling
+			*Star to Add to favorites
 		*NavBar
 			*SearchBar
-				*Searches Spot, County, Region names and descriptions
+				*Searches a precached hash of Spot, County, Region names and descriptions onChange
 			*AccountMenu
 			*HomeLink
 		*Footer
@@ -92,40 +94,61 @@ Users can create custom profiles:
 			*daily or weekly
 		*Map: pins nearby spots and links to their forecast pages
 	*SearchPage
+		*SearchBar with options
+		*options: 
+			*Distance Filter (text)
+			*Dropdown (breaktype)
+			*County/Region Filter (dropdown)
+		*Map:
+			*centered on search result average
+			*updates onChange of SearchBar/Options
 
-
-* Implement Router.
-* Implement Maps Element.
-* Setup API Actions Util to fetch 3rd party API data
+*Implement the Router
+	*Render HomePage, ForecastPage, RegionsPage, and SearchPage as discreet Pages, but navigation inside each as React
 
 [Details][phase-two]
 
-### Phase 3: Notebooks and Tags (2 days)
+### Phase 3: Photos (1 day)
 
+*for LinkBox, SpotPreview and SpotFocus backgrounds
+*Setup File System that organizes photos by spotid
+*Create associations (or something?) for Counties/Regions to have photos 
 
+### Phase 3: STYLE HTML AND CSS (2 days)
 
-[Details][phase-three]
+*Bootstrap!
+*Gussy up Auth Pages
+*User Preferences Page
+	*edit favorites (top favorite is 'home spot')
+	*delete account
+	*toggle units
 
-### Phase 4: Allow Complex Styling in Notes (1 day)
+*HomePage
+	*A 'home spot' SpotFocus
+	*A Favorites FeatureBox
+	*A Nearby Featurebox
 
-[Details][phase-four]
+*Dynamic Transitions to Charts and Icons
+	*Ripple Effect for Bar Chart
+	*Dynamic Icon for Weather
+	*Compass for Wind
 
-### Phase 5: Reminders and Garbage Collection (1 day)
+*Dynamic Weather-Based Styling to SpotFocus 
+	*Change class based on weather
+	*class styling reflects weather in colors
+	*background pic shaded/desaturated if gloomy/raining
+	*bonus add raindrops if raining
 
+*Add Styling that responds to certain types of forecasts
 
-[Details][phase-five]
+*Background Slideshow on LandingPage using spot pics
 
-### Phase 6: Styling Cleanup and Seeding (1 day)
-
-	*Background Slideshow on LandingPage using spot pics
+### Phase 4: Seed (1 day)
+	*Seed Photos, Spot Descriptions
 
 ### Bonus Features (TBD)
 	*Implement Regional Forecasts by crunching child-county forecasts
 		*cache the data to avoid abusing the API
 	*Searchbar can search by wave-size and other forecast elements
+	*Users can set search and filter preferences
 
-[phase-one]: ./docs/phases/phase1.md
-[phase-two]: ./docs/phases/phase2.md
-[phase-three]: ./docs/phases/phase3.md
-[phase-four]: ./docs/phases/phase4.md
-[phase-five]: ./docs/phases/phase5.md
