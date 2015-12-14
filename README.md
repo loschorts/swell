@@ -39,7 +39,7 @@ Users can create custom profiles:
 * [API Schema][api-schema]
 
 [view]: ./docs/wireframes/views.png
-[elements]: ./docs/wireframes/elements.md
+[elements]: ./docs/wireframes/elements.txt
 [db-schema]: ./docs/wirefreames/db-schema.md
 [api-schema]: ./docs/wireframes/api-schema.md
 
