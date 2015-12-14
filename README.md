@@ -1,4 +1,4 @@
-Project Proposal: "Swell"
+##Project Proposal: "Swell"
 
 [Heroku Link][heroku]
 
