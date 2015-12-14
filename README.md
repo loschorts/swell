@@ -62,7 +62,7 @@ Custom User Profiles:
 * Create Dispatcher and Stores
 	* SpotStore
 	* CountyStore
-* API Actions:
+* API Actions
 		* getSpotForecast(options)
 		* getCountyForecast(options)
 		* getWeatherForecast(coords)
@@ -114,8 +114,6 @@ Custom User Profiles:
 * Implement the Router
 	* Render HomePage, ForecastPage, RegionsPage, and SearchPage as discreet Pages, but navigation inside each as React
 
-[Details][phase-two]
-
 ### Phase 3: Photos (1 day)
 
 * For LinkBox, SpotPreview and SpotFocus backgrounds
@@ -152,11 +150,13 @@ Custom User Profiles:
 * Background Slideshow on LandingPage using spot pics
 
 ### Phase 4: Seed (1 day)
-	* Seed Photos, Spot Descriptions
+
+* Seed Photos, Spot Descriptions
 
 ### Bonus Features (TBD)
-	* Implement Regional Forecasts by crunching child-county forecasts
-		* cache the data to avoid abusing the API
-	* Searchbar can search by wave-size and other forecast elements
-	* Users can set search and filter preferences
+
+* Implement Regional Forecasts by crunching child-county forecasts
+	* cache the data to avoid abusing the API
+* Searchbar can search by wave-size and other forecast elements
+* Users can set search and filter preferences
 
