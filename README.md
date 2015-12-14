@@ -28,7 +28,7 @@ Users can create custom profiles:
 - [ ] Forecast display preferences: break type
 
 ## External API Dependencies
-- Spitcast API (spitcast.com/api/docs)
+- Spitcast API (http://spitcast.com/api/docs)
 - Openweather API (http://openweathermap.org/api)
 - Google Maps API (https://developers.google.com/maps/)
 
