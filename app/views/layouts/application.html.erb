@@ -7,8 +7,14 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-
+<%= "signed in as #{ current_user ? current_user.username : 'nobody'}" %>
+<% if current_user %>
+  <%= button_to "Logout", session_url, method: :delete %>
+<% end %>
+<%= flash[:errors] %>
 <%= yield %>
+
+
 
 </body>
 </html>
