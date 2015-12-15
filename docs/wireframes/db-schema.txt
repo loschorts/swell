@@ -10,12 +10,19 @@ create_table :users do |t|
 	t.string :favorites
 
 	t.timestamps, null: false
-
 end
 
 add_index :users, :username, unique: true
 add_index :session_token, unique: true
 add_index :password_digest, unique: true
+
+create_table :favorites do |t|
+	t.integer :user_id
+	t.integer :spot_id
+end
+
+add_index :user_id
+add_index :spot_id
 
 #FORECAST SCHEMA
 create_table :spots do |t|
@@ -54,7 +61,7 @@ add_index :counties, :name, unique: true
 add_index :counties, :region_id
 
 create_table :regions, do |t|
-	
+
 	#static data
 	t.string :name, null: false
 	t.string :description, null: false

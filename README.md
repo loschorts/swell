@@ -55,6 +55,7 @@ Custom User Profiles:
 * Implement database schema.
 * User signup/auth(models and controllers w/ basic html views).
 * Data models and associations (models and controllers w/ json views).
+* Favorites Join Table to connect users and spots
 * Implement a basic html landing page
 
 ### Phase 2: Flux Architecture (4 days)
@@ -73,15 +74,12 @@ Custom User Profiles:
 
 * Create React Elements in this order. See [elements][elements].
 	* HomePage
-		* LinkBox: simply a box with text that links
+		* LinkBox: simply an image box with text that links
 		* FeatureBox: container for LinkBoxes and SpotPreviews
 		* Spot Preview: a LinkBox with limited forecast info
 			* Swell Height and quality
 			* Styled based on quality and possibly weather
 			* Star to add to Favorites
-		* HighlightsBox: editorialized FeatureBox
-			* Best Choice Today: SpotPreview of best forecast
-			* LinkBox "Search by Region" to RegionsPage
 		* SpotFocus: a Jumbotron version of Spot Preview
 			* Styled based on weather
 			* Detail: Shows Tide, Wind, Swell Details
@@ -89,13 +87,16 @@ Custom User Profiles:
 				* List relevant data in each
 			* MiniDetail: Detail with less info, less styling
 			* Star to Add to favorites
+		* HighlightsBox: editorialized FeatureBox
+			* Best Choice Today: SpotPreview of best forecast
+			* LinkBox "Search by Region" to RegionsPage
 		* NavBar
 			* SearchBar
 				* Searches a precached hash of Spot, County, Region names and descriptions onChange
 			* AccountMenu
 			* HomeLink
 		* Footer
-			* powered by Spitcast
+			* 'powered by Spitcast'
 	* ForecastPage
 		* Chart: receives data and time props to render:
 			* swell height, wind, or tide
