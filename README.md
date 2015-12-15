@@ -63,10 +63,10 @@ Custom User Profiles:
 	* SpotStore
 	* CountyStore
 * API Actions
-		* getSpotForecast(options)
-		* getCountyForecast(options)
-		* getWeatherForecast(coords)
-		* (options hash to specify location, daily vs. weekly)
+	* getSpotForecast(options)
+	* getCountyForecast(options)
+	* getWeatherForecast(coords)
+	* (options hash to specify location, daily vs. weekly)
 	* Helper Actions
 		* SpitcastQuery(options)
 		* OpenweatherQuery(options)
