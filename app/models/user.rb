@@ -1,4 +1,10 @@
 class User < ActiveRecord::Base
+  has_one :preference
+
+  has_many :favorites
+  has_many :spots, through: :favorites
+
+  # ******* AUTH BELOW
   attr_reader :password
 
   after_initialize :ensure_session_token

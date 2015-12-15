@@ -48,12 +48,12 @@ add_index :spots, :longitude
 create_table :counties do |t|
 	#api id
 	t.string :spitcast_county, null: false
-
+	t.integer :region_id
 	#static data
 	t.string :name, null: false
 	t.string :description
 
-	t.timestamps null: false
+	t.timestamps
 end
 
 add_index :counties, :spitcast_county, unique: true
