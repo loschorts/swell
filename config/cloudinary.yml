@@ -1,0 +1,19 @@
+---
+development:
+  cloud_name: swell
+  api_key: '662895651527334'
+  api_secret: ik6HIfNjRhvKWtxdMB-h-6pMdG8
+  enhance_image_tag: true
+  static_image_support: false
+production:
+  cloud_name: swell
+  api_key: '662895651527334'
+  api_secret: ik6HIfNjRhvKWtxdMB-h-6pMdG8
+  enhance_image_tag: true
+  static_image_support: true
+test:
+  cloud_name: swell
+  api_key: '662895651527334'
+  api_secret: ik6HIfNjRhvKWtxdMB-h-6pMdG8
+  enhance_image_tag: true
+  static_image_support: false
