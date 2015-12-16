@@ -12,6 +12,6 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require_tree .
+//= require bundle
 //= require bootstrap
-//= require_tree ../../../vendor/assets/javascripts/creative
+//= require_tree .
