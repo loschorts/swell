@@ -43,7 +43,6 @@ class User < ActiveRecord::Base
   private
 
   def ensure_session_token
-    # Lazy: very low probability of collision, but we should fix this.
     self.session_token ||= self.class.generate_session_token
   end
 end

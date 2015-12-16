@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PreferenceTest < ActiveSupport::TestCase
+class Api::RegionsControllerTest < ActionController::TestCase
   # test "the truth" do
   #   assert true
   # end

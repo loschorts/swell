@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151215211931) do
+ActiveRecord::Schema.define(version: 20151216002451) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,15 +38,6 @@ ActiveRecord::Schema.define(version: 20151215211931) do
 
   add_index "favorites", ["spot_id"], name: "index_favorites_on_spot_id", using: :btree
   add_index "favorites", ["user_id"], name: "index_favorites_on_user_id", using: :btree
-
-  create_table "preferences", force: :cascade do |t|
-    t.integer  "user_id",                null: false
-    t.integer  "units",      default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "preferences", ["user_id"], name: "index_preferences_on_user_id", unique: true, using: :btree
 
   create_table "regions", force: :cascade do |t|
     t.string   "name",        null: false
@@ -77,6 +68,7 @@ ActiveRecord::Schema.define(version: 20151215211931) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "county_name",     null: false
+    t.integer  "county_id",       null: false
   end
 
   add_index "spots", ["lat"], name: "index_spots_on_lat", using: :btree

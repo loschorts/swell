@@ -1,3 +1,27 @@
+require 'byebug'
+
+$REGIONS = {
+	"Del Norte" => "The North",
+	"Humboldt" => "The North",
+	"Mendocino" => "The North",
+	"Sonoma" =>  "The Bay Area",
+	"Marin" => "The Bay Area",
+	"San Mateo" => "The Bay Area",
+	"San Francisco" => "The Bay Area",
+	"Santa Cruz" => "Santa Cruz and Monterey",
+	"Monterey" => "Santa Cruz and Monterey",
+	"San Luis Obispo" => "Santa Barbara, SLO, and Ventura",
+	"Santa Barbara" => "Santa Barbara, SLO, and Ventura",
+	"Ventura" => "Santa Barbara, SLO, and Ventura",
+	"Los Angeles" => "So Cal",
+	"Orange County" => "So Cal",
+	"San Diego" => "So Cal"
+}
+
+def show_regions
+	puts $REGIONS
+end
+
 def reset_tables
 	Spot.destroy_all
 	ActiveRecord::Base.connection.reset_pk_sequence!('spots')
@@ -13,9 +37,6 @@ def reset_tables
 
 	Favorite.destroy_all
 	ActiveRecord::Base.connection.reset_pk_sequence!('favorites')
-
-	Preference.destroy_all
-	ActiveRecord::Base.connection.reset_pk_sequence!('preferences')
 
 	SpotPhoto.destroy_all
 	ActiveRecord::Base.connection.reset_pk_sequence!('spot_photos')
@@ -33,35 +54,7 @@ def fetch_remote(should_run = false)
 	File.write('allspots', spots)
 end
 
-def create_spots
-	spots = JSON.parse(File.read('allspots'))
-	spots.each do |spot|
-		Spot.create!({
-			name: spot["spot_name"],
-			county_name: spot["county_name"],
-			spitcast_county: spot["county_name"].downcase.gsub(" ", "-"),
-			lat: spot["latitude"].to_f,
-			lng: spot["longitude"].to_f,
-			spitcast_id: spot["spot_id"].to_i,
-			})
-	end
-end
-
-def create_counties
-	County.destroy_all
-	counties = Spot.all.select(:county_name).uniq
-	counties.each do |county|
-		county_name = county[:county_name]
-		County.create({
-			name: county_name,
-			spitcast_county: county_name.downcase.gsub(" ", "-"),
-			region_id: get_region_id(county_name)
-			})
-	end
-end
-
 def create_regions
-	Region.destroy_all
 	Region.create({
 		name: "The North",
 		description: "Del Norte, Humbolt, and Mendino Counties"
@@ -84,23 +77,34 @@ def create_regions
 		})
 end
 
-def get_region_id(county_name)
-	regions = {
-		"Del Norte" => "The North",
-		"Humboldt" => "The North",
-		"Mendocino" => "The North",
-		"Sonoma" =>  "The Bay Area",
-		"Marin" => "The Bay Area",
-		"San Mateo" => "The Bay Area",
-		"San Francisco" => "The Bay Area",
-		"Santa Cruz" => "Santa Cruz and Monterey",
-		"Monterey" => "Santa Cruz and Monterey",
-		"San Luis Obispo" => "Santa Barbara, SLO, and Ventura",
-		"Santa Barbara" => "Santa Barbara, SLO, and Ventura",
-		"Ventura" => "Santa Barbara, SLO, and Ventura",
-		"Los Angeles" => "So Cal",
-		"Orange County" => "So Cal",
-		"San Diego" => "So Cal"
-	}
-	return Region.find_by(name: regions[county_name]).id
+def create_counties
+	county_names = $REGIONS.keys
+	county_names.each do |county_name|
+		County.create!({
+			name: county_name,
+			spitcast_county: county_name.downcase.gsub(" ", "-"),
+			region_id: get_region_id(county_name)
+			})
+	end
 end
+
+def create_spots
+	spots = JSON.parse(File.read('allspots'))
+	spots.each do |spot|
+		Spot.create!({
+			name: spot["spot_name"],
+			spitcast_county: spot["county_name"].downcase.gsub(" ", "-"),
+			county_id: County.find_by(name: spot["county_name"]).id,
+			county_name: spot["county_name"],
+			lat: spot["latitude"].to_f,
+			lng: spot["longitude"].to_f,
+			spitcast_id: spot["spot_id"].to_i,
+			})
+	end
+end
+
+def get_region_id(county_name)
+	return Region.find_by(name: $REGIONS[county_name]).id
+end
+
+
