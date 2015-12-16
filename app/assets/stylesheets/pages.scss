@@ -2,24 +2,25 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.util {
-	color: red;
+
+.spot-focus{
+	min-height: 100%;
+
+   background: url('http://res.cloudinary.com/swell/image/upload/v1450226800/Unknown-1620x1080_ugchnu.jpg') no-repeat center center;
 }
 
-.landing {
-    background-image: url();
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment:fixed;
-    background-size: cover;
+.vertical-center {
+  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh; /* These two lines are counted as one :-)       */
+
+  display: flex;
+  align-items: center;
 }
 
-body {
-	background: #e0e0d1 !important;
-
-}
-
-.app {
-	margin: auto;
-	max-width: 1200px;
+.center {
+	text-align: center;
+    margin: auto;
+    width: 30%;
+    border: 3px solid #73AD21;
+    padding: 10px;
 }

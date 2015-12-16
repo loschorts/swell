@@ -12,8 +12,16 @@
  *
  *= require_tree .
  *= require_self
+ //= require_tree ../../../vendor/assets/stylesheets/creative
+
  */
 
  @import "bootstrap-sprockets";
  @import "bootstrap";
+
+.util {
+	color: red;
+}
+
+
 
