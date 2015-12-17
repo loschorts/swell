@@ -3,7 +3,9 @@ var Dispatcher = require('../dispatcher/dispatcher');
 
 var UserStore = new Store(Dispatcher);
 
-var _currentUser = {username: null, id: null};
+var nullUser = {username: null, id: null, favorites: []};
+
+var _currentUser = nullUser;
 
 UserStore.__onDispatch = function(payload){
 	switch (payload.actionType){
@@ -27,7 +29,7 @@ UserStore.login = function(user){
 };
 
 UserStore.logout = function(){
-	_currentUser = {username: null, id: null};
+	_currentUser = nullUser;
 	UserStore.__emitChange();
 };
 

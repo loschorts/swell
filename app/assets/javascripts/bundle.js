@@ -57,7 +57,7 @@
 	var Hello = __webpack_require__(241);
 	var Navbar = __webpack_require__(233);
 	var SignInForm = __webpack_require__(236);
-	var SignUpForm = __webpack_require__(242);
+	var SignUpForm = __webpack_require__(246);
 	
 	var routes = React.createElement(
 	  Route,
@@ -24463,7 +24463,9 @@
 	
 	var UserStore = new Store(Dispatcher);
 	
-	var _currentUser = { username: null, id: null };
+	var nullUser = { username: null, id: null, favorites: [] };
+	
+	var _currentUser = nullUser;
 	
 	UserStore.__onDispatch = function (payload) {
 		switch (payload.actionType) {
@@ -24486,7 +24488,7 @@
 	};
 	
 	UserStore.logout = function () {
-		_currentUser = { username: null, id: null };
+		_currentUser = nullUser;
 		UserStore.__emitChange();
 	};
 	
@@ -31250,7 +31252,7 @@
 
 	var React = __webpack_require__(1);
 	var UserStore = __webpack_require__(211);
-	var UserAPIUtil = __webpack_require__(244);
+	var UserAPIUtil = __webpack_require__(234);
 	
 	var Navbar = React.createClass({
 	  displayName: 'Navbar',
@@ -31363,7 +31365,69 @@
 	module.exports = Navbar;
 
 /***/ },
-/* 234 */,
+/* 234 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var UserActions = __webpack_require__(235);
+	var UserStore = __webpack_require__(211);
+	
+	var UserAPIUtil = {
+	
+		login: function (user) {
+			$.ajax({
+				url: '/session',
+				type: 'POST',
+				data: { user: user },
+				success: function (user) {
+					UserActions.login(user);
+				},
+				error: function (request, error) {
+					console.log('cant do because ' + error);
+				}
+			});
+		},
+		logout: function () {
+			var user = UserStore.currentUser();
+			if (typeof user === 'undefined') {
+				return;
+			}
+	
+			$.ajax({
+				url: '/session',
+				type: 'DELETE',
+				data: { user: user },
+				success: function (user) {
+					UserActions.logout(user);
+				},
+				error: function (request, error) {
+					console.log(arguments);
+					console.log('cant do because ' + error);
+				}
+			});
+		},
+		guestLogin: function () {
+			this.login({ username: 'guest', password: 'guestguest' });
+		},
+		createUser: function (user) {
+			$.ajax({
+				url: '/users',
+				type: 'POST',
+				data: { user: user },
+				success: function (user) {
+					console.log("created" + user.username);
+					UserActions.login(user);
+				},
+				error: function (request, error) {
+					console.log(arguments);
+					console.log('cant do because ' + error);
+				}
+			});
+		}
+	};
+	
+	module.exports = UserAPIUtil;
+
+/***/ },
 /* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -31392,7 +31456,7 @@
 
 	var React = __webpack_require__(1);
 	var LinkedStateMixin = __webpack_require__(237);
-	var UserAPIUtil = __webpack_require__(244);
+	var UserAPIUtil = __webpack_require__(234);
 	
 	var SignInForm = React.createClass({
 		displayName: 'SignInForm',
@@ -31680,57 +31744,83 @@
 	var React = __webpack_require__(1);
 	
 	//Components
-	var HomeNavbar = __webpack_require__(243);
+	var HomeNavbar = __webpack_require__(242);
 	
 	//Stores & Utils
 	var UserStore = __webpack_require__(211);
-	var SpotStore = __webpack_require__(245);
-	var UserAPIUtil = __webpack_require__(244);
-	var SpotAPIUtil = __webpack_require__(246);
+	var SpotStore = __webpack_require__(243);
+	var UserAPIUtil = __webpack_require__(234);
+	var SpotAPIUtil = __webpack_require__(244);
 	
 	var Hello = React.createClass({
 	  displayName: 'Hello',
 	
 	  getInitialState: function () {
 	    return {
-	      user: UserStore.currentUser(),
-	      spots: []
+	      user: UserStore.currentUser()
 	    };
 	  },
 	  componentDidMount: function () {
 	    UserStore.addListener(this.updateUser);
-	    SpotStore.addListener(this.updateSpots);
-	  },
-	  updateSpots: function () {
-	    this.setState({ spots: SpotStore.all() });
 	  },
 	  updateUser: function () {
 	    this.setState({ user: UserStore.currentUser() });
 	  },
-	  userName: function () {
-	    if (this.state.user.username === null) {
-	      return "stranger";
-	    } else {
-	      return this.state.user.username;
-	    }
+	  userInfo: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h1',
+	        null,
+	        ' Hello, ',
+	        this.state.user.username || "Stranger",
+	        ' '
+	      ),
+	      React.createElement(
+	        'h2',
+	        null,
+	        ' ID: ',
+	        this.state.user.id,
+	        ' '
+	      ),
+	      React.createElement(
+	        'h3',
+	        null,
+	        ' Favorites: ',
+	        this.showFavorites(),
+	        ' '
+	      )
+	    );
 	  },
-	  spotNames: function () {
+	  showFavorites: function () {
+	    return this.spotNames(this.state.user.favorites);
+	  },
+	  spotNames: function (array) {
+	    if (array.length === 0) {
+	      return [];
+	    }
 	    var names = [];
-	    this.state.spots.forEach(function (spot) {
+	    array.forEach(function (spot) {
 	      names.push(spot.name);
 	    });
 	    return names;
 	  },
-	  render: function () {
+	  getAll: function () {
+	    this.setState({ spots: [] });
 	    SpotAPIUtil.getAllSpots();
+	  },
+	  getOne: function () {
+	    this.setState({ spots: [] });
+	    SpotAPIUtil.getSpotById(83);
+	    SpotStore.show(83);
+	  },
+	  render: function () {
 	    return React.createElement(
 	      'div',
 	      { id: 'hello' },
 	      React.createElement(HomeNavbar, null),
-	      "Hello, " + this.userName(),
-	      React.createElement('br', null),
-	      React.createElement('br', null),
-	      "Spots: " + this.spotNames()
+	      this.userInfo()
 	    );
 	  }
 	});
@@ -31742,65 +31832,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var LinkedStateMixin = __webpack_require__(237);
-	var UserAPIUtil = __webpack_require__(244);
-	
-	var SignUpForm = React.createClass({
-		displayName: 'SignUpForm',
-	
-		mixins: [LinkedStateMixin],
-		getInitialState: function () {
-			return { username: "", password: "" };
-		},
-		createUser: function (e) {
-			e.preventDefault();
-			UserAPIUtil.createUser(this.state);
-		},
-		render: function () {
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(
-					'h4',
-					null,
-					'Sign Up'
-				),
-				React.createElement(
-					'form',
-					{ onSubmit: this.createUser },
-					React.createElement(
-						'label',
-						{ 'for': 'username' },
-						'Username'
-					),
-					React.createElement('input', {
-						id: 'username',
-						type: 'text',
-						valueLink: this.linkState('username') }),
-					React.createElement(
-						'label',
-						{ 'for': 'password' },
-						'Password'
-					),
-					React.createElement('input', {
-						id: 'password',
-						type: 'password',
-						valueLink: this.linkState('password') }),
-					React.createElement('input', { type: 'submit' })
-				)
-			);
-		}
-	});
-	
-	module.exports = SignUpForm;
-
-/***/ },
-/* 243 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
 	var UserStore = __webpack_require__(211);
-	var UserAPIUtil = __webpack_require__(244);
+	var UserAPIUtil = __webpack_require__(234);
 	
 	var HomeNavbar = React.createClass({
 	  displayName: 'HomeNavbar',
@@ -31857,11 +31890,6 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'container-fluid' },
-	      React.createElement(
-	        'h1',
-	        { classname: 'white' },
-	        this.state.user.username
-	      ),
 	      React.createElement(
 	        'div',
 	        { className: 'navbar-header navbar-right' },
@@ -31923,70 +31951,7 @@
 	module.exports = HomeNavbar;
 
 /***/ },
-/* 244 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var UserActions = __webpack_require__(235);
-	var UserStore = __webpack_require__(211);
-	
-	var UserAPIUtil = {
-	
-		login: function (user) {
-			$.ajax({
-				url: '/session',
-				type: 'POST',
-				data: { user: user },
-				success: function (user) {
-					UserActions.login(user);
-				},
-				error: function (request, error) {
-					console.log('cant do because ' + error);
-				}
-			});
-		},
-		logout: function () {
-			var user = UserStore.currentUser();
-			if (typeof user === 'undefined') {
-				return;
-			}
-	
-			$.ajax({
-				url: '/session',
-				type: 'DELETE',
-				data: { user: user },
-				success: function (user) {
-					UserActions.logout(user);
-				},
-				error: function (request, error) {
-					console.log(arguments);
-					console.log('cant do because ' + error);
-				}
-			});
-		},
-		guestLogin: function () {
-			this.login({ username: 'guest', password: 'guestguest' });
-		},
-		createUser: function (user) {
-			$.ajax({
-				url: '/users',
-				type: 'POST',
-				data: { user: user },
-				success: function (user) {
-					console.log("created" + user.username);
-					UserActions.login(user);
-				},
-				error: function (request, error) {
-					console.log(arguments);
-					console.log('cant do because ' + error);
-				}
-			});
-		}
-	};
-	
-	module.exports = UserAPIUtil;
-
-/***/ },
-/* 245 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
@@ -31998,7 +31963,7 @@
 	
 	SpotStore.__onDispatch = function (payload) {
 		switch (payload.actionType) {
-			case "GET_SPOT":
+			case "UPDATE_SPOT":
 				SpotStore.updateSpot(payload.spot);
 				break;
 			case "ALL_SPOTS":
@@ -32013,7 +31978,8 @@
 	};
 	
 	SpotStore.updateSpot = function (spot) {
-		var idx = this.findSpot(spot);
+		console.log('update spot');
+		var idx = this.findSpot(spot.id);
 		if (idx) {
 			_spots[idx] = spot;
 			this.__emitChange();
@@ -32022,10 +31988,10 @@
 		}
 	};
 	
-	SpotStore.findSpot = function (spot) {
+	SpotStore.findSpot = function (id) {
 		var _spotIdx = null;
-		_spots.forEach(function (check, idx) {
-			if (check.id === spot.id) {
+		_spots.forEach(function (spot, idx) {
+			if (spot.id === id) {
 				_spotIdx = idx;
 				return;
 			}
@@ -32042,17 +32008,22 @@
 		return _spots.slice();
 	};
 	
+	SpotStore.show = function (id) {
+		idx = SpotStore.findSpot(id);
+		return _spots[idx];
+	};
+	
 	module.exports = SpotStore;
 
 /***/ },
-/* 246 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SpotActions = __webpack_require__(247);
+	var SpotActions = __webpack_require__(245);
 	var UserStore = __webpack_require__(211);
 	
 	var SpotApiUtil = {
-		getSpotbyId: function (id) {
+		getSpotById: function (id) {
 			$.ajax({
 				url: 'api/spots/' + id,
 				type: 'GET',
@@ -32079,7 +32050,7 @@
 	module.exports = SpotApiUtil;
 
 /***/ },
-/* 247 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Dispatcher = __webpack_require__(229);
@@ -32100,6 +32071,63 @@
 	};
 	
 	module.exports = SpotActions;
+
+/***/ },
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var LinkedStateMixin = __webpack_require__(237);
+	var UserAPIUtil = __webpack_require__(234);
+	
+	var SignUpForm = React.createClass({
+		displayName: 'SignUpForm',
+	
+		mixins: [LinkedStateMixin],
+		getInitialState: function () {
+			return { username: "", password: "" };
+		},
+		createUser: function (e) {
+			e.preventDefault();
+			UserAPIUtil.createUser(this.state);
+		},
+		render: function () {
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'h4',
+					null,
+					'Sign Up'
+				),
+				React.createElement(
+					'form',
+					{ onSubmit: this.createUser },
+					React.createElement(
+						'label',
+						{ 'for': 'username' },
+						'Username'
+					),
+					React.createElement('input', {
+						id: 'username',
+						type: 'text',
+						valueLink: this.linkState('username') }),
+					React.createElement(
+						'label',
+						{ 'for': 'password' },
+						'Password'
+					),
+					React.createElement('input', {
+						id: 'password',
+						type: 'password',
+						valueLink: this.linkState('password') }),
+					React.createElement('input', { type: 'submit' })
+				)
+			);
+		}
+	});
+	
+	module.exports = SignUpForm;
 
 /***/ }
 /******/ ]);

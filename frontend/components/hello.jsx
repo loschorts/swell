@@ -13,42 +13,49 @@ var Hello = React.createClass({
   getInitialState: function(){
     return ({
       user: UserStore.currentUser(),
-      spots: []
     });
   },
   componentDidMount: function(){
     UserStore.addListener(this.updateUser);
-    SpotStore.addListener(this.updateSpots);
-  },
-  updateSpots: function(){
-    this.setState({spots: SpotStore.all()});
   },
   updateUser: function(){
     this.setState({user: UserStore.currentUser()});
   },
-  userName: function(){
-  	if (this.state.user.username === null) {
-  		return "stranger";
-  	} else {
-  		return this.state.user.username;
-  	}
+  userInfo: function(){
+		return( <div> 
+              <h1> Hello, {this.state.user.username || "Stranger"} </h1>
+              <h2> ID: {this.state.user.id} </h2>
+              <h3> Favorites: {this.showFavorites()} </h3>
+            </div>);
   },
-  spotNames: function(){
+  showFavorites: function(){
+    return this.spotNames(this.state.user.favorites);
+  },
+  spotNames: function(array){
+    if (array.length === 0){
+      return [];
+    }
     var names = [];
-    this.state.spots.forEach(function(spot){
+    array.forEach(function(spot){
       names.push(spot.name);
     });
     return names;
   },
-  render: function(){
+  getAll: function(){
+    this.setState({spots: []});
     SpotAPIUtil.getAllSpots();
+  },
+  getOne: function(){
+    this.setState({spots: []});
+    SpotAPIUtil.getSpotById(83);
+    SpotStore.show(83);
+  },
+  render: function(){
     return(
     	<div id="hello"> 
 	    	<HomeNavbar/>
-	    	{"Hello, " + this.userName()}
-        <br/><br/>
-        {"Spots: "+ this.spotNames()}
-    	</div>
+        {this.userInfo()}
+      </div>
     );
   }
 });

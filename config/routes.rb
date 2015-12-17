@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
 
-  resources :users
   resource :session, only: [:new, :create, :destroy]
 
   namespace :api, defaults: { format: :json } do 
+    resources :users, only: [:create, :update, :destroy, :show]
     resources :spots, only: [:show, :index]
     resources :counties, only: [:show, :index] do
       resources :spots, only: [:index]

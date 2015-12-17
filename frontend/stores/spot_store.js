@@ -7,7 +7,7 @@ var _spots = [];
 
 SpotStore.__onDispatch = function(payload){
 	switch (payload.actionType){
-		case "GET_SPOT":
+		case "UPDATE_SPOT":
 			SpotStore.updateSpot(payload.spot);
 			break;
 		case "ALL_SPOTS":
@@ -22,7 +22,8 @@ SpotStore.setAll = function(spots){
 };
 
 SpotStore.updateSpot = function(spot){
-	var idx = this.findSpot(spot);
+	console.log('update spot');
+	var idx = this.findSpot(spot.id);
 	if (idx){
 		_spots[idx] = spot;
 		this.__emitChange();
@@ -31,10 +32,10 @@ SpotStore.updateSpot = function(spot){
 	}
 };
 
-SpotStore.findSpot = function(spot){
+SpotStore.findSpot = function(id){
 	var _spotIdx = null;
-	_spots.forEach(function(check, idx){
-		if (check.id === spot.id) {
+	_spots.forEach(function(spot, idx){
+		if (spot.id === id) {
 			_spotIdx = idx;
 			return;
 		}
@@ -49,6 +50,11 @@ SpotStore.addSpot = function(spot){
 
 SpotStore.all = function(){
 	return _spots.slice();
-}
+};
+
+SpotStore.show = function(id){
+	idx = SpotStore.findSpot(id);
+	return _spots[idx];
+};
 
 module.exports = SpotStore;

@@ -2,7 +2,7 @@ var SpotActions = require('../actions/spot_actions');
 var UserStore = require('../stores/user_store');
 
 var SpotApiUtil = {
-	getSpotbyId: function(id){
+	getSpotById: function(id){
 		$.ajax({
 			url: 'api/spots/'+ id,
 			type: 'GET',

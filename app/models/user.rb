@@ -4,7 +4,15 @@ class User < ActiveRecord::Base
   has_many :favorites
   has_many :spots, through: :favorites
 
-  # ******* AUTH BELOW
+  def add_favorite(spot_id)
+    Favorite.create(user_id: self.id, spot_id: spot_id)
+  end
+
+  def remove_favorite(spot_id)
+    Favorite.destroy(Favorite.where(user_id: self.id, spot_id: spot_id))
+  end
+
+  # AUTH #
   attr_reader :password
 
   after_initialize :ensure_session_token

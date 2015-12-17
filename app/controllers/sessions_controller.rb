@@ -23,7 +23,7 @@ class SessionsController < ApplicationController
   end
 
   def current_user_info
-    {username: current_user.username, id: current_user.id}
+    {username: current_user.username, id: current_user.id, favorites: current_user.spots}
   end
 
 end
