@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
 
     if @user
       sign_in(@user)
-      render json: {user: current_user_info}
+      render json: current_user_info
     end
   end
 

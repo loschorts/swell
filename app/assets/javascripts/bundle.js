@@ -24441,10 +24441,10 @@
 		displayName: 'Splash',
 	
 		getInitialState: function () {
-			return { form: "", currentUser: UserStore.currentUser() };
+			return { form: "", user: UserStore.currentUser() };
 		},
 		updateUser: function () {
-			this.setState({ currentUser: UserStore.currentUser() });
+			this.setState({ user: UserStore.currentUser() });
 		},
 		componentDidMount: function () {
 			UserStore.addListener(this.updateUser);
@@ -24456,13 +24456,11 @@
 			this.props.history.push('home');
 		},
 		render: function () {
-			console.log(this.state.currentUser);
+			console.log(this.state.user);
 			return React.createElement(
 				'div',
 				{ className: 'container-fluid splash fullscreen' },
-				React.createElement(Navbar, {
-					history: this.props.history,
-					selectForm: this.showForm }),
+				React.createElement(Navbar, { history: this.props.history }),
 				React.createElement(
 					'div',
 					{ className: 'row' },
@@ -24486,10 +24484,20 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	var UserStore = __webpack_require__(224);
 	
 	var Navbar = React.createClass({
 	  displayName: 'Navbar',
 	
+	  getInitialState: function () {
+	    return { user: { username: "fff" } };
+	  },
+	  componentDidMount: function () {
+	    UserStore.addListener(this.updateUser);
+	  },
+	  updateUser: function () {
+	    this.setState({ user: UserStore.currentUser() });
+	  },
 	  guestLogin: function (e) {
 	    e.preventDefault();
 	    console.log("IMPLEMENT GUEST LOGIN");
@@ -24511,16 +24519,16 @@
 	      'div',
 	      { className: 'row' },
 	      React.createElement(
+	        'h1',
+	        null,
+	        this.state.user.username
+	      ),
+	      React.createElement(
 	        'nav',
 	        { className: 'navbar ' },
 	        React.createElement(
 	          'div',
 	          { className: 'container-fluid' },
-	          React.createElement(
-	            'span',
-	            null,
-	            this.props.currentUser
-	          ),
 	          React.createElement(
 	            'div',
 	            { className: 'navbar-header navbar-right' },

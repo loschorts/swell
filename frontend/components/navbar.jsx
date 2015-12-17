@@ -1,6 +1,16 @@
 var React = require('react');
+var UserStore = require('../stores/user_store');
 
 var Navbar = React.createClass({
+  getInitialState: function(){
+    return ({user: {username: "fff"}});
+  },
+  componentDidMount: function(){
+    UserStore.addListener(this.updateUser);
+  },
+  updateUser: function(){
+    this.setState({user: UserStore.currentUser()});
+  },
   guestLogin: function(e){
     e.preventDefault();
     console.log("IMPLEMENT GUEST LOGIN");
@@ -20,9 +30,9 @@ var Navbar = React.createClass({
   render: function(){
     return(
       <div className="row">
+          <h1>{this.state.user.username}</h1>
         <nav className="navbar ">
           <div className="container-fluid">
-                <span>{this.props.currentUser}</span>
             <div className="navbar-header navbar-right">
               <ul className="nav navbar-nav">
                 <li className="dropdown">

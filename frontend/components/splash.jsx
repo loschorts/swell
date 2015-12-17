@@ -6,10 +6,10 @@ var UserStore = require('../stores/user_store');
 
 var Splash = React.createClass({
 	getInitialState: function(){
-		return {form: "", currentUser: UserStore.currentUser()};
+		return {form: "", user: UserStore.currentUser()};
 	},
 	updateUser: function(){
-		this.setState({currentUser: UserStore.currentUser()});
+		this.setState({user: UserStore.currentUser()});
 	},
 	componentDidMount: function(){
 		UserStore.addListener(this.updateUser);
@@ -21,12 +21,10 @@ var Splash = React.createClass({
 		this.props.history.push('home');
 	},
 	render: function(){
-		console.log(this.state.currentUser);
+		console.log(this.state.user);
 		return (
 				<div className="container-fluid splash fullscreen">
-					<Navbar 
-						history={this.props.history} 
-						selectForm={this.showForm}/>
+					<Navbar history={this.props.history}/>
 					<div className = "row">
 						<div className="logo">
 							<img 
