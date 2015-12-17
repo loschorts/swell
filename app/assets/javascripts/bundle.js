@@ -57,12 +57,14 @@
 	var Hello = __webpack_require__(241);
 	var Navbar = __webpack_require__(233);
 	var SignInForm = __webpack_require__(236);
+	var SignUpForm = __webpack_require__(242);
 	
 	var routes = React.createElement(
 	  Route,
 	  { path: '/', component: Splash },
 	  React.createElement(IndexRoute, { component: Splash }),
 	  React.createElement(Route, { path: 'sign-in', component: SignInForm }),
+	  React.createElement(Route, { path: 'sign-up', component: SignUpForm }),
 	  React.createElement(Route, { path: 'home', component: Hello })
 	);
 	
@@ -31264,7 +31266,7 @@
 	  },
 	  guestLogin: function (e) {
 	    e.preventDefault();
-	    console.log("IMPLEMENT GUEST LOGIN");
+	    APIUtil.guestLogin();
 	  },
 	  newUser: function (e) {
 	    e.preventDefault();
@@ -31278,7 +31280,7 @@
 	    e.preventDefault();
 	    APIUtil.logout();
 	  },
-	  showSignInOrOut: function () {
+	  logToggle: function () {
 	    if (this.state.user.username === null || typeof this.state.user === 'undefined') {
 	      return React.createElement(
 	        'li',
@@ -31355,7 +31357,7 @@
 	                      'Create Account'
 	                    )
 	                  ),
-	                  this.showSignInOrOut()
+	                  this.logToggle()
 	                )
 	              )
 	            )
@@ -31409,6 +31411,24 @@
 					console.log('cant do because ' + error);
 				}
 			});
+		},
+		guestLogin: function () {
+			this.login({ username: 'guest', password: 'guestguest' });
+		},
+		createUser: function (user) {
+			$.ajax({
+				url: '/users',
+				type: 'POST',
+				data: { user: user },
+				success: function (user) {
+					console.log("created" + user.username);
+					UserActions.login(user);
+				},
+				error: function (request, error) {
+					console.log(arguments);
+					console.log('cant do because ' + error);
+				}
+			});
 		}
 	};
 	
@@ -31422,7 +31442,6 @@
 	
 	UserActions = {
 		login: function (user) {
-			console.log("user actions");
 			Dispatcher.dispatch({
 				actionType: "LOGIN",
 				user: user
@@ -31485,7 +31504,7 @@
 					),
 					React.createElement('input', {
 						id: 'password',
-						type: 'text',
+						type: 'password',
 						valueLink: this.linkState('password') }),
 					React.createElement('input', { type: 'submit' })
 				)
@@ -31745,6 +31764,63 @@
 	});
 	
 	module.exports = Hello;
+
+/***/ },
+/* 242 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var LinkedStateMixin = __webpack_require__(237);
+	var APIUtil = __webpack_require__(234);
+	
+	var SignUpForm = React.createClass({
+		displayName: 'SignUpForm',
+	
+		mixins: [LinkedStateMixin],
+		getInitialState: function () {
+			return { username: "", password: "" };
+		},
+		createUser: function (e) {
+			e.preventDefault();
+			APIUtil.createUser(this.state);
+		},
+		render: function () {
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'h4',
+					null,
+					'Sign Up'
+				),
+				React.createElement(
+					'form',
+					{ onSubmit: this.createUser },
+					React.createElement(
+						'label',
+						{ 'for': 'username' },
+						'Username'
+					),
+					React.createElement('input', {
+						id: 'username',
+						type: 'text',
+						valueLink: this.linkState('username') }),
+					React.createElement(
+						'label',
+						{ 'for': 'password' },
+						'Password'
+					),
+					React.createElement('input', {
+						id: 'password',
+						type: 'password',
+						valueLink: this.linkState('password') }),
+					React.createElement('input', { type: 'submit' })
+				)
+			);
+		}
+	});
+	
+	module.exports = SignUpForm;
 
 /***/ }
 /******/ ]);

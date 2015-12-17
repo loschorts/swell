@@ -15,7 +15,7 @@ var Navbar = React.createClass({
   },
   guestLogin: function(e){
     e.preventDefault();
-    console.log("IMPLEMENT GUEST LOGIN");
+    APIUtil.guestLogin();
   },
   newUser: function(e){
     e.preventDefault();
@@ -29,9 +29,9 @@ var Navbar = React.createClass({
     e.preventDefault()
     APIUtil.logout();
   },
-  showSignInOrOut: function(){
+  logToggle: function(){
     if (this.state.user.username === null || 
-        typeof this.state.user === 'undefined'){
+        typeof this.state.user === 'undefined') {
       return <li><a onClick={this.signIn} href="/users/sign-in">Sign In</a></li>;
     } else {
       return <li><a onClick={this.signOut} href="/sign-out">Sign Out</a></li>;
@@ -58,7 +58,7 @@ var Navbar = React.createClass({
                     <li><a 
                       onClick={this.newUser}
                       href="/users/new">Create Account</a></li>
-                    {this.showSignInOrOut()}
+                    {this.logToggle()}
                   </ul>
                 </li>
               </ul>

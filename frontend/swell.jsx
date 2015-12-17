@@ -11,12 +11,14 @@ var Splash = require('./components/splash');
 var Hello = require('./components/hello');
 var Navbar = require('./components/navbar')
 var SignInForm = require('./components/sign_in_form');
+var SignUpForm = require('./components/sign_up_form');
 
 
 var routes = (
     <Route path="/" component={Splash}>
     	<IndexRoute component={Splash}/>
        	<Route path="sign-in" component={SignInForm}/>
+       	<Route path="sign-up" component={SignUpForm}/>
     	<Route path="home" component={Hello}/>
     </Route>
 );

@@ -2,7 +2,6 @@ var Dispatcher = require('../dispatcher/dispatcher');
 
 UserActions = {
 	login: function(user){
-		console.log("user actions");
 		Dispatcher.dispatch({
 			actionType: "LOGIN",
 			user: user

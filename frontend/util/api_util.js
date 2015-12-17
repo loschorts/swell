@@ -36,8 +36,24 @@ var APIUtil = {
 				console.log('cant do because ' + error);
 			}
 		});
-
-
+	},
+	guestLogin: function(){
+		this.login({username: 'guest', password: 'guestguest'})
+	},
+	createUser: function(user){
+		$.ajax({
+			url: '/users',
+			type: 'POST',
+			data: {user: user},
+			success: function(user){
+				console.log("created" + user.username);
+				UserActions.login(user);
+			},
+			error: function(request, error){
+				console.log(arguments);
+				console.log('cant do because ' + error);
+			}
+		});
 	}
 };
 
