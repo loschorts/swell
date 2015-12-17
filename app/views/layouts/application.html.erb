@@ -5,14 +5,12 @@
   <%= csrf_meta_tags %>
   <%= stylesheet_link_tag "application" %>
   <%= javascript_include_tag "application" %>
+	<link rel="shortcut icon" href=<%= asset_path('fav.png') %>>
 
 </head>
 <body>
 
-<%= render 'layouts/util' %>
-
-<%= yield %>
-
+	<%= yield %>
 
 </body>
 </html>
