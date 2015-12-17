@@ -14,16 +14,12 @@ class SessionsController < ApplicationController
 
     if @user
       sign_in(@user)
-      render json: current_user_info
+      render 'api/users/show', user: @user
     end
   end
 
   def destroy
     render json: sign_out
-  end
-
-  def current_user_info
-    {username: current_user.username, id: current_user.id, favorites: current_user.spots}
   end
 
 end
