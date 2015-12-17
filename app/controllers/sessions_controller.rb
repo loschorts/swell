@@ -14,13 +14,17 @@ class SessionsController < ApplicationController
 
     if @user
       sign_in(@user)
-      render json: {user: current_user}
+      render json: {user: current_user_info}
     end
   end
 
   def destroy
     sign_out
     redirect_to new_session_url
+  end
+
+  def current_user_info
+    {username: current_user.username, id: current_user.id}
   end
 
 end

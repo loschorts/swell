@@ -6,10 +6,12 @@ var Route = require('react-router').Route;
 var IndexRoute = require('react-router').IndexRoute;
 
 // Components
+var App = require('./components/app');
 var Splash = require('./components/splash');
 var Hello = require('./components/hello');
 var Navbar = require('./components/navbar')
 var SignInForm = require('./components/sign_in_form');
+
 
 var routes = (
     <Route path="/" component={Splash}>
