@@ -1,7 +1,7 @@
 var React = require('react');
 
 //Components
-var HomeNavbar = require('./home_navbar');
+var HelloNavbar = require('./hello_navbar');
 
 //Stores & Utils
 var UserStore = require('../stores/user_store');
@@ -41,19 +41,10 @@ var Hello = React.createClass({
     });
     return names;
   },
-  getAll: function(){
-    this.setState({spots: []});
-    SpotAPIUtil.getAllSpots();
-  },
-  getOne: function(){
-    this.setState({spots: []});
-    SpotAPIUtil.getSpotById(83);
-    SpotStore.show(83);
-  },
   render: function(){
     return(
     	<div id="hello"> 
-	    	<HomeNavbar/>
+	    	<HelloNavbar history={this.props.history}/>
         {this.userInfo()}
       </div>
     );

@@ -31269,18 +31269,19 @@
 	  guestLogin: function (e) {
 	    e.preventDefault();
 	    UserAPIUtil.guestLogin();
+	    this.props.history.push('/hello');
 	  },
 	  newUser: function (e) {
 	    e.preventDefault();
-	    this.props.history.push('splash/sign-up');
+	    this.props.history.push('/splash/sign-up');
 	  },
 	  signIn: function (e) {
 	    e.preventDefault();
-	    this.props.history.push('splash/sign-in');
+	    this.props.history.push('/splash/sign-in');
 	  },
 	  signOut: function (e) {
-	    e.preventDefault();
 	    UserAPIUtil.logout();
+	    this.props.history.push('/');
 	  },
 	  logToggle: function () {
 	    if (this.state.user.username === null || typeof this.state.user === 'undefined') {
@@ -31299,7 +31300,7 @@
 	        null,
 	        React.createElement(
 	          'a',
-	          { onClick: this.signOut, href: '/sign-out' },
+	          { onClick: this.signOut, href: '/' },
 	          'Sign Out'
 	        )
 	      );
@@ -31311,7 +31312,7 @@
 	      { className: 'container-fluid' },
 	      React.createElement(
 	        'h1',
-	        { classname: 'white' },
+	        { className: 'white' },
 	        this.state.user.username
 	      ),
 	      React.createElement(
@@ -31410,7 +31411,7 @@
 		},
 		createUser: function (user) {
 			$.ajax({
-				url: '/users',
+				url: 'api/users',
 				type: 'POST',
 				data: { user: user },
 				success: function (user) {
@@ -31468,6 +31469,7 @@
 		login: function (e) {
 			e.preventDefault();
 			UserAPIUtil.login(this.state);
+			this.props.history.push('/hello');
 		},
 		render: function () {
 			return React.createElement(
@@ -31744,7 +31746,7 @@
 	var React = __webpack_require__(1);
 	
 	//Components
-	var HomeNavbar = __webpack_require__(242);
+	var HelloNavbar = __webpack_require__(247);
 	
 	//Stores & Utils
 	var UserStore = __webpack_require__(211);
@@ -31806,20 +31808,11 @@
 	    });
 	    return names;
 	  },
-	  getAll: function () {
-	    this.setState({ spots: [] });
-	    SpotAPIUtil.getAllSpots();
-	  },
-	  getOne: function () {
-	    this.setState({ spots: [] });
-	    SpotAPIUtil.getSpotById(83);
-	    SpotStore.show(83);
-	  },
 	  render: function () {
 	    return React.createElement(
 	      'div',
 	      { id: 'hello' },
-	      React.createElement(HomeNavbar, null),
+	      React.createElement(HelloNavbar, { history: this.props.history }),
 	      this.userInfo()
 	    );
 	  }
@@ -31828,129 +31821,7 @@
 	module.exports = Hello;
 
 /***/ },
-/* 242 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var UserStore = __webpack_require__(211);
-	var UserAPIUtil = __webpack_require__(234);
-	
-	var HomeNavbar = React.createClass({
-	  displayName: 'HomeNavbar',
-	
-	  getInitialState: function () {
-	    return { user: UserStore.currentUser() };
-	  },
-	  componentDidMount: function () {
-	    UserStore.addListener(this.updateUser);
-	  },
-	  updateUser: function () {
-	    this.setState({ user: UserStore.currentUser() });
-	  },
-	  guestLogin: function (e) {
-	    e.preventDefault();
-	    UserAPIUtil.guestLogin();
-	  },
-	  newUser: function (e) {
-	    e.preventDefault();
-	    this.props.history.push('splash/sign-up');
-	  },
-	  signIn: function (e) {
-	    e.preventDefault();
-	    this.props.history.push('splash/sign-in');
-	  },
-	  signOut: function (e) {
-	    e.preventDefault();
-	    UserAPIUtil.logout();
-	  },
-	  logToggle: function () {
-	    if (this.state.user.username === null || typeof this.state.user === 'undefined') {
-	      return React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'a',
-	          { onClick: this.signIn, href: '/users/sign-in' },
-	          'Sign In'
-	        )
-	      );
-	    } else {
-	      return React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'a',
-	          { onClick: this.signOut, href: '/sign-out' },
-	          'Sign Out'
-	        )
-	      );
-	    }
-	  },
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      { className: 'container-fluid' },
-	      React.createElement(
-	        'div',
-	        { className: 'navbar-header navbar-right' },
-	        React.createElement(
-	          'ul',
-	          { className: 'nav navbar-nav' },
-	          React.createElement(
-	            'li',
-	            { className: 'dropdown' },
-	            React.createElement(
-	              'a',
-	              { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
-	              React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/c_scale,h_71/v1450302743/--logo_2_a32kqk.png' })
-	            ),
-	            React.createElement(
-	              'ul',
-	              { className: 'dropdown-menu' },
-	              React.createElement(
-	                'li',
-	                null,
-	                React.createElement(
-	                  'a',
-	                  {
-	                    href: '#' },
-	                  'Customize Me!!!'
-	                )
-	              ),
-	              React.createElement(
-	                'li',
-	                null,
-	                React.createElement(
-	                  'a',
-	                  {
-	                    onClick: this.guestLogin,
-	                    href: '/guest-login' },
-	                  'Sign in as Guest'
-	                )
-	              ),
-	              React.createElement(
-	                'li',
-	                null,
-	                React.createElement(
-	                  'a',
-	                  {
-	                    onClick: this.newUser,
-	                    href: '/users/new' },
-	                  'Create Account'
-	                )
-	              ),
-	              this.logToggle()
-	            )
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = HomeNavbar;
-
-/***/ },
+/* 242 */,
 /* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -32090,6 +31961,7 @@
 		createUser: function (e) {
 			e.preventDefault();
 			UserAPIUtil.createUser(this.state);
+			this.props.history.push('hello');
 		},
 		render: function () {
 			return React.createElement(
@@ -32128,6 +32000,130 @@
 	});
 	
 	module.exports = SignUpForm;
+
+/***/ },
+/* 247 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserStore = __webpack_require__(211);
+	var UserAPIUtil = __webpack_require__(234);
+	
+	var HelloNavbar = React.createClass({
+	  displayName: 'HelloNavbar',
+	
+	  getInitialState: function () {
+	    return { user: UserStore.currentUser() };
+	  },
+	  componentDidMount: function () {
+	    UserStore.addListener(this.updateUser);
+	  },
+	  updateUser: function () {
+	    this.setState({ user: UserStore.currentUser() });
+	  },
+	  guestLogin: function (e) {
+	    e.preventDefault();
+	    UserAPIUtil.guestLogin();
+	  },
+	  newUser: function (e) {
+	    e.preventDefault();
+	    this.props.history.push('/splash/sign-up');
+	  },
+	  signIn: function (e) {
+	    e.preventDefault();
+	    this.props.history.push('/splash/sign-in');
+	  },
+	  signOut: function (e) {
+	    e.preventDefault();
+	    UserAPIUtil.logout();
+	    this.props.history.push('/');
+	  },
+	  logToggle: function () {
+	    if (this.state.user.username === null || typeof this.state.user === 'undefined') {
+	      return React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'a',
+	          { onClick: this.signIn, href: '/users/sign-in' },
+	          'Sign In'
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'a',
+	          { onClick: this.signOut, href: '/sign-out' },
+	          'Sign Out'
+	        )
+	      );
+	    }
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'container-fluid' },
+	      React.createElement(
+	        'div',
+	        { className: 'navbar-header navbar-right' },
+	        React.createElement(
+	          'ul',
+	          { className: 'nav navbar-nav' },
+	          React.createElement(
+	            'li',
+	            { className: 'dropdown' },
+	            React.createElement(
+	              'a',
+	              { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
+	              React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/c_scale,h_71/v1450302743/--logo_2_a32kqk.png' })
+	            ),
+	            React.createElement(
+	              'ul',
+	              { className: 'dropdown-menu' },
+	              React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                  'a',
+	                  {
+	                    href: '#' },
+	                  'Customize Me!!!'
+	                )
+	              ),
+	              React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                  'a',
+	                  {
+	                    onClick: this.guestLogin,
+	                    href: '/guest-login' },
+	                  'Sign in as Guest'
+	                )
+	              ),
+	              React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                  'a',
+	                  {
+	                    onClick: this.newUser,
+	                    href: '/users/new' },
+	                  'Create Account'
+	                )
+	              ),
+	              this.logToggle()
+	            )
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = HelloNavbar;
 
 /***/ }
 /******/ ]);

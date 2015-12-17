@@ -40,7 +40,7 @@ var UserAPIUtil = {
 	},
 	createUser: function(user){
 		$.ajax({
-			url: '/users',
+			url: 'api/users',
 			type: 'POST',
 			data: {user: user},
 			success: function(user){

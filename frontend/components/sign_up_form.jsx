@@ -10,7 +10,7 @@ var SignUpForm = React.createClass({
 	createUser: function(e){
 		e.preventDefault();
 		UserAPIUtil.createUser(this.state);
-
+		this.props.history.push('hello')
 	},
 	render: function(){
 		return(

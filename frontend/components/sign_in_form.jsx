@@ -10,7 +10,7 @@ var SignInForm = React.createClass({
 	login: function(e){
 		e.preventDefault();
 		UserAPIUtil.login(this.state);
-
+		this.props.history.push('/hello');
 	},
 	render: function(){
 		return(

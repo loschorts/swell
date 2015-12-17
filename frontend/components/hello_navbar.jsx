@@ -3,7 +3,7 @@ var UserStore = require('../stores/user_store');
 var UserAPIUtil = require('../util/user_api_util');
 
 
-var HomeNavbar = React.createClass({
+var HelloNavbar = React.createClass({
   getInitialState: function(){
     return ({user: UserStore.currentUser()});
   },
@@ -19,15 +19,16 @@ var HomeNavbar = React.createClass({
   },
   newUser: function(e){
     e.preventDefault();
-    this.props.history.push('splash/sign-up');
+    this.props.history.push('/splash/sign-up');
   },
   signIn: function(e){
     e.preventDefault();
-    this.props.history.push('splash/sign-in');
+    this.props.history.push('/splash/sign-in');
   },
   signOut: function(e){
     e.preventDefault()
     UserAPIUtil.logout();
+    this.props.history.push('/');
   },
   logToggle: function(){
     if (this.state.user.username === null || 
@@ -67,7 +68,7 @@ var HomeNavbar = React.createClass({
   }
 });
 
-module.exports = HomeNavbar;
+module.exports = HelloNavbar;
 
 
 

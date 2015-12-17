@@ -16,31 +16,32 @@ var Navbar = React.createClass({
   guestLogin: function(e){
     e.preventDefault();
     UserAPIUtil.guestLogin();
+    this.props.history.push('/hello');
   },
   newUser: function(e){
     e.preventDefault();
-    this.props.history.push('splash/sign-up');
+    this.props.history.push('/splash/sign-up');
   },
   signIn: function(e){
     e.preventDefault();
-    this.props.history.push('splash/sign-in');
+    this.props.history.push('/splash/sign-in');
   },
   signOut: function(e){
-    e.preventDefault()
     UserAPIUtil.logout();
+    this.props.history.push('/');
   },
   logToggle: function(){
     if (this.state.user.username === null || 
         typeof this.state.user === 'undefined') {
       return <li><a onClick={this.signIn} href="/sign-in">Sign In</a></li>;
     } else {
-      return <li><a onClick={this.signOut} href="/sign-out">Sign Out</a></li>;
+      return <li><a onClick={this.signOut} href="/">Sign Out</a></li>;
     }
   },
   render: function(){
     return(
           <div className="container-fluid">
-          <h1 classname="white">{this.state.user.username}</h1>
+          <h1 className="white">{this.state.user.username}</h1>
             <div className="navbar-header navbar-right">
               <ul className="nav navbar-nav">
 

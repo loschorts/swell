@@ -5,8 +5,9 @@ class Api::UsersController < ApplicationController
 
     if @user.save
       sign_in(@user)
-      redirect_to user_url(@user)
+      render 'api/users/show', user: @user
     end
+
   end
 
   def show
