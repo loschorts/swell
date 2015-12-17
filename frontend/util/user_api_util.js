@@ -1,19 +1,17 @@
 var UserActions = require('../actions/user_actions');
 var UserStore = require('../stores/user_store');
 
-
-var APIUtil = {
+var UserAPIUtil = {
+	
 	login: function(user){
 		$.ajax({
 			url: '/session',
 			type: 'POST',
 			data: {user: user},
 			success: function(user){
-				console.log("success");
 				UserActions.login(user);
 			},
 			error: function(request, error){
-				console.log(arguments);
 				console.log('cant do because ' + error);
 			}
 		});
@@ -54,7 +52,7 @@ var APIUtil = {
 				console.log('cant do because ' + error);
 			}
 		});
-	}
+	},
 };
 
-module.exports = APIUtil;
+module.exports = UserAPIUtil;

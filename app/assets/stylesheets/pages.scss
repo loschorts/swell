@@ -12,15 +12,41 @@
   right: 0;
   margin: 0;
   overflow: auto;
-  
+}
+
+.fullscreen * {
+  position: float-left;
 }
 
 .splash {
 	max-width: 1620px;
    background: image-url('ocean-beach.jpg') no-repeat center bottom;
-
 }
 
-.splash-form {
-	
+.logo {
+  position: float;
+}
+
+body {
+  color: white;
+}
+
+.center-text {
+  text-align: center;
+}
+.red {
+  vertical-align: middle;
+
+  background: #000;
+  opacity: .3;
+  height: 300px;
+}
+
+.white {
+  color: white;
+}
+
+#hello {
+  color: white;
+  background: #000;
 }

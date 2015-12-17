@@ -17,19 +17,17 @@ var Splash = React.createClass({
 	showForm: function(formName){
 		this.props.history.push(formName);
 	},
-	goToHome: function(){
-		this.props.history.push('home');
+	goToMain: function(){
+		this.props.history.push('hello');
 	},
 	render: function(){
 		return (
-				<div className="container-fluid splash fullscreen">
+				<div className="splash fullscreen">
 					<Navbar history={this.props.history}/>
 					<div className = "row">
-						<div className="logo">
-							<img 
-								onClick={this.goToHome}
-								className="center-block" src="http://res.cloudinary.com/swell/image/upload/v1450301564/swell-logo_1_imizgd.png"/>
-						</div>
+						<img 
+							onClick={this.goToMain}
+							className="logo center-block" src="http://res.cloudinary.com/swell/image/upload/v1450301564/swell-logo_1_imizgd.png"/>
 					</div>
 					{this.props.children}
 				</div>

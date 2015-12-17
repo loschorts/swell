@@ -61,11 +61,15 @@
 	
 	var routes = React.createElement(
 	  Route,
-	  { path: '/', component: Splash },
+	  { path: '/', component: App },
 	  React.createElement(IndexRoute, { component: Splash }),
-	  React.createElement(Route, { path: 'sign-in', component: SignInForm }),
-	  React.createElement(Route, { path: 'sign-up', component: SignUpForm }),
-	  React.createElement(Route, { path: 'home', component: Hello })
+	  React.createElement(
+	    Route,
+	    { path: 'splash', component: Splash },
+	    React.createElement(Route, { path: 'sign-in', component: SignInForm }),
+	    React.createElement(Route, { path: 'sign-up', component: SignUpForm })
+	  ),
+	  React.createElement(Route, { path: 'hello', component: Hello })
 	);
 	
 	document.addEventListener('DOMContentLoaded', function () {
@@ -31218,24 +31222,20 @@
 		showForm: function (formName) {
 			this.props.history.push(formName);
 		},
-		goToHome: function () {
-			this.props.history.push('home');
+		goToMain: function () {
+			this.props.history.push('hello');
 		},
 		render: function () {
 			return React.createElement(
 				'div',
-				{ className: 'container-fluid splash fullscreen' },
+				{ className: 'splash fullscreen' },
 				React.createElement(Navbar, { history: this.props.history }),
 				React.createElement(
 					'div',
 					{ className: 'row' },
-					React.createElement(
-						'div',
-						{ className: 'logo' },
-						React.createElement('img', {
-							onClick: this.goToHome,
-							className: 'center-block', src: 'http://res.cloudinary.com/swell/image/upload/v1450301564/swell-logo_1_imizgd.png' })
-					)
+					React.createElement('img', {
+						onClick: this.goToMain,
+						className: 'logo center-block', src: 'http://res.cloudinary.com/swell/image/upload/v1450301564/swell-logo_1_imizgd.png' })
 				),
 				this.props.children
 			);
@@ -31250,7 +31250,7 @@
 
 	var React = __webpack_require__(1);
 	var UserStore = __webpack_require__(211);
-	var APIUtil = __webpack_require__(234);
+	var UserAPIUtil = __webpack_require__(244);
 	
 	var Navbar = React.createClass({
 	  displayName: 'Navbar',
@@ -31266,19 +31266,19 @@
 	  },
 	  guestLogin: function (e) {
 	    e.preventDefault();
-	    APIUtil.guestLogin();
+	    UserAPIUtil.guestLogin();
 	  },
 	  newUser: function (e) {
 	    e.preventDefault();
-	    this.props.history.push('sign-up');
+	    this.props.history.push('splash/sign-up');
 	  },
 	  signIn: function (e) {
 	    e.preventDefault();
-	    this.props.history.push('sign-in');
+	    this.props.history.push('splash/sign-in');
 	  },
 	  signOut: function (e) {
 	    e.preventDefault();
-	    APIUtil.logout();
+	    UserAPIUtil.logout();
 	  },
 	  logToggle: function () {
 	    if (this.state.user.username === null || typeof this.state.user === 'undefined') {
@@ -31287,7 +31287,7 @@
 	        null,
 	        React.createElement(
 	          'a',
-	          { onClick: this.signIn, href: '/users/sign-in' },
+	          { onClick: this.signIn, href: '/sign-in' },
 	          'Sign In'
 	        )
 	      );
@@ -31306,60 +31306,52 @@
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      { className: 'row' },
+	      { className: 'container-fluid' },
 	      React.createElement(
 	        'h1',
-	        null,
+	        { classname: 'white' },
 	        this.state.user.username
 	      ),
 	      React.createElement(
-	        'nav',
-	        { className: 'navbar ' },
+	        'div',
+	        { className: 'navbar-header navbar-right' },
 	        React.createElement(
-	          'div',
-	          { className: 'container-fluid' },
+	          'ul',
+	          { className: 'nav navbar-nav' },
 	          React.createElement(
-	            'div',
-	            { className: 'navbar-header navbar-right' },
+	            'li',
+	            { className: 'dropdown' },
+	            React.createElement(
+	              'a',
+	              { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
+	              React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/c_scale,h_71/v1450302743/--logo_2_a32kqk.png' })
+	            ),
 	            React.createElement(
 	              'ul',
-	              { className: 'nav navbar-nav' },
+	              { className: 'dropdown-menu' },
 	              React.createElement(
 	                'li',
-	                { className: 'dropdown' },
+	                null,
 	                React.createElement(
 	                  'a',
-	                  { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
-	                  React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/c_scale,h_71/v1450302743/--logo_2_a32kqk.png' })
-	                ),
-	                React.createElement(
-	                  'ul',
-	                  { className: 'dropdown-menu' },
-	                  React.createElement(
-	                    'li',
-	                    null,
-	                    React.createElement(
-	                      'a',
-	                      {
-	                        onClick: this.guestLogin,
-	                        href: '/guest-login' },
-	                      'Sign in as Guest'
-	                    )
-	                  ),
-	                  React.createElement(
-	                    'li',
-	                    null,
-	                    React.createElement(
-	                      'a',
-	                      {
-	                        onClick: this.newUser,
-	                        href: '/users/new' },
-	                      'Create Account'
-	                    )
-	                  ),
-	                  this.logToggle()
+	                  {
+	                    onClick: this.guestLogin,
+	                    href: '/guest-login' },
+	                  'Sign in as Guest'
 	                )
-	              )
+	              ),
+	              React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                  'a',
+	                  {
+	                    onClick: this.newUser,
+	                    href: '/users/new' },
+	                  'Create Account'
+	                )
+	              ),
+	              this.logToggle()
 	            )
 	          )
 	        )
@@ -31371,70 +31363,7 @@
 	module.exports = Navbar;
 
 /***/ },
-/* 234 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var UserActions = __webpack_require__(235);
-	var UserStore = __webpack_require__(211);
-	
-	var APIUtil = {
-		login: function (user) {
-			$.ajax({
-				url: '/session',
-				type: 'POST',
-				data: { user: user },
-				success: function (user) {
-					console.log("success");
-					UserActions.login(user);
-				},
-				error: function (request, error) {
-					console.log(arguments);
-					console.log('cant do because ' + error);
-				}
-			});
-		},
-		logout: function () {
-			var user = UserStore.currentUser();
-			if (typeof user === 'undefined') {
-				return;
-			}
-	
-			$.ajax({
-				url: '/session',
-				type: 'DELETE',
-				data: { user: user },
-				success: function (user) {
-					UserActions.logout(user);
-				},
-				error: function (request, error) {
-					console.log(arguments);
-					console.log('cant do because ' + error);
-				}
-			});
-		},
-		guestLogin: function () {
-			this.login({ username: 'guest', password: 'guestguest' });
-		},
-		createUser: function (user) {
-			$.ajax({
-				url: '/users',
-				type: 'POST',
-				data: { user: user },
-				success: function (user) {
-					console.log("created" + user.username);
-					UserActions.login(user);
-				},
-				error: function (request, error) {
-					console.log(arguments);
-					console.log('cant do because ' + error);
-				}
-			});
-		}
-	};
-	
-	module.exports = APIUtil;
-
-/***/ },
+/* 234 */,
 /* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -31463,7 +31392,7 @@
 
 	var React = __webpack_require__(1);
 	var LinkedStateMixin = __webpack_require__(237);
-	var APIUtil = __webpack_require__(234);
+	var UserAPIUtil = __webpack_require__(244);
 	
 	var SignInForm = React.createClass({
 		displayName: 'SignInForm',
@@ -31474,7 +31403,7 @@
 		},
 		login: function (e) {
 			e.preventDefault();
-			APIUtil.login(this.state);
+			UserAPIUtil.login(this.state);
 		},
 		render: function () {
 			return React.createElement(
@@ -31750,17 +31679,60 @@
 
 	var React = __webpack_require__(1);
 	
-	var Hello = React.createClass({
-		displayName: 'Hello',
+	//Components
+	var HomeNavbar = __webpack_require__(243);
 	
-		render: function () {
-			console.log('hello');
-			return React.createElement(
-				'div',
-				null,
-				'Hello'
-			);
-		}
+	//Stores & Utils
+	var UserStore = __webpack_require__(211);
+	var SpotStore = __webpack_require__(245);
+	var UserAPIUtil = __webpack_require__(244);
+	var SpotAPIUtil = __webpack_require__(246);
+	
+	var Hello = React.createClass({
+	  displayName: 'Hello',
+	
+	  getInitialState: function () {
+	    return {
+	      user: UserStore.currentUser(),
+	      spots: []
+	    };
+	  },
+	  componentDidMount: function () {
+	    UserStore.addListener(this.updateUser);
+	    SpotStore.addListener(this.updateSpots);
+	  },
+	  updateSpots: function () {
+	    this.setState({ spots: SpotStore.all() });
+	  },
+	  updateUser: function () {
+	    this.setState({ user: UserStore.currentUser() });
+	  },
+	  userName: function () {
+	    if (this.state.user.username === null) {
+	      return "stranger";
+	    } else {
+	      return this.state.user.username;
+	    }
+	  },
+	  spotNames: function () {
+	    var names = [];
+	    this.state.spots.forEach(function (spot) {
+	      names.push(spot.name);
+	    });
+	    return names;
+	  },
+	  render: function () {
+	    SpotAPIUtil.getAllSpots();
+	    return React.createElement(
+	      'div',
+	      { id: 'hello' },
+	      React.createElement(HomeNavbar, null),
+	      "Hello, " + this.userName(),
+	      React.createElement('br', null),
+	      React.createElement('br', null),
+	      "Spots: " + this.spotNames()
+	    );
+	  }
 	});
 	
 	module.exports = Hello;
@@ -31771,7 +31743,7 @@
 
 	var React = __webpack_require__(1);
 	var LinkedStateMixin = __webpack_require__(237);
-	var APIUtil = __webpack_require__(234);
+	var UserAPIUtil = __webpack_require__(244);
 	
 	var SignUpForm = React.createClass({
 		displayName: 'SignUpForm',
@@ -31782,7 +31754,7 @@
 		},
 		createUser: function (e) {
 			e.preventDefault();
-			APIUtil.createUser(this.state);
+			UserAPIUtil.createUser(this.state);
 		},
 		render: function () {
 			return React.createElement(
@@ -31821,6 +31793,313 @@
 	});
 	
 	module.exports = SignUpForm;
+
+/***/ },
+/* 243 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserStore = __webpack_require__(211);
+	var UserAPIUtil = __webpack_require__(244);
+	
+	var HomeNavbar = React.createClass({
+	  displayName: 'HomeNavbar',
+	
+	  getInitialState: function () {
+	    return { user: UserStore.currentUser() };
+	  },
+	  componentDidMount: function () {
+	    UserStore.addListener(this.updateUser);
+	  },
+	  updateUser: function () {
+	    this.setState({ user: UserStore.currentUser() });
+	  },
+	  guestLogin: function (e) {
+	    e.preventDefault();
+	    UserAPIUtil.guestLogin();
+	  },
+	  newUser: function (e) {
+	    e.preventDefault();
+	    this.props.history.push('splash/sign-up');
+	  },
+	  signIn: function (e) {
+	    e.preventDefault();
+	    this.props.history.push('splash/sign-in');
+	  },
+	  signOut: function (e) {
+	    e.preventDefault();
+	    UserAPIUtil.logout();
+	  },
+	  logToggle: function () {
+	    if (this.state.user.username === null || typeof this.state.user === 'undefined') {
+	      return React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'a',
+	          { onClick: this.signIn, href: '/users/sign-in' },
+	          'Sign In'
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'a',
+	          { onClick: this.signOut, href: '/sign-out' },
+	          'Sign Out'
+	        )
+	      );
+	    }
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'container-fluid' },
+	      React.createElement(
+	        'h1',
+	        { classname: 'white' },
+	        this.state.user.username
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'navbar-header navbar-right' },
+	        React.createElement(
+	          'ul',
+	          { className: 'nav navbar-nav' },
+	          React.createElement(
+	            'li',
+	            { className: 'dropdown' },
+	            React.createElement(
+	              'a',
+	              { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
+	              React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/c_scale,h_71/v1450302743/--logo_2_a32kqk.png' })
+	            ),
+	            React.createElement(
+	              'ul',
+	              { className: 'dropdown-menu' },
+	              React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                  'a',
+	                  {
+	                    href: '#' },
+	                  'Customize Me!!!'
+	                )
+	              ),
+	              React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                  'a',
+	                  {
+	                    onClick: this.guestLogin,
+	                    href: '/guest-login' },
+	                  'Sign in as Guest'
+	                )
+	              ),
+	              React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                  'a',
+	                  {
+	                    onClick: this.newUser,
+	                    href: '/users/new' },
+	                  'Create Account'
+	                )
+	              ),
+	              this.logToggle()
+	            )
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = HomeNavbar;
+
+/***/ },
+/* 244 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var UserActions = __webpack_require__(235);
+	var UserStore = __webpack_require__(211);
+	
+	var UserAPIUtil = {
+	
+		login: function (user) {
+			$.ajax({
+				url: '/session',
+				type: 'POST',
+				data: { user: user },
+				success: function (user) {
+					UserActions.login(user);
+				},
+				error: function (request, error) {
+					console.log('cant do because ' + error);
+				}
+			});
+		},
+		logout: function () {
+			var user = UserStore.currentUser();
+			if (typeof user === 'undefined') {
+				return;
+			}
+	
+			$.ajax({
+				url: '/session',
+				type: 'DELETE',
+				data: { user: user },
+				success: function (user) {
+					UserActions.logout(user);
+				},
+				error: function (request, error) {
+					console.log(arguments);
+					console.log('cant do because ' + error);
+				}
+			});
+		},
+		guestLogin: function () {
+			this.login({ username: 'guest', password: 'guestguest' });
+		},
+		createUser: function (user) {
+			$.ajax({
+				url: '/users',
+				type: 'POST',
+				data: { user: user },
+				success: function (user) {
+					console.log("created" + user.username);
+					UserActions.login(user);
+				},
+				error: function (request, error) {
+					console.log(arguments);
+					console.log('cant do because ' + error);
+				}
+			});
+		}
+	};
+	
+	module.exports = UserAPIUtil;
+
+/***/ },
+/* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var Dispatcher = __webpack_require__(229);
+	
+	var SpotStore = new Store(Dispatcher);
+	
+	var _spots = [];
+	
+	SpotStore.__onDispatch = function (payload) {
+		switch (payload.actionType) {
+			case "GET_SPOT":
+				SpotStore.updateSpot(payload.spot);
+				break;
+			case "ALL_SPOTS":
+				SpotStore.setAll(payload.spots);
+				break;
+		}
+	};
+	
+	SpotStore.setAll = function (spots) {
+		_spots = spots;
+		this.__emitChange();
+	};
+	
+	SpotStore.updateSpot = function (spot) {
+		var idx = this.findSpot(spot);
+		if (idx) {
+			_spots[idx] = spot;
+			this.__emitChange();
+		} else {
+			this.addSpot(spot);
+		}
+	};
+	
+	SpotStore.findSpot = function (spot) {
+		var _spotIdx = null;
+		_spots.forEach(function (check, idx) {
+			if (check.id === spot.id) {
+				_spotIdx = idx;
+				return;
+			}
+		});
+		return _spotIdx;
+	};
+	
+	SpotStore.addSpot = function (spot) {
+		_spots.push(spot);
+		this.__emitChange();
+	};
+	
+	SpotStore.all = function () {
+		return _spots.slice();
+	};
+	
+	module.exports = SpotStore;
+
+/***/ },
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var SpotActions = __webpack_require__(247);
+	var UserStore = __webpack_require__(211);
+	
+	var SpotApiUtil = {
+		getSpotbyId: function (id) {
+			$.ajax({
+				url: 'api/spots/' + id,
+				type: 'GET',
+				data: {},
+				success: function (spot) {
+					SpotActions.updateSpot(spot);
+				}
+			});
+		},
+		getAllSpots: function () {
+			console.log('spotAPIUtil, get all spots');
+			$.ajax({
+				url: 'api/spots/',
+				type: 'GET',
+				data: {},
+				success: function (spots) {
+					SpotActions.setAll(spots);
+				}
+	
+			});
+		}
+	};
+	
+	module.exports = SpotApiUtil;
+
+/***/ },
+/* 247 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(229);
+	
+	SpotActions = {
+		updateSpot: function (spot) {
+			Dispatcher.dispatch({
+				actionType: "UPDATE_SPOT",
+				spot: spot
+			});
+		},
+		setAll: function (spots) {
+			Dispatcher.dispatch({
+				actionType: "ALL_SPOTS",
+				spots: spots
+			});
+		}
+	};
+	
+	module.exports = SpotActions;
 
 /***/ }
 /******/ ]);

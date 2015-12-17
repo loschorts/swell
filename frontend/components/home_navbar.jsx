@@ -3,7 +3,7 @@ var UserStore = require('../stores/user_store');
 var UserAPIUtil = require('../util/user_api_util');
 
 
-var Navbar = React.createClass({
+var HomeNavbar = React.createClass({
   getInitialState: function(){
     return ({user: UserStore.currentUser()});
   },
@@ -32,7 +32,7 @@ var Navbar = React.createClass({
   logToggle: function(){
     if (this.state.user.username === null || 
         typeof this.state.user === 'undefined') {
-      return <li><a onClick={this.signIn} href="/sign-in">Sign In</a></li>;
+      return <li><a onClick={this.signIn} href="/users/sign-in">Sign In</a></li>;
     } else {
       return <li><a onClick={this.signOut} href="/sign-out">Sign Out</a></li>;
     }
@@ -50,6 +50,8 @@ var Navbar = React.createClass({
 
                   </a>
                   <ul className="dropdown-menu">
+                      <li><a 
+                      href="#">Customize Me!!!</a></li>
                     <li><a 
                       onClick={this.guestLogin}
                       href="/guest-login">Sign in as Guest</a></li>
@@ -66,7 +68,7 @@ var Navbar = React.createClass({
   }
 });
 
-module.exports = Navbar;
+module.exports = HomeNavbar;
 
 
 
