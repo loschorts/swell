@@ -5,7 +5,7 @@ class Api::UsersController < ApplicationController
 
     if @user.save
       sign_in(@user)
-      render json: {username: @user.username, id: @user.id}
+      redirect_to user_url(@user)
     end
   end
 
@@ -14,7 +14,6 @@ class Api::UsersController < ApplicationController
       render json: "unauthorized"
     else
       @user = User.find(params[:id])
-      render json: {username: @user.username, id: @user.id, favorites: @user.spots}
     end
   end
 
