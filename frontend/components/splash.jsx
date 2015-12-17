@@ -21,7 +21,6 @@ var Splash = React.createClass({
 		this.props.history.push('home');
 	},
 	render: function(){
-		console.log(this.state.user);
 		return (
 				<div className="container-fluid splash fullscreen">
 					<Navbar history={this.props.history}/>

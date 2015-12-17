@@ -19,8 +19,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    sign_out
-    redirect_to new_session_url
+    render json: sign_out
   end
 
   def current_user_info

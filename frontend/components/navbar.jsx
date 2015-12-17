@@ -1,9 +1,11 @@
 var React = require('react');
 var UserStore = require('../stores/user_store');
+var APIUtil = require('../util/api_util')
+
 
 var Navbar = React.createClass({
   getInitialState: function(){
-    return ({user: {username: "fff"}});
+    return ({user: UserStore.currentUser()});
   },
   componentDidMount: function(){
     UserStore.addListener(this.updateUser);
@@ -25,16 +27,25 @@ var Navbar = React.createClass({
   },
   signOut: function(e){
     e.preventDefault()
-    console.log("implement signout");
+    APIUtil.logout();
+  },
+  showSignInOrOut: function(){
+    if (this.state.user.username === null || 
+        typeof this.state.user === 'undefined'){
+      return <li><a onClick={this.signIn} href="/users/sign-in">Sign In</a></li>;
+    } else {
+      return <li><a onClick={this.signOut} href="/sign-out">Sign Out</a></li>;
+    }
   },
   render: function(){
     return(
       <div className="row">
-          <h1>{this.state.user.username}</h1>
+        <h1>{this.state.user.username}</h1>
         <nav className="navbar ">
           <div className="container-fluid">
             <div className="navbar-header navbar-right">
               <ul className="nav navbar-nav">
+
                 <li className="dropdown">
                   <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                     <img src="http://res.cloudinary.com/swell/image/upload/c_scale,h_71/v1450302743/--logo_2_a32kqk.png"/>
@@ -43,16 +54,11 @@ var Navbar = React.createClass({
                   <ul className="dropdown-menu">
                     <li><a 
                       onClick={this.guestLogin}
-                      href="/guest-login">Guest Account</a></li>
+                      href="/guest-login">Sign in as Guest</a></li>
                     <li><a 
                       onClick={this.newUser}
-                      href="/users/new">New</a></li>
-                    <li><a 
-                      onClick={this.signIn}
-                      href="/users/sign-in">Sign In</a></li>
-                    <li><a 
-                      onClick={this.signOut}
-                      href="/sign-out">Sign Out</a></li>
+                      href="/users/new">Create Account</a></li>
+                    {this.showSignInOrOut()}
                   </ul>
                 </li>
               </ul>
