@@ -50,14 +50,24 @@ var SpotFocus = React.createClass({
 			return;
 		}		
 		var _data = this.state.countyForecast.wind;
-		
 
-
+		return (JSON.stringify({
+			degrees: _data.direction_degrees,
+			direction: _data.direction_text,
+			speed: _data.speed_mph
+		}));
 	},
 	tides: function(){
 		if (this.state.countyForecast === null) {
 			return;
 		}	
+		var _data = this.state.countyForecast.tide;
+		var _direction = CountyStore.getCurrentTideDirection(this.props.spot.spitcast_county);
+
+		return (JSON.stringify({
+			tide: _data.tide,
+			direction: _direction
+		}));
 	},
 	render: function(){
 		var _forecast = this.state.forecast;
@@ -72,6 +82,8 @@ var SpotFocus = React.createClass({
 					<li className="detail">Tide: {_forecast.tide_quality}</li>
 					<li className="detail">Wind: {_forecast.wind_quality}</li>
 					<li className="detail">Swells: {this.swells()} </li>
+					<li className="detail">Wind Details: {this.winds()} </li>
+					<li className="detail">Tide: {this.tides()} </li>
 				</ul>
 			</div>
 		);

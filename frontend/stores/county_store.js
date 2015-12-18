@@ -36,6 +36,45 @@ CountyStore.getCurrentCountyForecast = function(spitcast_county){
 	};
 };
 
+CountyStore.getCurrentTideDirection = function(spitcast_county){
+	var _tides = CountyStore.getCountyForecast(spitcast_county).tide;
+
+	var now = new Date().getHours();
+
+	var next = now + 1;
+
+	next = this.findValueAtTime(next, _tides);
+	now = this.findValueAtTime(now, _tides);
+
+	if (next-now > 0) {
+		return "rising";
+	} else {
+		return "falling";
+	}
+};
+
+CountyStore.findValueAtTime = function(hour, data){
+	
+	if (hour === 0){
+		hour = "12AM";
+	} else if (hour < 12) {
+		hour += "AM";
+	} else {
+		hour = (hour % 12) + "PM";
+	}
+
+	var _result = null;
+
+	data.forEach(function(datum){
+		if (datum.hour == hour) {
+			_result = datum;
+			return;
+		}
+	});
+
+	return _result;
+};
+
 CountyStore.findCurrentValue = function(data){
 	var hour = new Date().getHours();
 
@@ -46,7 +85,7 @@ CountyStore.findCurrentValue = function(data){
 	} else {
 		hour = (hour % 12) + "PM";
 	}
-	
+
 	var _result = null;
 
 	data.forEach(function(datum){

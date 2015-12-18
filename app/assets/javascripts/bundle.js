@@ -32029,11 +32029,24 @@
 				return;
 			}
 			var _data = this.state.countyForecast.wind;
+	
+			return JSON.stringify({
+				degrees: _data.direction_degrees,
+				direction: _data.direction_text,
+				speed: _data.speed_mph
+			});
 		},
 		tides: function () {
 			if (this.state.countyForecast === null) {
 				return;
 			}
+			var _data = this.state.countyForecast.tide;
+			var _direction = CountyStore.getCurrentTideDirection(this.props.spot.spitcast_county);
+	
+			return JSON.stringify({
+				tide: _data.tide,
+				direction: _direction
+			});
 		},
 		render: function () {
 			var _forecast = this.state.forecast;
@@ -32090,6 +32103,20 @@
 						{ className: 'detail' },
 						'Swells: ',
 						this.swells(),
+						' '
+					),
+					React.createElement(
+						'li',
+						{ className: 'detail' },
+						'Wind Details: ',
+						this.winds(),
+						' '
+					),
+					React.createElement(
+						'li',
+						{ className: 'detail' },
+						'Tide: ',
+						this.tides(),
 						' '
 					)
 				)
@@ -32525,6 +32552,45 @@
 			wind: this.findCurrentValue(_forecast.wind),
 			tide: this.findCurrentValue(_forecast.tide)
 		};
+	};
+	
+	CountyStore.getCurrentTideDirection = function (spitcast_county) {
+		var _tides = CountyStore.getCountyForecast(spitcast_county).tide;
+	
+		var now = new Date().getHours();
+	
+		var next = now + 1;
+	
+		next = this.findValueAtTime(next, _tides);
+		now = this.findValueAtTime(now, _tides);
+	
+		if (next - now > 0) {
+			return "rising";
+		} else {
+			return "falling";
+		}
+	};
+	
+	CountyStore.findValueAtTime = function (hour, data) {
+	
+		if (hour === 0) {
+			hour = "12AM";
+		} else if (hour < 12) {
+			hour += "AM";
+		} else {
+			hour = hour % 12 + "PM";
+		}
+	
+		var _result = null;
+	
+		data.forEach(function (datum) {
+			if (datum.hour == hour) {
+				_result = datum;
+				return;
+			}
+		});
+	
+		return _result;
 	};
 	
 	CountyStore.findCurrentValue = function (data) {
