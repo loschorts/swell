@@ -53,9 +53,7 @@ var SpotApiUtil = {
 			}
 		});
 	},
-	fetchMultiForecasts: function(spots){
-
-	}
+	fetchCountyForecast: function({})
 };
 
 module.exports = SpotApiUtil;

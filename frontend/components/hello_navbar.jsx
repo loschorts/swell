@@ -26,7 +26,7 @@ var HelloNavbar = React.createClass({
     this.props.history.push('/splash/sign-in');
   },
   signOut: function(e){
-    e.preventDefault()
+    e.preventDefault();
     UserAPIUtil.logout();
     this.props.history.push('/');
   },

@@ -55,7 +55,6 @@ def fetch_remote(should_run = false)
 	spots = res.body
 	File.write('allspots', spots)
 
-
 	#Filter out spots that are not supported by the API
 	spots = JSON.parse(File.read('allspots'))
 	File.write('validspots','[')
@@ -108,8 +107,6 @@ def create_counties
 	end
 end
 
-
-
 def create_spots
 	spots = JSON.parse(File.read('validspots'))
 	spots.each do |spot|
@@ -143,5 +140,3 @@ end
 def get_region_id(county_name)
 	return Region.find_by(name: $REGIONS[county_name]).id
 end
-
-

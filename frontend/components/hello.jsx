@@ -22,6 +22,7 @@ var Hello = React.createClass({
   },
   updateUser: function(){
     this.setState({user: UserStore.currentUser()});
+
   },
   userInfo: function(){
 		return( <div> 
@@ -44,19 +45,26 @@ var Hello = React.createClass({
     return names;
   },
   renderHome: function(){
+    
+    if (this.state.user.favorites.length === 0) {
+      return;
+    }
     return <SpotFocus spot={this.state.user.favorites[0]}/>
   },
   renderFavorites: function(){
-    var favorites = this.state.user.favorites.slice(1, this.length);
-    var result = favorites.map(function(fav){
+    if (this.state.user.favorites.length < 2) {
+      return;
+    }
+    var _favorites = this.state.user.favorites.slice(1, this.length);
+    var result = _favorites.map(function(fav){
       return (<SpotPreview spot={fav}/>);
     });
     return (<div className="feature-box">{result}</div>);
   },
   render: function(){
     return(
-    	<div id="hello"> 
-	    	<HelloNavbar history={this.props.history}/>
+      <div id="hello"> 
+        <HelloNavbar history={this.props.history}/>
         {this.userInfo()}
         {this.renderHome()}
         {this.renderFavorites()}

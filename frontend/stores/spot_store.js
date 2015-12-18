@@ -64,8 +64,23 @@ SpotStore.setForecast = function(spot, forecast){
 	this.__emitChange();
 };
 
+SpotStore.emptyForecast = {forecast: {
+					hour: "dummy",
+					size: "dummy",
+					quality: "dummy",
+					wind_quality: "dummy",
+					wave_quality: "dummy",
+					tide_quality: "dummy",
+					}};
+
 SpotStore.getCurrentForecast = function(id){
-	var forecast = _spots[this.findSpot(id)].forecast;
+	var _spot = _spots[this.findSpot(id)]
+	if (typeof _spot === 'undefined'){
+		return this.emptyForecast;
+	} else {		
+		var _forecast = _spot.forecast;
+	}
+
 	var hour = new Date().getHours();
 
 	if (hour === 0){
@@ -76,15 +91,15 @@ SpotStore.getCurrentForecast = function(id){
 		hour = (hour % 12) + "PM";
 	}
 
-	var currentForecast;
-	forecast.forEach(function(forecastHour){
+	var _currentForecast;
+	_forecast.forEach(function(forecastHour){
 		if (hour === forecastHour.hour) {
-			currentForecast = forecastHour;
+			_currentForecast = forecastHour;
 			return;
 		}
 	});
 	
-	return currentForecast;
+	return _currentForecast;
 };
 
 SpotStore.getFullForecast = function(id){
