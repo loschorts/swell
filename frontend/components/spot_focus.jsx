@@ -17,33 +17,35 @@ var SpotFocus = React.createClass({
 	},
 	componentDidMount: function(){
 		SpotStore.addListener(this.receiveForecast);
+		SpotAPIUtil.fetchForecast(this.props.spot);
+
 	},
 	componentDidUpdate: function(){
 		SpotAPIUtil.fetchForecast(this.props.spot);
 	},
 	receiveForecast: function(){		
-		var _forecast = SpotStore.getForecast(this.props.spot.id);
+		var _forecast = SpotStore.getCurrentForecast(this.props.spot.id);
 		this.setState({forecast: _forecast});
 	},
+	renderForecast: function(){
+		var _forecast = this.state.forecast;
+		return (
+			<div className="spot-focus">
+				<h3>SpotFocus for {this.props.spot.name}</h3>
+				<div className="detail">Hour: {_forecast.hour}</div>
+				<div className="detail">Size: {_forecast.size}</div>
+				<div className="detail">Quality: {_forecast.quality}</div>
+				<div className="detail">Swell: {_forecast.swell_quality}</div>
+				<div className="detail">Tide: {_forecast.tide_quality}</div>
+				<div className="detail">Wind: {_forecast.wind_quality}</div>
+			</div>
+		);
+	},
 	render: function(){
-		debugger
 		if (typeof this.props.spot === 'undefined') {
 			return (<div className="spot-focus"/>);
 		} else {		
-			return (
-				<div className="spot-focus">
-
-					<div className="highlight">Name: {this.props.spot.name}</div>
-					<div className="highlight">Quality: {this.state.forecast.quality}</div>
-
-					<div className="detail">Wind: {this.state.forecast.wind}</div>
-					<div className="detail">Wave_Height: {this.state.forecast.wave_height}</div>
-					<div className="detail">Tide: {this.state.forecast.tide}</div>
-					
-					<div className="detail mini">Air: {this.state.forecast.air_temp}</div>
-					<div className="detail mini">Water: {this.state.forecast.water_temp}</div>
-				</div>
-			);
+			return this.renderForecast();
 		}
 	}
 });

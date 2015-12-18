@@ -44,6 +44,8 @@ end
 
 def fetch_remote(should_run = false)
 	return unless should_run
+
+	#Fetch all spots from the API
 	puts "fetching spot/county data from Spitcast"
 	url = URI.parse('http://api.spitcast.com/api/spot/all')
 	req = Net::HTTP::Get.new(url.to_s)
@@ -52,6 +54,24 @@ def fetch_remote(should_run = false)
 	}
 	spots = res.body
 	File.write('allspots', spots)
+
+
+	#Filter out spots that are not supported by the API
+	spots = JSON.parse(File.read('allspots'))
+	File.write('validspots','[')
+	spots.each do |spot|
+		if forecast_exists?(spot)
+			open('validspots', 'a') do |f|
+				f << JSON.stringify(spot) + ','
+			end
+			p File.read('validspots')
+		else 
+			p 'invalid!'
+		end
+	end
+	open('validspots', 'a') do |f|
+	f << spot.to_s + ']'
+	end
 end
 
 def create_regions
@@ -88,8 +108,10 @@ def create_counties
 	end
 end
 
+
+
 def create_spots
-	spots = JSON.parse(File.read('allspots'))
+	spots = JSON.parse(File.read('validspots'))
 	spots.each do |spot|
 		Spot.create!({
 			name: spot["spot_name"],
@@ -100,6 +122,21 @@ def create_spots
 			lng: spot["longitude"].to_f,
 			spitcast_id: spot["spot_id"].to_i,
 			})
+	end
+end
+
+def forecast_exists?(spot)
+	puts "checking forecast for #{spot["spot_name"]}"
+	url = URI.parse('http://api.spitcast.com/api/spot/forecast/' + spot["spot_id"].to_s + '/')
+	req = Net::HTTP::Get.new(url.to_s)
+	res = Net::HTTP.start(url.host, url.port) {|http|
+	  http.request(req)
+	}
+	if res.message == "OK"
+		return true
+	else
+		puts "invalid!"
+		return false
 	end
 end
 

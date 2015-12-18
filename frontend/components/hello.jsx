@@ -3,6 +3,7 @@ var React = require('react');
 //Components
 var HelloNavbar = require('./hello_navbar');
 var SpotFocus = require('./spot_focus');
+var SpotPreview = require('./spot_preview');
 
 //Stores & Utils
 var UserStore = require('../stores/user_store');
@@ -42,12 +43,23 @@ var Hello = React.createClass({
     });
     return names;
   },
+  renderHome: function(){
+    return <SpotFocus spot={this.state.user.favorites[0]}/>
+  },
+  renderFavorites: function(){
+    var favorites = this.state.user.favorites.slice(1, this.length);
+    var result = favorites.map(function(fav){
+      return (<SpotPreview spot={fav}/>);
+    });
+    return (<div className="feature-box">{result}</div>);
+  },
   render: function(){
     return(
     	<div id="hello"> 
 	    	<HelloNavbar history={this.props.history}/>
         {this.userInfo()}
-        <SpotFocus spot={this.state.user.favorites[0]}/>
+        {this.renderHome()}
+        {this.renderFavorites()}
       </div>
     );
   }

@@ -64,7 +64,30 @@ SpotStore.setForecast = function(spot, forecast){
 	this.__emitChange();
 };
 
-SpotStore.getForecast = function(id){
+SpotStore.getCurrentForecast = function(id){
+	var forecast = _spots[this.findSpot(id)].forecast;
+	var hour = new Date().getHours();
+
+	if (hour === 0){
+		hour = "12AM";
+	} else if (hour < 12) {
+		hour += "AM";
+	} else {
+		hour = (hour % 12) + "PM";
+	}
+
+	var currentForecast;
+	forecast.forEach(function(forecastHour){
+		if (hour === forecastHour.hour) {
+			currentForecast = forecastHour;
+			return;
+		}
+	});
+	
+	return currentForecast;
+};
+
+SpotStore.getFullForecast = function(id){
 	return _spots[this.findSpot(id)].forecast;
 };
 

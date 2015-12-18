@@ -31748,12 +31748,13 @@
 	//Components
 	var HelloNavbar = __webpack_require__(242);
 	var SpotFocus = __webpack_require__(243);
+	var SpotPreview = __webpack_require__(248);
 	
 	//Stores & Utils
 	var UserStore = __webpack_require__(211);
-	var SpotStore = __webpack_require__(246);
+	var SpotStore = __webpack_require__(244);
 	var UserAPIUtil = __webpack_require__(234);
-	var SpotAPIUtil = __webpack_require__(244);
+	var SpotAPIUtil = __webpack_require__(245);
 	
 	var Hello = React.createClass({
 	  displayName: 'Hello',
@@ -31809,13 +31810,28 @@
 	    });
 	    return names;
 	  },
+	  renderHome: function () {
+	    return React.createElement(SpotFocus, { spot: this.state.user.favorites[0] });
+	  },
+	  renderFavorites: function () {
+	    var favorites = this.state.user.favorites.slice(1, this.length);
+	    var result = favorites.map(function (fav) {
+	      return React.createElement(SpotPreview, { spot: fav });
+	    });
+	    return React.createElement(
+	      'div',
+	      { className: 'feature-box' },
+	      result
+	    );
+	  },
 	  render: function () {
 	    return React.createElement(
 	      'div',
 	      { id: 'hello' },
 	      React.createElement(HelloNavbar, { history: this.props.history }),
 	      this.userInfo(),
-	      React.createElement(SpotFocus, { spot: this.state.user.favorites[0] })
+	      this.renderHome(),
+	      this.renderFavorites()
 	    );
 	  }
 	});
@@ -31951,8 +31967,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var SpotAPIUtil = __webpack_require__(244);
-	var SpotStore = __webpack_require__(246);
+	var SpotAPIUtil = __webpack_require__(245);
+	var SpotStore = __webpack_require__(244);
 	
 	var SpotFocus = React.createClass({
 		displayName: 'SpotFocus',
@@ -31971,65 +31987,69 @@
 		},
 		componentDidMount: function () {
 			SpotStore.addListener(this.receiveForecast);
+			SpotAPIUtil.fetchForecast(this.props.spot);
 		},
 		componentDidUpdate: function () {
 			SpotAPIUtil.fetchForecast(this.props.spot);
 		},
 		receiveForecast: function () {
-			var _forecast = SpotStore.getForecast(this.props.spot.id);
+			var _forecast = SpotStore.getCurrentForecast(this.props.spot.id);
 			this.setState({ forecast: _forecast });
 		},
+		renderForecast: function () {
+			var _forecast = this.state.forecast;
+			return React.createElement(
+				'div',
+				{ className: 'spot-focus' },
+				React.createElement(
+					'h3',
+					null,
+					'SpotFocus for ',
+					this.props.spot.name
+				),
+				React.createElement(
+					'div',
+					{ className: 'detail' },
+					'Hour: ',
+					_forecast.hour
+				),
+				React.createElement(
+					'div',
+					{ className: 'detail' },
+					'Size: ',
+					_forecast.size
+				),
+				React.createElement(
+					'div',
+					{ className: 'detail' },
+					'Quality: ',
+					_forecast.quality
+				),
+				React.createElement(
+					'div',
+					{ className: 'detail' },
+					'Swell: ',
+					_forecast.swell_quality
+				),
+				React.createElement(
+					'div',
+					{ className: 'detail' },
+					'Tide: ',
+					_forecast.tide_quality
+				),
+				React.createElement(
+					'div',
+					{ className: 'detail' },
+					'Wind: ',
+					_forecast.wind_quality
+				)
+			);
+		},
 		render: function () {
-			debugger;
 			if (typeof this.props.spot === 'undefined') {
 				return React.createElement('div', { className: 'spot-focus' });
 			} else {
-				return React.createElement(
-					'div',
-					{ className: 'spot-focus' },
-					React.createElement(
-						'div',
-						{ className: 'highlight' },
-						'Name: ',
-						this.props.spot.name
-					),
-					React.createElement(
-						'div',
-						{ className: 'highlight' },
-						'Quality: ',
-						this.state.forecast.quality
-					),
-					React.createElement(
-						'div',
-						{ className: 'detail' },
-						'Wind: ',
-						this.state.forecast.wind
-					),
-					React.createElement(
-						'div',
-						{ className: 'detail' },
-						'Wave_Height: ',
-						this.state.forecast.wave_height
-					),
-					React.createElement(
-						'div',
-						{ className: 'detail' },
-						'Tide: ',
-						this.state.forecast.tide
-					),
-					React.createElement(
-						'div',
-						{ className: 'detail mini' },
-						'Air: ',
-						this.state.forecast.air_temp
-					),
-					React.createElement(
-						'div',
-						{ className: 'detail mini' },
-						'Water: ',
-						this.state.forecast.water_temp
-					)
-				);
+				return this.renderForecast();
 			}
 		}
 	});
@@ -32038,80 +32058,6 @@
 
 /***/ },
 /* 244 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var SpotActions = __webpack_require__(245);
-	var UserStore = __webpack_require__(211);
-	
-	var SpotApiUtil = {
-		getSpotById: function (id) {
-			$.ajax({
-				url: 'api/spots/' + id,
-				type: 'GET',
-				data: {},
-				success: function (spot) {
-					SpotActions.updateSpot(spot);
-				}
-			});
-		},
-		getAllSpots: function () {
-			$.ajax({
-				url: 'api/spots/',
-				type: 'GET',
-				data: {},
-				success: function (spots) {
-					SpotActions.setAll(spots);
-				}
-	
-			});
-		},
-		fetchForecast: function (spot) {
-	
-			$.ajax({
-				url: 'http://api.spitcast.com/api/spot/forecast/' + spot.spitcast_id + '/',
-				type: 'GET',
-				success: function (forecast) {
-					SpotActions.setForecast(spot, forecast);
-				}
-			});
-		},
-		fetchMultiForecasts: function (spots) {}
-	};
-	
-	module.exports = SpotApiUtil;
-
-/***/ },
-/* 245 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Dispatcher = __webpack_require__(229);
-	
-	SpotActions = {
-		updateSpot: function (spot) {
-			Dispatcher.dispatch({
-				actionType: "UPDATE_SPOT",
-				spot: spot
-			});
-		},
-		setAll: function (spots) {
-			Dispatcher.dispatch({
-				actionType: "ALL_SPOTS",
-				spots: spots
-			});
-		},
-		setForecast: function (spot, forecast) {
-			Dispatcher.dispatch({
-				actionType: "SET_FORECAST",
-				spot: spot,
-				forecast: forecast
-			});
-		}
-	};
-	
-	module.exports = SpotActions;
-
-/***/ },
-/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
@@ -32180,11 +32126,128 @@
 		this.__emitChange();
 	};
 	
-	SpotStore.getForecast = function (id) {
+	SpotStore.getCurrentForecast = function (id) {
+		var forecast = _spots[this.findSpot(id)].forecast;
+		var hour = new Date().getHours();
+	
+		if (hour === 0) {
+			hour = "12AM";
+		} else if (hour < 12) {
+			hour += "AM";
+		} else {
+			hour = hour % 12 + "PM";
+		}
+	
+		var currentForecast;
+		forecast.forEach(function (forecastHour) {
+			if (hour === forecastHour.hour) {
+				currentForecast = forecastHour;
+				return;
+			}
+		});
+	
+		return currentForecast;
+	};
+	
+	SpotStore.getFullForecast = function (id) {
 		return _spots[this.findSpot(id)].forecast;
 	};
 	
 	module.exports = SpotStore;
+
+/***/ },
+/* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var SpotActions = __webpack_require__(246);
+	var UserStore = __webpack_require__(211);
+	
+	var SpotApiUtil = {
+		getSpotById: function (id) {
+			$.ajax({
+				url: 'api/spots/' + id,
+				type: 'GET',
+				data: {},
+				success: function (spot) {
+					SpotActions.updateSpot(spot);
+				}
+			});
+		},
+		getAllSpots: function () {
+			$.ajax({
+				url: 'api/spots/',
+				type: 'GET',
+				data: {},
+				success: function (spots) {
+					SpotActions.setAll(spots);
+				}
+	
+			});
+		},
+		fetchForecast: function (spot) {
+	
+			$.ajax({
+				url: 'http://api.spitcast.com/api/spot/forecast/' + spot.spitcast_id + '/',
+				type: 'GET',
+				success: function (data) {
+					var forecast = data.map(function (entry) {
+						var formatted = {
+							date: entry.date,
+							day: entry.day,
+							gmt: entry.gmt,
+							hour: entry.hour,
+							latitude: entry.latitude,
+							longitude: entry.longitude,
+							quality: entry.shape_full,
+							swell_quality: entry.shape_detail.swell,
+							tide_quality: entry.shape_detail.tide,
+							wind_quality: entry.shape_detail.wind,
+							size: parseFloat(entry.size_ft).toFixed(2),
+							warnings: entry.warnings,
+							spitcast_id: entry.spot_id,
+							spot_name: entry.spot_name
+						};
+						return formatted;
+					});
+	
+					SpotActions.setForecast(spot, forecast);
+				}
+			});
+		},
+		fetchMultiForecasts: function (spots) {}
+	};
+	
+	module.exports = SpotApiUtil;
+
+/***/ },
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(229);
+	
+	SpotActions = {
+		updateSpot: function (spot) {
+			Dispatcher.dispatch({
+				actionType: "UPDATE_SPOT",
+				spot: spot
+			});
+		},
+		setAll: function (spots) {
+			Dispatcher.dispatch({
+				actionType: "ALL_SPOTS",
+				spots: spots
+			});
+		},
+		setForecast: function (spot, forecast) {
+			Dispatcher.dispatch({
+				actionType: "SET_FORECAST",
+				spot: spot,
+				forecast: forecast
+			});
+		}
+	};
+	
+	module.exports = SpotActions;
 
 /***/ },
 /* 247 */
@@ -32243,6 +32306,99 @@
 	});
 	
 	module.exports = SignUpForm;
+
+/***/ },
+/* 248 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var SpotAPIUtil = __webpack_require__(245);
+	var SpotStore = __webpack_require__(244);
+	
+	var SpotPreview = React.createClass({
+		displayName: 'SpotPreview',
+	
+		getInitialState: function () {
+			return { forecast: {
+					name: "",
+					quality: "",
+					wind: "",
+					wave_height: "",
+					tide: "",
+					air_temp: "",
+					water_temp: ""
+				}
+			};
+		},
+		componentDidMount: function () {
+			SpotStore.addListener(this.receiveForecast);
+		},
+		componentDidUpdate: function () {
+			SpotAPIUtil.fetchForecast(this.props.spot);
+		},
+		receiveForecast: function () {
+			var _forecast = SpotStore.getCurrentForecast(this.props.spot.id);
+			this.setState({ forecast: _forecast });
+		},
+		renderForecast: function () {
+			var _forecast = this.state.forecast;
+			return React.createElement(
+				'div',
+				{ className: 'spot-focus' },
+				React.createElement(
+					'h5',
+					null,
+					'SpotPreview for ',
+					this.props.spot.name
+				),
+				React.createElement(
+					'div',
+					{ className: 'detail' },
+					'Hour: ',
+					_forecast.hour
+				),
+				React.createElement(
+					'div',
+					{ className: 'detail' },
+					'Size: ',
+					_forecast.size
+				),
+				React.createElement(
+					'div',
+					{ className: 'detail' },
+					'Quality: ',
+					_forecast.quality
+				),
+				React.createElement(
+					'div',
+					{ className: 'detail' },
+					'Swell: ',
+					_forecast.swell_quality
+				),
+				React.createElement(
+					'div',
+					{ className: 'detail' },
+					'Tide: ',
+					_forecast.tide_quality
+				),
+				React.createElement(
+					'div',
+					{ className: 'detail' },
+					'Wind: ',
+					_forecast.wind_quality
+				)
+			);
+		},
+		render: function () {
+			if (typeof this.props.spot === 'undefined') {
+				return React.createElement('div', { className: 'spot-focus' });
+			} else {
+				return this.renderForecast();
+			}
+		}
+	});
+	
+	module.exports = SpotPreview;
 
 /***/ }
 /******/ ]);
