@@ -8,11 +8,13 @@ var _spots = [];
 SpotStore.__onDispatch = function(payload){
 	switch (payload.actionType){
 		case "UPDATE_SPOT":
-			SpotStore.updateSpot(payload.spot);
+			this.updateSpot(payload.spot);
 			break;
 		case "ALL_SPOTS":
-			SpotStore.setAll(payload.spots);
+			this.setAll(payload.spots);
 			break;
+		case "SET_FORECAST":
+			this.setForecast(payload.spot, payload.forecast);
 	}
 };
 
@@ -22,7 +24,6 @@ SpotStore.setAll = function(spots){
 };
 
 SpotStore.updateSpot = function(spot){
-	console.log('update spot');
 	var idx = this.findSpot(spot.id);
 	if (idx){
 		_spots[idx] = spot;
@@ -55,6 +56,16 @@ SpotStore.all = function(){
 SpotStore.show = function(id){
 	idx = SpotStore.findSpot(id);
 	return _spots[idx];
+};
+
+SpotStore.setForecast = function(spot, forecast){
+	spot.forecast = forecast;
+	this.updateSpot(spot);
+	this.__emitChange();
+};
+
+SpotStore.getForecast = function(id){
+	return _spots[this.findSpot(id)].forecast;
 };
 
 module.exports = SpotStore;

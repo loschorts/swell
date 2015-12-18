@@ -13,6 +13,13 @@ SpotActions = {
 			spots: spots
 		});
 	},
+	setForecast: function(spot, forecast){
+		Dispatcher.dispatch({
+			actionType: "SET_FORECAST",
+			spot: spot,
+			forecast: forecast,
+		});
+	}
 };
 
 module.exports = SpotActions;

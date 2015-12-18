@@ -6,3 +6,4 @@ json.lng 				spot.lng
 json.name 				spot.name          		  
 json.description 		spot.description
 json.county_name 		spot.county.name 
+

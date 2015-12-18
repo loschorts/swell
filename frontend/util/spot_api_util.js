@@ -13,7 +13,6 @@ var SpotApiUtil = {
 		});
 	},
 	getAllSpots: function(){
-		console.log('spotAPIUtil, get all spots');
 		$.ajax({
 			url: 'api/spots/',
 			type: 'GET',
@@ -23,6 +22,19 @@ var SpotApiUtil = {
 			}
 
 		});
+	},
+	fetchForecast: function(spot){
+
+		$.ajax({
+			url: 'http://api.spitcast.com/api/spot/forecast/' + spot.spitcast_id + '/',
+			type: 'GET',
+			success: function(forecast){
+				
+			}
+		});
+	},
+	fetchMultiForecasts: function(spots){
+
 	}
 };
 

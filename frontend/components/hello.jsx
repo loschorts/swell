@@ -2,6 +2,7 @@ var React = require('react');
 
 //Components
 var HelloNavbar = require('./hello_navbar');
+var SpotFocus = require('./spot_focus');
 
 //Stores & Utils
 var UserStore = require('../stores/user_store');
@@ -23,8 +24,8 @@ var Hello = React.createClass({
   },
   userInfo: function(){
 		return( <div> 
-              <h1> Hello, {this.state.user.username || "Stranger"} </h1>
-              <h2> ID: {this.state.user.id} </h2>
+              <h3> Hello, {this.state.user.username || "Stranger"} </h3>
+              <h3> ID: {this.state.user.id} </h3>
               <h3> Favorites: {this.showFavorites()} </h3>
             </div>);
   },
@@ -46,6 +47,7 @@ var Hello = React.createClass({
     	<div id="hello"> 
 	    	<HelloNavbar history={this.props.history}/>
         {this.userInfo()}
+        <SpotFocus spot={this.state.user.favorites[0]}/>
       </div>
     );
   }

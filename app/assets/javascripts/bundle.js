@@ -57,7 +57,7 @@
 	var Hello = __webpack_require__(241);
 	var Navbar = __webpack_require__(233);
 	var SignInForm = __webpack_require__(236);
-	var SignUpForm = __webpack_require__(246);
+	var SignUpForm = __webpack_require__(247);
 	
 	var routes = React.createElement(
 	  Route,
@@ -31746,11 +31746,12 @@
 	var React = __webpack_require__(1);
 	
 	//Components
-	var HelloNavbar = __webpack_require__(247);
+	var HelloNavbar = __webpack_require__(242);
+	var SpotFocus = __webpack_require__(243);
 	
 	//Stores & Utils
 	var UserStore = __webpack_require__(211);
-	var SpotStore = __webpack_require__(243);
+	var SpotStore = __webpack_require__(246);
 	var UserAPIUtil = __webpack_require__(234);
 	var SpotAPIUtil = __webpack_require__(244);
 	
@@ -31773,14 +31774,14 @@
 	      'div',
 	      null,
 	      React.createElement(
-	        'h1',
+	        'h3',
 	        null,
 	        ' Hello, ',
 	        this.state.user.username || "Stranger",
 	        ' '
 	      ),
 	      React.createElement(
-	        'h2',
+	        'h3',
 	        null,
 	        ' ID: ',
 	        this.state.user.id,
@@ -31813,7 +31814,8 @@
 	      'div',
 	      { id: 'hello' },
 	      React.createElement(HelloNavbar, { history: this.props.history }),
-	      this.userInfo()
+	      this.userInfo(),
+	      React.createElement(SpotFocus, { spot: this.state.user.favorites[0] })
 	    );
 	  }
 	});
@@ -31821,188 +31823,7 @@
 	module.exports = Hello;
 
 /***/ },
-/* 242 */,
-/* 243 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(212).Store;
-	var Dispatcher = __webpack_require__(229);
-	
-	var SpotStore = new Store(Dispatcher);
-	
-	var _spots = [];
-	
-	SpotStore.__onDispatch = function (payload) {
-		switch (payload.actionType) {
-			case "UPDATE_SPOT":
-				SpotStore.updateSpot(payload.spot);
-				break;
-			case "ALL_SPOTS":
-				SpotStore.setAll(payload.spots);
-				break;
-		}
-	};
-	
-	SpotStore.setAll = function (spots) {
-		_spots = spots;
-		this.__emitChange();
-	};
-	
-	SpotStore.updateSpot = function (spot) {
-		console.log('update spot');
-		var idx = this.findSpot(spot.id);
-		if (idx) {
-			_spots[idx] = spot;
-			this.__emitChange();
-		} else {
-			this.addSpot(spot);
-		}
-	};
-	
-	SpotStore.findSpot = function (id) {
-		var _spotIdx = null;
-		_spots.forEach(function (spot, idx) {
-			if (spot.id === id) {
-				_spotIdx = idx;
-				return;
-			}
-		});
-		return _spotIdx;
-	};
-	
-	SpotStore.addSpot = function (spot) {
-		_spots.push(spot);
-		this.__emitChange();
-	};
-	
-	SpotStore.all = function () {
-		return _spots.slice();
-	};
-	
-	SpotStore.show = function (id) {
-		idx = SpotStore.findSpot(id);
-		return _spots[idx];
-	};
-	
-	module.exports = SpotStore;
-
-/***/ },
-/* 244 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var SpotActions = __webpack_require__(245);
-	var UserStore = __webpack_require__(211);
-	
-	var SpotApiUtil = {
-		getSpotById: function (id) {
-			$.ajax({
-				url: 'api/spots/' + id,
-				type: 'GET',
-				data: {},
-				success: function (spot) {
-					SpotActions.updateSpot(spot);
-				}
-			});
-		},
-		getAllSpots: function () {
-			console.log('spotAPIUtil, get all spots');
-			$.ajax({
-				url: 'api/spots/',
-				type: 'GET',
-				data: {},
-				success: function (spots) {
-					SpotActions.setAll(spots);
-				}
-	
-			});
-		}
-	};
-	
-	module.exports = SpotApiUtil;
-
-/***/ },
-/* 245 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Dispatcher = __webpack_require__(229);
-	
-	SpotActions = {
-		updateSpot: function (spot) {
-			Dispatcher.dispatch({
-				actionType: "UPDATE_SPOT",
-				spot: spot
-			});
-		},
-		setAll: function (spots) {
-			Dispatcher.dispatch({
-				actionType: "ALL_SPOTS",
-				spots: spots
-			});
-		}
-	};
-	
-	module.exports = SpotActions;
-
-/***/ },
-/* 246 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var LinkedStateMixin = __webpack_require__(237);
-	var UserAPIUtil = __webpack_require__(234);
-	
-	var SignUpForm = React.createClass({
-		displayName: 'SignUpForm',
-	
-		mixins: [LinkedStateMixin],
-		getInitialState: function () {
-			return { username: "", password: "" };
-		},
-		createUser: function (e) {
-			e.preventDefault();
-			UserAPIUtil.createUser(this.state);
-			this.props.history.push('hello');
-		},
-		render: function () {
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(
-					'h4',
-					null,
-					'Sign Up'
-				),
-				React.createElement(
-					'form',
-					{ onSubmit: this.createUser },
-					React.createElement(
-						'label',
-						{ 'for': 'username' },
-						'Username'
-					),
-					React.createElement('input', {
-						id: 'username',
-						type: 'text',
-						valueLink: this.linkState('username') }),
-					React.createElement(
-						'label',
-						{ 'for': 'password' },
-						'Password'
-					),
-					React.createElement('input', {
-						id: 'password',
-						type: 'password',
-						valueLink: this.linkState('password') }),
-					React.createElement('input', { type: 'submit' })
-				)
-			);
-		}
-	});
-	
-	module.exports = SignUpForm;
-
-/***/ },
-/* 247 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -32124,6 +31945,301 @@
 	});
 	
 	module.exports = HelloNavbar;
+
+/***/ },
+/* 243 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var SpotAPIUtil = __webpack_require__(244);
+	var SpotStore = __webpack_require__(246);
+	
+	var SpotFocus = React.createClass({
+		displayName: 'SpotFocus',
+	
+		getInitialState: function () {
+			return { forecast: {
+					name: "",
+					quality: "",
+					wind: "",
+					wave_height: "",
+					tide: "",
+					air_temp: "",
+					water_temp: ""
+				}
+			};
+		},
+		componentDidMount: function () {
+			SpotStore.addListener(this.receiveForecast);
+		},
+		componentDidUpdate: function () {
+			SpotAPIUtil.fetchForecast(this.props.spot);
+		},
+		receiveForecast: function () {
+			var _forecast = SpotStore.getForecast(this.props.spot.id);
+			this.setState({ forecast: _forecast });
+		},
+		render: function () {
+			if (typeof this.props.spot === 'undefined') {
+				return React.createElement('div', { className: 'spot-focus' });
+			} else {
+				return React.createElement(
+					'div',
+					{ className: 'spot-focus' },
+					React.createElement(
+						'div',
+						{ className: 'highlight' },
+						'Name: ',
+						this.props.spot.name
+					),
+					React.createElement(
+						'div',
+						{ className: 'highlight' },
+						'Quality: ',
+						this.state.forecast.quality
+					),
+					React.createElement(
+						'div',
+						{ className: 'detail' },
+						'Wind: ',
+						this.state.forecast.wind
+					),
+					React.createElement(
+						'div',
+						{ className: 'detail' },
+						'Wave_Height: ',
+						this.state.forecast.wave_height
+					),
+					React.createElement(
+						'div',
+						{ className: 'detail' },
+						'Tide: ',
+						this.state.forecast.tide
+					),
+					React.createElement(
+						'div',
+						{ className: 'detail mini' },
+						'Air: ',
+						this.state.forecast.air_temp
+					),
+					React.createElement(
+						'div',
+						{ className: 'detail mini' },
+						'Water: ',
+						this.state.forecast.water_temp
+					)
+				);
+			}
+		}
+	});
+	
+	module.exports = SpotFocus;
+
+/***/ },
+/* 244 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var SpotActions = __webpack_require__(245);
+	var UserStore = __webpack_require__(211);
+	
+	var SpotApiUtil = {
+		getSpotById: function (id) {
+			$.ajax({
+				url: 'api/spots/' + id,
+				type: 'GET',
+				data: {},
+				success: function (spot) {
+					SpotActions.updateSpot(spot);
+				}
+			});
+		},
+		getAllSpots: function () {
+			$.ajax({
+				url: 'api/spots/',
+				type: 'GET',
+				data: {},
+				success: function (spots) {
+					SpotActions.setAll(spots);
+				}
+	
+			});
+		},
+		fetchForecast: function (spot) {
+	
+			$.ajax({
+				url: 'http://api.spitcast.com/api/spot/forecast/' + spot.spitcast_id + '/',
+				type: 'GET',
+				success: function (forecast) {}
+			});
+		},
+		fetchMultiForecasts: function (spots) {}
+	};
+	
+	module.exports = SpotApiUtil;
+
+/***/ },
+/* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(229);
+	
+	SpotActions = {
+		updateSpot: function (spot) {
+			Dispatcher.dispatch({
+				actionType: "UPDATE_SPOT",
+				spot: spot
+			});
+		},
+		setAll: function (spots) {
+			Dispatcher.dispatch({
+				actionType: "ALL_SPOTS",
+				spots: spots
+			});
+		},
+		setForecast: function (spot, forecast) {
+			Dispatcher.dispatch({
+				actionType: "SET_FORECAST",
+				spot: spot,
+				forecast: forecast
+			});
+		}
+	};
+	
+	module.exports = SpotActions;
+
+/***/ },
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var Dispatcher = __webpack_require__(229);
+	
+	var SpotStore = new Store(Dispatcher);
+	
+	var _spots = [];
+	
+	SpotStore.__onDispatch = function (payload) {
+		switch (payload.actionType) {
+			case "UPDATE_SPOT":
+				this.updateSpot(payload.spot);
+				break;
+			case "ALL_SPOTS":
+				this.setAll(payload.spots);
+				break;
+			case "SET_FORECAST":
+				this.setForecast(payload.spot, payload.forecast);
+		}
+	};
+	
+	SpotStore.setAll = function (spots) {
+		_spots = spots;
+		this.__emitChange();
+	};
+	
+	SpotStore.updateSpot = function (spot) {
+		var idx = this.findSpot(spot.id);
+		if (idx) {
+			_spots[idx] = spot;
+			this.__emitChange();
+		} else {
+			this.addSpot(spot);
+		}
+	};
+	
+	SpotStore.findSpot = function (id) {
+		var _spotIdx = null;
+		_spots.forEach(function (spot, idx) {
+			if (spot.id === id) {
+				_spotIdx = idx;
+				return;
+			}
+		});
+		return _spotIdx;
+	};
+	
+	SpotStore.addSpot = function (spot) {
+		_spots.push(spot);
+		this.__emitChange();
+	};
+	
+	SpotStore.all = function () {
+		return _spots.slice();
+	};
+	
+	SpotStore.show = function (id) {
+		idx = SpotStore.findSpot(id);
+		return _spots[idx];
+	};
+	
+	SpotStore.setForecast = function (spot, forecast) {
+		spot.forecast = forecast;
+		this.updateSpot(spot);
+		this.__emitChange();
+	};
+	
+	SpotStore.getForecast = function (id) {
+		return _spots[this.findSpot(id)].forecast;
+	};
+	
+	module.exports = SpotStore;
+
+/***/ },
+/* 247 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var LinkedStateMixin = __webpack_require__(237);
+	var UserAPIUtil = __webpack_require__(234);
+	
+	var SignUpForm = React.createClass({
+		displayName: 'SignUpForm',
+	
+		mixins: [LinkedStateMixin],
+		getInitialState: function () {
+			return { username: "", password: "" };
+		},
+		createUser: function (e) {
+			e.preventDefault();
+			UserAPIUtil.createUser(this.state);
+			this.props.history.push('hello');
+		},
+		render: function () {
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'h4',
+					null,
+					'Sign Up'
+				),
+				React.createElement(
+					'form',
+					{ onSubmit: this.createUser },
+					React.createElement(
+						'label',
+						{ 'for': 'username' },
+						'Username'
+					),
+					React.createElement('input', {
+						id: 'username',
+						type: 'text',
+						valueLink: this.linkState('username') }),
+					React.createElement(
+						'label',
+						{ 'for': 'password' },
+						'Password'
+					),
+					React.createElement('input', {
+						id: 'password',
+						type: 'password',
+						valueLink: this.linkState('password') }),
+					React.createElement('input', { type: 'submit' })
+				)
+			);
+		}
+	});
+	
+	module.exports = SignUpForm;
 
 /***/ }
 /******/ ]);

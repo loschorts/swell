@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resource :session, only: [:new, :create, :destroy]
 
   namespace :api, defaults: { format: :json } do 
+    resources :forecasts, only: [:show]
     resources :users, only: [:create, :update, :destroy, :show]
     resources :spots, only: [:show, :index]
     resources :counties, only: [:show, :index] do
