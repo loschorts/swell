@@ -1,6 +1,9 @@
 var SpotActions = require('../actions/spot_actions');
 var UserStore = require('../stores/user_store');
 
+
+
+
 var SpotApiUtil = {
 	getSpotById: function(id){
 		$.ajax({
@@ -53,7 +56,37 @@ var SpotApiUtil = {
 			}
 		});
 	},
-	fetchCountyForecast: function({})
+	fetchCountyForecast: function(spot){
+		var _countyForecast = {};
+		$.ajax({
+			url: 'http://api.spitcast.com/api/county/swell/' + spot.spitcast_county + '/',
+			type: 'GET',
+			success: function(data){	
+				_countyForecast.swell = data;
+				$.ajax({
+					url: 'http://api.spitcast.com/api/county/wind/' + spot.spitcast_county + '/',
+					type: 'GET',
+					success: function(data){
+						_countyForecast.wind = data;
+						$.ajax({
+							url: 'http://api.spitcast.com/api/county/tide/' + spot.spitcast_county + '/',
+							type: 'GET',	
+							success: function(data){
+								_countyForecast.tide = data;
+								$.ajax({
+									url: 'http://api.spitcast.com/api/county/water-temperature/' + spot.spitcast_county + '/',
+									type: 'GET',
+									success: function(data){
+										_countyForecast.water_temp = data;
+									}
+								});
+							}						
+						});
+					}
+				});
+			}
+		});
+	}
 };
 
 module.exports = SpotApiUtil;

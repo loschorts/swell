@@ -31754,7 +31754,7 @@
 	var UserStore = __webpack_require__(211);
 	var SpotStore = __webpack_require__(244);
 	var UserAPIUtil = __webpack_require__(234);
-	var SpotAPIUtil = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../util/spot_api_util\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var SpotAPIUtil = __webpack_require__(245);
 	
 	var Hello = React.createClass({
 	  displayName: 'Hello',
@@ -31974,7 +31974,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var SpotAPIUtil = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../util/spot_api_util\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var SpotAPIUtil = __webpack_require__(245);
 	var SpotStore = __webpack_require__(244);
 	
 	var SpotFocus = React.createClass({
@@ -32163,8 +32163,130 @@
 	module.exports = SpotStore;
 
 /***/ },
-/* 245 */,
-/* 246 */,
+/* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var SpotActions = __webpack_require__(246);
+	var UserStore = __webpack_require__(211);
+	
+	var SpotApiUtil = {
+		getSpotById: function (id) {
+			$.ajax({
+				url: 'api/spots/' + id,
+				type: 'GET',
+				data: {},
+				success: function (spot) {
+					SpotActions.updateSpot(spot);
+				}
+			});
+		},
+		getAllSpots: function () {
+			$.ajax({
+				url: 'api/spots/',
+				type: 'GET',
+				data: {},
+				success: function (spots) {
+					SpotActions.setAll(spots);
+				}
+	
+			});
+		},
+		fetchForecast: function (spot) {
+	
+			$.ajax({
+				url: 'http://api.spitcast.com/api/spot/forecast/' + spot.spitcast_id + '/',
+				type: 'GET',
+				success: function (data) {
+					var forecast = data.map(function (entry) {
+						var formatted = {
+							date: entry.date,
+							day: entry.day,
+							gmt: entry.gmt,
+							hour: entry.hour,
+							latitude: entry.latitude,
+							longitude: entry.longitude,
+							quality: entry.shape_full,
+							swell_quality: entry.shape_detail.swell,
+							tide_quality: entry.shape_detail.tide,
+							wind_quality: entry.shape_detail.wind,
+							size: parseFloat(entry.size_ft).toFixed(2),
+							warnings: entry.warnings,
+							spitcast_id: entry.spot_id,
+							spot_name: entry.spot_name
+						};
+						return formatted;
+					});
+	
+					SpotActions.setForecast(spot, forecast);
+				}
+			});
+		},
+		fetchCountyForecast: function (spot) {
+			var _countyForecast = {};
+			$.ajax({
+				url: 'http://api.spitcast.com/api/county/swell/' + spot.spitcast_county + '/',
+				type: 'GET',
+				success: function (data) {
+					_countyForecast.swell = data;
+					$.ajax({
+						url: 'http://api.spitcast.com/api/county/wind/' + spot.spitcast_county + '/',
+						type: 'GET',
+						success: function (data) {
+							_countyForecast.wind = data;
+							$.ajax({
+								url: 'http://api.spitcast.com/api/county/tide/' + spot.spitcast_county + '/',
+								type: 'GET',
+								success: function (data) {
+									_countyForecast.tide = data;
+									$.ajax({
+										url: 'http://api.spitcast.com/api/county/water-temperature/' + spot.spitcast_county + '/',
+										type: 'GET',
+										success: function (data) {
+											_countyForecast.water_temp = data;
+										}
+									});
+								}
+							});
+						}
+					});
+				}
+			});
+		}
+	};
+	
+	module.exports = SpotApiUtil;
+
+/***/ },
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(229);
+	
+	SpotActions = {
+		updateSpot: function (spot) {
+			Dispatcher.dispatch({
+				actionType: "UPDATE_SPOT",
+				spot: spot
+			});
+		},
+		setAll: function (spots) {
+			Dispatcher.dispatch({
+				actionType: "ALL_SPOTS",
+				spots: spots
+			});
+		},
+		setForecast: function (spot, forecast) {
+			Dispatcher.dispatch({
+				actionType: "SET_FORECAST",
+				spot: spot,
+				forecast: forecast
+			});
+		}
+	};
+	
+	module.exports = SpotActions;
+
+/***/ },
 /* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -32227,7 +32349,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var SpotAPIUtil = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../util/spot_api_util\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var SpotAPIUtil = __webpack_require__(245);
 	var SpotStore = __webpack_require__(244);
 	
 	var SpotPreview = React.createClass({
