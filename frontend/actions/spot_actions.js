@@ -19,6 +19,13 @@ SpotActions = {
 			spot: spot,
 			forecast: forecast
 		});
+	},
+	setCountyForecast: function(spitcast_county, forecast){
+		Dispatcher.dispatch({
+			actionType: "SET_COUNTY_FORECAST",
+			spitcast_county: spitcast_county,
+			forecast: forecast
+		});
 	}
 };
 

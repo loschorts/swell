@@ -31976,20 +31976,64 @@
 	var React = __webpack_require__(1);
 	var SpotAPIUtil = __webpack_require__(245);
 	var SpotStore = __webpack_require__(244);
+	var CountyStore = __webpack_require__(249);
 	
 	var SpotFocus = React.createClass({
 		displayName: 'SpotFocus',
 	
 		getInitialState: function () {
-			return { forecast: SpotStore.emptyForecast };
+			return {
+				forecast: SpotStore.emptyForecast,
+				countyForecast: null
+			};
 		},
 		componentDidMount: function () {
 			SpotStore.addListener(this.receiveForecast);
+			CountyStore.addListener(this.receiveCountyForecast);
 			SpotAPIUtil.fetchForecast(this.props.spot);
+			SpotAPIUtil.fetchCountyForecast(this.props.spot.spitcast_county);
 		},
 		receiveForecast: function () {
 			var _forecast = SpotStore.getCurrentForecast(this.props.spot.id);
 			this.setState({ forecast: _forecast });
+		},
+		receiveCountyForecast: function () {
+			var _forecast = CountyStore.getCurrentCountyForecast(this.props.spot.spitcast_county);
+			this.setState({ countyForecast: _forecast });
+		},
+		county: function () {
+			return JSON.stringify(this.state.countyForecast);
+		},
+		swells: function () {
+			if (this.state.countyForecast === null) {
+				return;
+			}
+	
+			var _data = this.state.countyForecast.swell;
+			var _swells = [];
+	
+			for (var s = 0; s < 3; s++) {
+				_swells.push({
+					index: s,
+					height: _data[s].hs,
+					period: _data[s].tp
+				});
+			}
+			var result = _swells.map(function (s) {
+				return JSON.stringify(s);
+			});
+			return result;
+		},
+		winds: function () {
+			if (this.state.countyForecast === null) {
+				return;
+			}
+			var _data = this.state.countyForecast.wind;
+		},
+		tides: function () {
+			if (this.state.countyForecast === null) {
+				return;
+			}
 		},
 		render: function () {
 			var _forecast = this.state.forecast;
@@ -32040,6 +32084,13 @@
 						{ className: 'detail' },
 						'Wind: ',
 						_forecast.wind_quality
+					),
+					React.createElement(
+						'li',
+						{ className: 'detail' },
+						'Swells: ',
+						this.swells(),
+						' '
 					)
 				)
 			);
@@ -32119,12 +32170,12 @@
 	};
 	
 	SpotStore.emptyForecast = { forecast: {
-			hour: "dummy",
-			size: "dummy",
-			quality: "dummy",
-			wind_quality: "dummy",
-			wave_quality: "dummy",
-			tide_quality: "dummy"
+			hour: "",
+			size: "",
+			quality: "",
+			wind_quality: "",
+			wave_quality: "",
+			tide_quality: ""
 		} };
 	
 	SpotStore.getCurrentForecast = function (id) {
@@ -32221,30 +32272,34 @@
 				}
 			});
 		},
-		fetchCountyForecast: function (spot) {
+		fetchWaterTemp: function () {
+			$.ajax({
+				url: 'http://api.spitcast.com/api/county/water-temperature/' + county + '/',
+				type: 'GET',
+				success: function (data) {
+					console.log(data);
+					_countyForecast.water_temp = data;
+				}
+			});
+		},
+		fetchCountyForecast: function (spitcast_county) {
 			var _countyForecast = {};
 			$.ajax({
-				url: 'http://api.spitcast.com/api/county/swell/' + spot.spitcast_county + '/',
+				url: 'http://api.spitcast.com/api/county/swell/' + spitcast_county + '/',
 				type: 'GET',
 				success: function (data) {
 					_countyForecast.swell = data;
 					$.ajax({
-						url: 'http://api.spitcast.com/api/county/wind/' + spot.spitcast_county + '/',
+						url: 'http://api.spitcast.com/api/county/wind/' + spitcast_county + '/',
 						type: 'GET',
 						success: function (data) {
 							_countyForecast.wind = data;
 							$.ajax({
-								url: 'http://api.spitcast.com/api/county/tide/' + spot.spitcast_county + '/',
+								url: 'http://api.spitcast.com/api/county/tide/' + spitcast_county + '/',
 								type: 'GET',
 								success: function (data) {
 									_countyForecast.tide = data;
-									$.ajax({
-										url: 'http://api.spitcast.com/api/county/water-temperature/' + spot.spitcast_county + '/',
-										type: 'GET',
-										success: function (data) {
-											_countyForecast.water_temp = data;
-										}
-									});
+									SpotActions.setCountyForecast(spitcast_county, _countyForecast);
 								}
 							});
 						}
@@ -32279,6 +32334,13 @@
 			Dispatcher.dispatch({
 				actionType: "SET_FORECAST",
 				spot: spot,
+				forecast: forecast
+			});
+		},
+		setCountyForecast: function (spitcast_county, forecast) {
+			Dispatcher.dispatch({
+				actionType: "SET_COUNTY_FORECAST",
+				spitcast_county: spitcast_county,
 				forecast: forecast
 			});
 		}
@@ -32422,6 +32484,79 @@
 	});
 	
 	module.exports = SpotPreview;
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var Dispatcher = __webpack_require__(229);
+	
+	var _counties = {};
+	
+	CountyStore = new Store(Dispatcher);
+	
+	CountyStore.__onDispatch = function (payload) {
+		switch (payload.actionType) {
+			case "SET_COUNTY_FORECAST":
+				this.setCountyForecast(payload.spitcast_county, payload.forecast);
+				break;
+		}
+	};
+	
+	CountyStore.setCountyForecast = function (spitcast_county, forecast) {
+		_counties[spitcast_county] = forecast;
+		this.__emitChange();
+	};
+	
+	CountyStore.getCountyForecast = function (spitcast_county) {
+		return _counties[spitcast_county];
+	};
+	
+	CountyStore.all = function () {
+		return _counties;
+	};
+	
+	CountyStore.getCurrentCountyForecast = function (spitcast_county) {
+		var _forecast = this.getCountyForecast(spitcast_county);
+	
+		return {
+			swell: this.findCurrentValue(_forecast.swell),
+			wind: this.findCurrentValue(_forecast.wind),
+			tide: this.findCurrentValue(_forecast.tide)
+		};
+	};
+	
+	CountyStore.findCurrentValue = function (data) {
+		var hour = new Date().getHours();
+	
+		if (hour === 0) {
+			hour = "12AM";
+		} else if (hour < 12) {
+			hour += "AM";
+		} else {
+			hour = hour % 12 + "PM";
+		}
+	
+		var _result = null;
+	
+		data.forEach(function (datum) {
+			if (datum.hour == hour) {
+				_result = datum;
+				return;
+			}
+		});
+	
+		return _result;
+	};
+	
+	CountyStore.emptyCountyForecast = {
+		swell: {},
+		wind: {},
+		tide: {}
+	};
+	
+	module.exports = CountyStore;
 
 /***/ }
 /******/ ]);

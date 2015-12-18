@@ -65,12 +65,12 @@ SpotStore.setForecast = function(spot, forecast){
 };
 
 SpotStore.emptyForecast = {forecast: {
-					hour: "dummy",
-					size: "dummy",
-					quality: "dummy",
-					wind_quality: "dummy",
-					wave_quality: "dummy",
-					tide_quality: "dummy",
+					hour: "",
+					size: "",
+					quality: "",
+					wind_quality: "",
+					wave_quality: "",
+					tide_quality: "",
 					}};
 
 SpotStore.getCurrentForecast = function(id){
