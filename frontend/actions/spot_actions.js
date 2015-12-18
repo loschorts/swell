@@ -17,7 +17,7 @@ SpotActions = {
 		Dispatcher.dispatch({
 			actionType: "SET_FORECAST",
 			spot: spot,
-			forecast: forecast,
+			forecast: forecast
 		});
 	}
 };

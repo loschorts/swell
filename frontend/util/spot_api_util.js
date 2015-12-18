@@ -29,7 +29,7 @@ var SpotApiUtil = {
 			url: 'http://api.spitcast.com/api/spot/forecast/' + spot.spitcast_id + '/',
 			type: 'GET',
 			success: function(forecast){
-				
+				SpotActions.setForecast(spot, forecast);
 			}
 		});
 	},

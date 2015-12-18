@@ -26,6 +26,7 @@ var SpotFocus = React.createClass({
 		this.setState({forecast: _forecast});
 	},
 	render: function(){
+		debugger
 		if (typeof this.props.spot === 'undefined') {
 			return (<div className="spot-focus"/>);
 		} else {		

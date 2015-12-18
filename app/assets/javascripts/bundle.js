@@ -31980,6 +31980,7 @@
 			this.setState({ forecast: _forecast });
 		},
 		render: function () {
+			debugger;
 			if (typeof this.props.spot === 'undefined') {
 				return React.createElement('div', { className: 'spot-focus' });
 			} else {
@@ -32069,7 +32070,9 @@
 			$.ajax({
 				url: 'http://api.spitcast.com/api/spot/forecast/' + spot.spitcast_id + '/',
 				type: 'GET',
-				success: function (forecast) {}
+				success: function (forecast) {
+					SpotActions.setForecast(spot, forecast);
+				}
 			});
 		},
 		fetchMultiForecasts: function (spots) {}
