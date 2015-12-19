@@ -26,6 +26,13 @@ SpotActions = {
 			spitcast_county: spitcast_county,
 			forecast: forecast
 		});
+	},
+	setNeighbors: function(spot, neighbors){
+		Dispatcher.dispatch({
+			actionType: "SET_NEIGHBORS",
+			spot: spot,
+			neighbors: neighbors
+		});
 	}
 };
 

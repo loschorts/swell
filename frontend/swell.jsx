@@ -12,6 +12,7 @@ var Hello = require('./components/hello');
 var Navbar = require('./components/navbar');
 var SignInForm = require('./components/sign_in_form');
 var SignUpForm = require('./components/sign_up_form');
+var Forecast = require('./components/forecast');
 
 var routes = (
     <Route path="/" component={App}>
@@ -21,6 +22,7 @@ var routes = (
          	<Route path="sign-up" component={SignUpForm}/>
         </Route>
     	<Route path="hello" component={Hello}/>
+      <Route path="forecast" component={Forecast}/>
     </Route>
 );
 

@@ -15,14 +15,22 @@ var Hello = React.createClass({
   getInitialState: function(){
     return ({
       user: UserStore.currentUser(),
+      neighbors: []
     });
   },
   componentDidMount: function(){
     UserStore.addListener(this.updateUser);
+    SpotStore.addListener(this.updateNeighbors);
   },
   updateUser: function(){
     this.setState({user: UserStore.currentUser()});
-
+    var home = this.state.user.favorites[0];
+    SpotStore.updateSpot(home);
+    SpotAPIUtil.fetchNearbySpots(home);
+  },
+  updateNeighbors: function(){
+    var home = this.state.user.favorites[0];    
+    this.setState({neighbors: SpotStore.getNeighbors(home.id)});
   },
   userInfo: function(){
 		return( <div> 
@@ -49,7 +57,10 @@ var Hello = React.createClass({
     if (this.state.user.favorites.length === 0) {
       return;
     }
-    return <SpotFocus spot={this.state.user.favorites[0]}/>
+    return (<div>
+              <h1>Home</h1>
+              <SpotFocus spot={this.state.user.favorites[0]}/>
+          </div>);
   },
   renderFavorites: function(){
     if (this.state.user.favorites.length < 2) {
@@ -59,7 +70,21 @@ var Hello = React.createClass({
     var result = _favorites.map(function(fav){
       return (<SpotPreview spot={fav}/>);
     });
-    return (<div className="feature-box">{result}</div>);
+    return (<div className="feature-box">
+        {result}
+      </div>);
+  },
+  renderNeighbors: function(){
+    var result = ""
+    if (this.state.neighbors.count === 0){
+      result = "";
+    } else {
+      result = this.state.neighbors.map(function(neighbor){
+          return <SpotPreview spot={neighbor}/>
+        });  
+    }
+
+    return <div className="feature-box">{result}</div>
   },
   render: function(){
     return(
@@ -68,6 +93,7 @@ var Hello = React.createClass({
         {this.userInfo()}
         {this.renderHome()}
         {this.renderFavorites()}
+        {this.renderNeighbors()}
       </div>
     );
   }

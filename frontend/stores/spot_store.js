@@ -1,5 +1,6 @@
 var Store = require('flux/utils').Store;
 var Dispatcher = require('../dispatcher/dispatcher');
+var SpotAPIUtil = require('../util/spot_api_util');
 
 var SpotStore = new Store(Dispatcher);
 
@@ -15,6 +16,9 @@ SpotStore.__onDispatch = function(payload){
 			break;
 		case "SET_FORECAST":
 			this.setForecast(payload.spot, payload.forecast);
+			break;
+		case "SET_NEIGHBORS":
+			this.setNeighbors(payload.spot, payload.neighbors);
 	}
 };
 
@@ -104,6 +108,31 @@ SpotStore.getCurrentForecast = function(id){
 
 SpotStore.getFullForecast = function(id){
 	return _spots[this.findSpot(id)].forecast;
+};
+
+SpotStore.setNeighbors = function(spot, neighbors){
+	_spots[this.findSpot(spot.id)].neighbors = neighbors;
+	console.log('SpotStore.setNeighbors');
+	spot.neighbors.forEach(function(neighbor){
+		debugger
+		// the problem is that you are bypassing the native API
+		// and going straight to the 3rd party
+		// fix by writing a new route that fetches neighbors from  SWELL 
+		// by Spitcast-id
+		SpotAPIUtil.fetchForecast({spitcast_id: neighbor.spot_id});
+	});
+	this.__emitChange();
+};
+
+SpotStore.getNeighbors = function(id){
+	var spot = _spots[this.findSpot(id)];
+
+	if (typeof spot.neighbors === 'undefined'){
+		return [];
+	} else {
+		return spot.neighbors;
+	}
+
 };
 
 module.exports = SpotStore;

@@ -24,7 +24,8 @@ var SpotApiUtil = {
 		});
 	},
 	fetchForecast: function(spot){
-
+		console.log('fetching forecast for ');
+		console.log(spot);
 		$.ajax({
 			url: 'http://api.spitcast.com/api/spot/forecast/' + spot.spitcast_id + '/',
 			type: 'GET',
@@ -87,7 +88,21 @@ var SpotApiUtil = {
 				});
 			}
 		});
-	}
+	},
+	fetchNearbySpots: function(spot){
+		var _lat = spot.lat;
+		var _lng = spot.lng;
+
+		$.ajax({
+			url: 'http://api.spitcast.com/api/spot/nearby',
+			type: 'GET',
+			data: {latitude: _lat, longitude: _lng},
+			success: function(data){
+				SpotActions.setNeighbors(spot, data);
+			}
+		});
+	},
+
 };
 
 module.exports = SpotApiUtil;
