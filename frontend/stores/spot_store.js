@@ -4,7 +4,7 @@ var SpotAPIUtil = require('../util/spot_api_util');
 
 var SpotStore = new Store(Dispatcher);
 
-var _spots = [];
+var _spots = {};
 
 SpotStore.__onDispatch = function(payload){
 	switch (payload.actionType){
@@ -28,38 +28,25 @@ SpotStore.setAll = function(spots){
 };
 
 SpotStore.updateSpot = function(spot){
-	var idx = this.findSpot(spot.id);
-	if (idx){
-		_spots[idx] = spot;
-		this.__emitChange();
-	} else {
-		this.addSpot(spot);
-	}
+	_spots[spot.id] = spot;
+	this.__emitChange();
 };
 
-SpotStore.findSpot = function(id){
-	var _spotIdx = null;
-	_spots.forEach(function(spot, idx){
-		if (spot.id === id) {
-			_spotIdx = idx;
-			return;
-		}
-	});
-	return _spotIdx;
+SpotStore.findSpot = function(spot){
+	return _spots[spot.id];
 };
 
 SpotStore.addSpot = function(spot){
-	_spots.push(spot);
+	_spots[spot.id] = spot;
 	this.__emitChange();
 };
 
 SpotStore.all = function(){
-	return _spots.slice();
+	return _spots;
 };
 
 SpotStore.show = function(id){
-	idx = SpotStore.findSpot(id);
-	return _spots[idx];
+	return _spots[id];
 };
 
 SpotStore.setForecast = function(spot, forecast){
@@ -78,7 +65,8 @@ SpotStore.emptyForecast = {forecast: {
 					}};
 
 SpotStore.getCurrentForecast = function(id){
-	var _spot = _spots[this.findSpot(id)]
+	var _spot = this.show(id);
+
 	if (typeof _spot === 'undefined'){
 		return this.emptyForecast;
 	} else {		
@@ -107,11 +95,13 @@ SpotStore.getCurrentForecast = function(id){
 };
 
 SpotStore.getFullForecast = function(id){
-	return _spots[this.findSpot(id)].forecast;
+	return _spots[this.show(id)].forecast;
 };
 
 SpotStore.setNeighbors = function(spot, neighbors){
-	_spots[this.findSpot(spot.id)].neighbors = neighbors;
+	var _spot = this.findSpot(spot);
+
+	_spot.neighbors = neighbors;
 	console.log('SpotStore.setNeighbors');
 	spot.neighbors.forEach(function(neighbor){
 		debugger

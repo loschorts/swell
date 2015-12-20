@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151216002451) do
+ActiveRecord::Schema.define(version: 20151220213405) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,16 @@ ActiveRecord::Schema.define(version: 20151216002451) do
 
   add_index "favorites", ["spot_id"], name: "index_favorites_on_spot_id", using: :btree
   add_index "favorites", ["user_id"], name: "index_favorites_on_user_id", using: :btree
+
+  create_table "neighbor_relations", force: :cascade do |t|
+    t.integer  "spot_id",     null: false
+    t.integer  "neighbor_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "neighbor_relations", ["neighbor_id"], name: "index_neighbor_relations_on_neighbor_id", using: :btree
+  add_index "neighbor_relations", ["spot_id"], name: "index_neighbor_relations_on_spot_id", using: :btree
 
   create_table "regions", force: :cascade do |t|
     t.string   "name",        null: false

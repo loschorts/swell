@@ -40,9 +40,12 @@ def reset_tables
 
 	SpotPhoto.destroy_all
 	ActiveRecord::Base.connection.reset_pk_sequence!('spot_photos')
+
+	NeighborRelation.destroy_all
+	ActiveRecord::Base.connection.reset_pk_sequence!('neighbor_relations')
 end
 
-def fetch_remote(should_run = false)
+def fetch_spots_remote(should_run = false)
 	return unless should_run
 
 	#Fetch all spots from the API
@@ -110,7 +113,8 @@ end
 def create_spots
 	spots = JSON.parse(File.read('validspots'))
 	spots.each do |spot|
-		Spot.create!({
+		first_name = spot["spot_name"]
+		puts Spot.create!({
 			name: spot["spot_name"],
 			spitcast_county: spot["county_name"].downcase.gsub(" ", "-"),
 			county_id: County.find_by(name: spot["county_name"]).id,
@@ -122,6 +126,46 @@ def create_spots
 	end
 end
 
+def create_guest_account
+	guest = User.create(username: "guest", password: "guestguest")
+	guest.add_favorite(11)
+	guest.add_favorite(30)
+	guest.add_favorite(47)
+	guest.add_favorite(15)
+end	
+
+def fetch_neighbors_remote(should_run = false)
+	return unless should_run
+
+	Spot.all.each do |spot|
+		puts "fetching neighbors for #{spot.name}"
+
+		url = URI.parse("http://api.spitcast.com/api/spot/neighbors/#{spot.spitcast_id}/")
+		req = Net::HTTP::Get.new(url.to_s)
+		res = Net::HTTP.start(url.host, url.port) {|http|
+		  http.request(req)
+		}
+
+		if res.message == "OK"
+			File.open("./neighbors/#{spot.id}", "w") { |f| f.write(res.body) }
+		else 
+			puts "received bad response for #{url}"
+			File.open("./neighbors/#{spot.id}", "w") { |f| f.write("[]") }
+		end
+	end
+end
+
+def set_neighbors
+	Spot.all.each do |spot|
+		f = File.read("./neighbors/#{spot.id}")
+		results = JSON.parse(f)
+		results.each do |result|
+			neighbor = Spot.find_by(spitcast_id: result["spot_id"])
+			NeighborRelation.create(spot_id: spot.id, neighbor_id: neighbor.id)
+		end
+	end
+end
+
 def forecast_exists?(spot)
 	puts "checking forecast for #{spot["spot_name"]}"
 	url = URI.parse('http://api.spitcast.com/api/spot/forecast/' + spot["spot_id"].to_s + '/')
@@ -130,10 +174,8 @@ def forecast_exists?(spot)
 	  http.request(req)
 	}
 	if res.message == "OK"
-		return true
-	else
-		puts "invalid!"
-		return false
+		neighbors = JSON.parse(res.body)
+		debugger
 	end
 end
 

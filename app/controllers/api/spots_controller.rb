@@ -11,4 +11,7 @@ class Api::SpotsController < ApplicationController
 	def show
 		@spot = Spot.find(params[:id])
 	end
+	def apikey
+		@spot = Spot.find_by(spitcast_id: params[:id])
+	end
 end

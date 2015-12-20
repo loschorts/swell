@@ -9,7 +9,10 @@ class Spot < ActiveRecord::Base
 
   has_many :users, through: :favorites
 
-  def forecast
-  	
-  end
+  has_many :neighbor_relations
+
+  has_many :neighbors,
+  	through: :neighbor_relations,
+  	source: :neighbor
+
 end
