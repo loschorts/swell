@@ -15,8 +15,6 @@ var Hello = React.createClass({
   getInitialState: function(){
     return ({
       user: UserStore.currentUser(),
-      home: {neighbors: []},
-      neighbors: []
     });
   },
   componentDidMount: function(){
@@ -27,16 +25,9 @@ var Hello = React.createClass({
     this.setState({
       user: UserStore.currentUser(),
     });
-    this.updateNeighbors();
-  },
-  updateSpots: function(){
-    var _home = this.state.user.favorites[0];
-    console.log("updateNeighbors");
-    debugger
-    // this.setState({
-    //   home: _home,
-    //   neighbors: _neighbors
-    // })
+    user.favorites.forEach(function(spot){
+      SpotAPIUtil.getSpotById(spot);
+    });
   },
   userInfo: function(){
 		return( <div> 
@@ -76,13 +67,21 @@ var Hello = React.createClass({
     var result = _favorites.map(function(fav){
       return (<SpotPreview spot={fav}/>);
     });
-    return (<div className="feature-box">
-        {result}
-      </div>);
+    return (<div className="feature-box">{result}</div>);
   },
   renderNeighbors: function(){
-    var result = this.state.neighbors.map(function(neighbor){
-      return neighbor.name;
+    if (typeof this.state.user.favorites[0].neighbors === 'undefined' || 
+        typeof this.state.user ){
+      return;
+    }
+    var _neighbors = this.state.user.neighbors
+    var result = _neighbors.map(function(neighbor){
+      var _neighbor = SpotStore.show(neighbor);
+      if (typeof _neighbor !== 'undefined'){
+        return (<SpotPreview spot={_neighbor}/>);
+      } else {
+        return <div/>
+      }
     });
 
     return <div className="feature-box">{result}</div>

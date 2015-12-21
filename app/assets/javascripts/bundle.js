@@ -59,10 +59,11 @@
 	var SignInForm = __webpack_require__(236);
 	var SignUpForm = __webpack_require__(249);
 	var Forecast = __webpack_require__(250);
+	var Test = __webpack_require__(251);
 	
 	var routes = React.createElement(
 	  Route,
-	  { path: '/', component: App },
+	  { path: '/', component: Test },
 	  React.createElement(IndexRoute, { component: Splash }),
 	  React.createElement(
 	    Route,
@@ -31763,9 +31764,7 @@
 	
 	  getInitialState: function () {
 	    return {
-	      user: UserStore.currentUser(),
-	      home: { neighbors: [] },
-	      neighbors: []
+	      user: UserStore.currentUser()
 	    };
 	  },
 	  componentDidMount: function () {
@@ -31776,16 +31775,9 @@
 	    this.setState({
 	      user: UserStore.currentUser()
 	    });
-	    this.updateNeighbors();
-	  },
-	  updateSpots: function () {
-	    var _home = this.state.user.favorites[0];
-	    console.log("updateNeighbors");
-	    debugger;
-	    // this.setState({
-	    //   home: _home,
-	    //   neighbors: _neighbors
-	    // })
+	    user.favorites.forEach(function (spot) {
+	      SpotAPIUtil.getSpotById(spot);
+	    });
 	  },
 	  userInfo: function () {
 	    return React.createElement(
@@ -31858,8 +31850,17 @@
 	    );
 	  },
 	  renderNeighbors: function () {
-	    var result = this.state.neighbors.map(function (neighbor) {
-	      return neighbor.name;
+	    if (typeof this.state.user.favorites[0].neighbors === 'undefined' || typeof this.state.user) {
+	      return;
+	    }
+	    var _neighbors = this.state.user.neighbors;
+	    var result = _neighbors.map(function (neighbor) {
+	      var _neighbor = SpotStore.show(neighbor);
+	      if (typeof _neighbor !== 'undefined') {
+	        return React.createElement(SpotPreview, { spot: _neighbor });
+	      } else {
+	        return React.createElement('div', null);
+	      }
 	    });
 	
 	    return React.createElement(
@@ -32016,151 +32017,92 @@
 	var SpotStore = __webpack_require__(246);
 	var CountyStore = __webpack_require__(247);
 	
-	var SpotFocus = React.createClass({
-		displayName: 'SpotFocus',
+	// var SpotFocus = React.createClass({
+	// 	getInitialState: function(){
+	// 		return ({
+	// 			forecast: SpotStore.emptyForecast,
+	// 			countyForecast: null
+	// 		});
+	// 	},
+	// 	componentDidMount: function(){
+	// 		SpotStore.addListener(this.receiveForecast);
+	// 		CountyStore.addListener(this.receiveCountyForecast);
+	// 		SpotAPIUtil.fetchForecast(this.props.spot);
+	// 		SpotAPIUtil.fetchCountyForecast(this.props.spot.spitcast_county);
+	// 	},
+	// 	receiveForecast: function(){	
+	// 		var _forecast = SpotStore.getCurrentForecast(this.props.spot.id);
+	// 		this.setState({forecast: _forecast});
+	// 	},
+	// 	receiveCountyForecast: function(){
+	// 		var _forecast = CountyStore.getCurrentCountyForecast(this.props.spot.spitcast_county);
+	// 		this.setState({countyForecast: _forecast});
+	// 	},
+	// 	county: function(){
+	// 		return JSON.stringify(this.state.countyForecast);
+	// 	},
+	// 	swells: function(){
+	// 		if (this.state.countyForecast === null) {
+	// 			return;
+	// 		}
 	
-		getInitialState: function () {
-			return {
-				forecast: SpotStore.emptyForecast,
-				countyForecast: null
-			};
-		},
-		componentDidMount: function () {
-			SpotStore.addListener(this.receiveForecast);
-			CountyStore.addListener(this.receiveCountyForecast);
-			SpotAPIUtil.fetchForecast(this.props.spot);
-			SpotAPIUtil.fetchCountyForecast(this.props.spot.spitcast_county);
-		},
-		receiveForecast: function () {
-			var _forecast = SpotStore.getCurrentForecast(this.props.spot.id);
-			this.setState({ forecast: _forecast });
-		},
-		receiveCountyForecast: function () {
-			var _forecast = CountyStore.getCurrentCountyForecast(this.props.spot.spitcast_county);
-			this.setState({ countyForecast: _forecast });
-		},
-		county: function () {
-			return JSON.stringify(this.state.countyForecast);
-		},
-		swells: function () {
-			if (this.state.countyForecast === null) {
-				return;
-			}
+	// 		var _data = this.state.countyForecast.swell;
+	// 		var _swells = [];
 	
-			var _data = this.state.countyForecast.swell;
-			var _swells = [];
+	// 		for (var s = 0 ; s < 3 ; s++) {
+	// 			_swells.push({
+	// 				index: s,
+	// 				height: _data[s].hs,
+	// 				period: _data[s].tp
+	// 			});
+	// 		}
+	// 		var result = _swells.map(function(s){return JSON.stringify(s)});
+	// 		return result;
+	// 	},
+	// 	winds: function(){
+	// 		if (this.state.countyForecast === null) {
+	// 			return;
+	// 		}		
+	// 		var _data = this.state.countyForecast.wind;
 	
-			for (var s = 0; s < 3; s++) {
-				_swells.push({
-					index: s,
-					height: _data[s].hs,
-					period: _data[s].tp
-				});
-			}
-			var result = _swells.map(function (s) {
-				return JSON.stringify(s);
-			});
-			return result;
-		},
-		winds: function () {
-			if (this.state.countyForecast === null) {
-				return;
-			}
-			var _data = this.state.countyForecast.wind;
+	// 		return (JSON.stringify({
+	// 			degrees: _data.direction_degrees,
+	// 			direction: _data.direction_text,
+	// 			speed: _data.speed_mph
+	// 		}));
+	// 	},
+	// 	tides: function(){
+	// 		if (this.state.countyForecast === null) {
+	// 			return;
+	// 		}	
+	// 		var _data = this.state.countyForecast.tide;
+	// 		var _direction = CountyStore.getCurrentTideDirection(this.props.spot.spitcast_county);
 	
-			return JSON.stringify({
-				degrees: _data.direction_degrees,
-				direction: _data.direction_text,
-				speed: _data.speed_mph
-			});
-		},
-		tides: function () {
-			if (this.state.countyForecast === null) {
-				return;
-			}
-			var _data = this.state.countyForecast.tide;
-			var _direction = CountyStore.getCurrentTideDirection(this.props.spot.spitcast_county);
-	
-			return JSON.stringify({
-				tide: _data.tide,
-				direction: _direction
-			});
-		},
-		render: function () {
-			var _forecast = this.state.forecast;
-			return React.createElement(
-				'div',
-				{ className: 'spot-focus' },
-				React.createElement(
-					'h3',
-					null,
-					'SpotFocus for ',
-					this.props.spot.name
-				),
-				React.createElement(
-					'ul',
-					null,
-					React.createElement(
-						'li',
-						{ className: 'detail' },
-						'Hour: ',
-						_forecast.hour
-					),
-					React.createElement(
-						'li',
-						{ className: 'detail' },
-						'Size: ',
-						_forecast.size
-					),
-					React.createElement(
-						'li',
-						{ className: 'detail' },
-						'Quality: ',
-						_forecast.quality
-					),
-					React.createElement(
-						'li',
-						{ className: 'detail' },
-						'Swell: ',
-						_forecast.swell_quality
-					),
-					React.createElement(
-						'li',
-						{ className: 'detail' },
-						'Tide: ',
-						_forecast.tide_quality
-					),
-					React.createElement(
-						'li',
-						{ className: 'detail' },
-						'Wind: ',
-						_forecast.wind_quality
-					),
-					React.createElement(
-						'li',
-						{ className: 'detail' },
-						'Swells: ',
-						this.swells(),
-						' '
-					),
-					React.createElement(
-						'li',
-						{ className: 'detail' },
-						'Wind Details: ',
-						this.winds(),
-						' '
-					),
-					React.createElement(
-						'li',
-						{ className: 'detail' },
-						'Tide: ',
-						this.tides(),
-						' '
-					)
-				)
-			);
-		}
-	});
+	// 		return (JSON.stringify({
+	// 			tide: _data.tide,
+	// 			direction: _direction
+	// 		}));
+	// 	},
+	// 	render: function(){
+	// 		var _forecast = this.state.forecast;
+	// 		return (
+	// 			<div className="spot-focus">
+	// 				<h3>SpotFocus for {this.props.spot.name}</h3>
+	// 				<ul>
+	// 					<li className="detail">Hour: {_forecast.hour}</li>
+	// 					<li className="detail">Size: {_forecast.size}</li>
+	// 					<li className="detail">Quality: {_forecast.quality}</li>
+	// 					<li className="detail">Swell: {_forecast.swell_quality}</li>
+	// 					<li className="detail">Tide: {_forecast.tide_quality}</li>
+	// 					<li className="detail">Wind: {_forecast.wind_quality}</li>
+	// 					<li className="detail">Swells: {this.swells()} </li>
+	// 					<li className="detail">Wind Details: {this.winds()} </li>
+	// 					<li className="detail">Tide: {this.tides()} </li>
+	// 				</ul>
+	// 			</div>
+	// 		);
+	// 	},
+	// });
 	
 	module.exports = SpotFocus;
 
@@ -32172,103 +32114,13 @@
 	var UserStore = __webpack_require__(211);
 	
 	var SpotApiUtil = {
-		getSpotById: function (id) {
+		fetchSpot: function (id) {
 			$.ajax({
 				url: 'api/spots/' + id,
 				type: 'GET',
 				data: {},
 				success: function (spot) {
-					SpotActions.updateSpot(spot);
-				}
-			});
-		},
-		getAllSpots: function () {
-			$.ajax({
-				url: 'api/spots/',
-				type: 'GET',
-				data: {},
-				success: function (spots) {
-					SpotActions.setAll(spots);
-				}
-	
-			});
-		},
-		fetchForecast: function (spot) {
-			console.log('fetching forecast for ');
-			console.log(spot);
-			$.ajax({
-				url: 'http://api.spitcast.com/api/spot/forecast/' + spot.spitcast_id + '/',
-				type: 'GET',
-				success: function (data) {
-					var forecast = data.map(function (entry) {
-						var formatted = {
-							date: entry.date,
-							day: entry.day,
-							gmt: entry.gmt,
-							hour: entry.hour,
-							latitude: entry.latitude,
-							longitude: entry.longitude,
-							quality: entry.shape_full,
-							swell_quality: entry.shape_detail.swell,
-							tide_quality: entry.shape_detail.tide,
-							wind_quality: entry.shape_detail.wind,
-							size: parseFloat(entry.size_ft).toFixed(2),
-							warnings: entry.warnings,
-							spitcast_id: entry.spot_id,
-							spot_name: entry.spot_name
-						};
-						return formatted;
-					});
-	
-					SpotActions.setForecast(spot, forecast);
-				}
-			});
-		},
-		fetchWaterTemp: function () {
-			$.ajax({
-				url: 'http://api.spitcast.com/api/county/water-temperature/' + county + '/',
-				type: 'GET',
-				success: function (data) {
-					console.log(data);
-					_countyForecast.water_temp = data;
-				}
-			});
-		},
-		fetchCountyForecast: function (spitcast_county) {
-			var _countyForecast = {};
-			$.ajax({
-				url: 'http://api.spitcast.com/api/county/swell/' + spitcast_county + '/',
-				type: 'GET',
-				success: function (data) {
-					_countyForecast.swell = data;
-					$.ajax({
-						url: 'http://api.spitcast.com/api/county/wind/' + spitcast_county + '/',
-						type: 'GET',
-						success: function (data) {
-							_countyForecast.wind = data;
-							$.ajax({
-								url: 'http://api.spitcast.com/api/county/tide/' + spitcast_county + '/',
-								type: 'GET',
-								success: function (data) {
-									_countyForecast.tide = data;
-									SpotActions.setCountyForecast(spitcast_county, _countyForecast);
-								}
-							});
-						}
-					});
-				}
-			});
-		},
-		fetchNearbySpots: function (spot) {
-			var _lat = spot.lat;
-			var _lng = spot.lng;
-	
-			$.ajax({
-				url: 'http://api.spitcast.com/api/spot/nearby',
-				type: 'GET',
-				data: { latitude: _lat, longitude: _lng },
-				success: function (data) {
-					SpotActions.setNeighbors(spot, data);
+					SpotActions.setSpot(spot);
 				}
 			});
 		}
@@ -32284,37 +32136,10 @@
 	var Dispatcher = __webpack_require__(229);
 	
 	SpotActions = {
-		updateSpot: function (spot) {
+		setSpot: function (spot) {
 			Dispatcher.dispatch({
-				actionType: "UPDATE_SPOT",
+				actionType: "SET_SPOT",
 				spot: spot
-			});
-		},
-		setAll: function (spots) {
-			Dispatcher.dispatch({
-				actionType: "ALL_SPOTS",
-				spots: spots
-			});
-		},
-		setForecast: function (spot, forecast) {
-			Dispatcher.dispatch({
-				actionType: "SET_FORECAST",
-				spot: spot,
-				forecast: forecast
-			});
-		},
-		setCountyForecast: function (spitcast_county, forecast) {
-			Dispatcher.dispatch({
-				actionType: "SET_COUNTY_FORECAST",
-				spitcast_county: spitcast_county,
-				forecast: forecast
-			});
-		},
-		setNeighbors: function (spot, neighbors) {
-			Dispatcher.dispatch({
-				actionType: "SET_NEIGHBORS",
-				spot: spot,
-				neighbors: neighbors
 			});
 		}
 	};
@@ -32335,35 +32160,13 @@
 	
 	SpotStore.__onDispatch = function (payload) {
 		switch (payload.actionType) {
-			case "UPDATE_SPOT":
-				this.updateSpot(payload.spot);
+			case "SET_SPOT":
+				this.setSpot(payload.spot);
 				break;
-			case "ALL_SPOTS":
-				this.setAll(payload.spots);
-				break;
-			case "SET_FORECAST":
-				this.setForecast(payload.spot, payload.forecast);
-				break;
-			case "SET_NEIGHBORS":
-				this.setNeighbors(payload.spot, payload.neighbors);
 		}
 	};
 	
-	SpotStore.setAll = function (spots) {
-		_spots = spots;
-		this.__emitChange();
-	};
-	
-	SpotStore.updateSpot = function (spot) {
-		_spots[spot.id] = spot;
-		this.__emitChange();
-	};
-	
-	SpotStore.findSpot = function (spot) {
-		return _spots[spot.id];
-	};
-	
-	SpotStore.addSpot = function (spot) {
+	SpotStore.setSpot = function (spot) {
 		_spots[spot.id] = spot;
 		this.__emitChange();
 	};
@@ -32372,73 +32175,20 @@
 		return _spots;
 	};
 	
-	SpotStore.show = function (id) {
+	SpotStore.getSpot = function (id) {
 		return _spots[id];
 	};
 	
-	SpotStore.setForecast = function (spot, forecast) {
-		spot.forecast = forecast;
-		this.updateSpot(spot);
-		this.__emitChange();
-	};
-	
-	SpotStore.emptyForecast = { forecast: {
-			hour: "",
-			size: "",
-			quality: "",
-			wind_quality: "",
-			wave_quality: "",
-			tide_quality: ""
-		} };
-	
-	SpotStore.getCurrentForecast = function (id) {
-		var _spot = this.show(id);
-	
-		if (typeof _spot === 'undefined') {
-			return this.emptyForecast;
-		} else {
-			var _forecast = _spot.forecast;
-		}
-	
-		var hour = new Date().getHours();
-	
-		if (hour === 0) {
-			hour = "12AM";
-		} else if (hour < 12) {
-			hour += "AM";
-		} else {
-			hour = hour % 12 + "PM";
-		}
-	
-		var _currentForecast;
-		_forecast.forEach(function (forecastHour) {
-			if (hour === forecastHour.hour) {
-				_currentForecast = forecastHour;
-				return;
-			}
-		});
-	
-		return _currentForecast;
-	};
-	
-	SpotStore.getFullForecast = function (id) {
-		return _spots[this.show(id)].forecast;
-	};
-	
-	SpotStore.setNeighbors = function (spot, neighbors) {
-		var _spot = this.findSpot(spot);
-	
-		_spot.neighbors = neighbors;
-		console.log('SpotStore.setNeighbors');
-		spot.neighbors.forEach(function (neighbor) {
-			debugger;
-			// the problem is that you are bypassing the native API
-			// and going straight to the 3rd party
-			// fix by writing a new route that fetches neighbors from  SWELL
-			// by Spitcast-id
-			SpotAPIUtil.fetchForecast({ spitcast_id: neighbor.spot_id });
-		});
-		this.__emitChange();
+	SpotStore.emptySpot = {
+		id: null,
+		spitcast_id: null,
+		spitcast_county: null,
+		lat: null,
+		lng: null,
+		name: null,
+		description: null,
+		county_name: null,
+		neighbors: null
 	};
 	
 	module.exports = SpotStore;
@@ -32561,21 +32311,37 @@
 
 	var React = __webpack_require__(1);
 	var SpotAPIUtil = __webpack_require__(244);
+	var ForecastAPIUtil = __webpack_require__(253);
+	
 	var SpotStore = __webpack_require__(246);
+	window.ForecastStore = __webpack_require__(252);
 	
 	var SpotPreview = React.createClass({
 		displayName: 'SpotPreview',
 	
 		getInitialState: function () {
-			return { forecast: SpotStore.emptyForecast };
+			return {
+				spot: SpotStore.emptySpot,
+				forecast: ForecastStore.emptyForecast
+			};
 		},
 		componentDidMount: function () {
-			SpotStore.addListener(this.receiveForecast);
-			SpotAPIUtil.fetchForecast(this.props.spot);
+			SpotStore.addListener(this.updateSpot);
+			ForecastStore.addListener(this.updateForecast);
+			SpotAPIUtil.fetchSpot(this.props.spotId);
 		},
-		receiveForecast: function () {
-			var _forecast = SpotStore.getCurrentForecast(this.props.spot.id);
-			this.setState({ forecast: _forecast });
+		updateSpot: function () {
+			var spot = SpotStore.getSpot(this.props.spotId);
+			this.setState({ spot: spot });
+		},
+		updateForecast: function () {
+			var forecast = ForecastStore.getCurrentSpotForecast(this.state.spot);
+			this.setState({ forecast: forecast });
+		},
+		componentWillUpdate: function (nextProps, nextState) {
+			if (typeof nextState.spot.id !== 'undefined' && nextState.spot.id !== this.state.spot.id) {
+				ForecastAPIUtil.fetchSpotForecast(nextState.spot);
+			}
 		},
 		render: function () {
 			var _forecast = this.state.forecast;
@@ -32586,7 +32352,7 @@
 					'h4',
 					null,
 					'SpotPreview for ',
-					this.props.spot.name
+					this.state.spot.name
 				),
 				React.createElement(
 					'ul',
@@ -32734,6 +32500,230 @@
 	});
 	
 	module.exports = Hello;
+
+/***/ },
+/* 251 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var SpotPreview = __webpack_require__(248);
+	
+	var Test = React.createClass({
+		displayName: 'Test',
+	
+		render: function () {
+			return React.createElement(SpotPreview, { spotId: 15 });
+		}
+	});
+	
+	module.exports = Test;
+
+/***/ },
+/* 252 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var Dispatcher = __webpack_require__(229);
+	var ForecastAPIUtil = __webpack_require__(253);
+	var TimeUtil = __webpack_require__(254);
+	
+	var ForecastStore = new Store(Dispatcher);
+	
+	var _spot_forecasts = {};
+	var _county_forecasts = {};
+	
+	ForecastStore.__onDispatch = function (payload) {
+		switch (payload.actionType) {
+			case "SET_SPOT_FORECAST":
+				this.setSpotForecast(payload.spot, payload.forecast);
+				break;
+			case "SET_COUNTY_FORECAST":
+				this.setCountyForecast(payload.county, payload.forecast);
+				break;
+		}
+	};
+	
+	ForecastStore.inspect = function () {
+		console.log(_spot_forecasts);
+		console.log(_county_forecasts);
+	};
+	
+	ForecastStore.getSpotForecast = function (spot) {
+		return _spot_forecasts[spot.id];
+	};
+	
+	ForecastStore.setSpotForecast = function (spot, forecast) {
+		_spot_forecasts[spot.id] = forecast;
+		this.__emitChange();
+	};
+	
+	ForecastStore.getCountyForecast = function (spitcast_county) {
+		return _county_forecasts[spitcast_county];
+	};
+	
+	ForecastStore.setCountyForecast = function (spitcast_county, forecast) {
+		_spot_forecasts[spitcast_county] = forecast;
+		this.__emitChange();
+	};
+	
+	ForecastStore.getCurrentSpotForecast = function (spot) {
+		var now = TimeUtil.now();
+	
+		var currentForecast = null;
+	
+		_spot_forecasts[spot.id].forEach(function (entry) {
+			if (entry.hour === now) {
+				currentForecast = entry;
+				return;
+			}
+		});
+	
+		return currentForecast;
+	};
+	
+	ForecastStore.getCurrentCountyForecast = function (county) {
+	
+		var now = TimeUtil.now();
+	
+		var currentForecast = null;
+	
+		_county_forecasts[spot].forEach(function (entry) {
+			if (entry.hour === now) {
+				return entry;
+			}
+		});
+	
+		return currentForecast;
+	};
+	
+	ForecastStore.emptyForecast = {
+		date: null,
+		day: null,
+		gmt: null,
+		hour: null,
+		latitude: null,
+		live: null,
+		longitude: null,
+		shape: null,
+		shape_detail: null,
+		shape_full: null,
+		size: null,
+		size_ft: null,
+		spot_id: null,
+		spot_name: null,
+		warnings: null
+	};
+	
+	module.exports = ForecastStore;
+
+/***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ForecastActions = __webpack_require__(255);
+	var UserStore = __webpack_require__(211);
+	
+	var ForecastAPIUtil = {
+		fetchSpotForecast: function (spot) {
+			$.ajax({
+				url: 'http://api.spitcast.com/api/spot/forecast/' + spot.spitcast_id + '/',
+				type: 'GET',
+				success: function (data) {
+					var forecast = data.map(function (entry) {
+						var formatted = {
+							date: entry.date,
+							day: entry.day,
+							gmt: entry.gmt,
+							hour: entry.hour,
+							latitude: entry.latitude,
+							longitude: entry.longitude,
+							quality: entry.shape_full,
+							swell_quality: entry.shape_detail.swell,
+							tide_quality: entry.shape_detail.tide,
+							wind_quality: entry.shape_detail.wind,
+							size: parseFloat(entry.size_ft).toFixed(2),
+							warnings: entry.warnings,
+							spitcast_id: entry.spot_id,
+							spot_name: entry.spot_name
+						};
+						return formatted;
+					});
+					ForecastActions.setSpotForecast(spot, forecast);
+				}
+			});
+		},
+		fetchCountyForecast: function (spitcast_county) {
+			var _countyForecast = {};
+			$.ajax({
+				url: 'http://api.spitcast.com/api/county/swell/' + spitcast_county + '/',
+				type: 'GET',
+				success: function (data) {
+					_countyForecast.swell = data;
+					$.ajax({
+						url: 'http://api.spitcast.com/api/county/wind/' + spitcast_county + '/',
+						type: 'GET',
+						success: function (data) {
+							_countyForecast.wind = data;
+							$.ajax({
+								url: 'http://api.spitcast.com/api/county/tide/' + spitcast_county + '/',
+								type: 'GET',
+								success: function (data) {
+									_countyForecast.tide = data;
+									ForecastActions.setCountyForecast(spitcast_county, _countyForecast);
+								}
+							});
+						}
+					});
+				}
+			});
+		}
+	};
+	
+	module.exports = ForecastAPIUtil;
+
+/***/ },
+/* 254 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		now: function () {
+			var hour = new Date().getHours();
+	
+			if (hour === 0) {
+				hour = "12AM";
+			} else if (hour < 12) {
+				hour += "AM";
+			} else {
+				hour = hour % 12 + "PM";
+			}
+			return hour;
+		}
+	};
+
+/***/ },
+/* 255 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(229);
+	
+	ForecastActions = {
+		setSpotForecast: function (spot, forecast) {
+			Dispatcher.dispatch({
+				actionType: "SET_SPOT_FORECAST",
+				spot: spot,
+				forecast: forecast
+			});
+		},
+		setCountyForecast: function (county, forecast) {
+			Dispatcher.dispatch({
+				actionType: "SET_COUNTY_FORECAST",
+				county: county,
+				forecast: forecast
+			});
+		}
+	};
+	
+	module.exports = ForecastActions;
 
 /***/ }
 /******/ ]);

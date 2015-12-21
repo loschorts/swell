@@ -13,9 +13,10 @@ var Navbar = require('./components/navbar');
 var SignInForm = require('./components/sign_in_form');
 var SignUpForm = require('./components/sign_up_form');
 var Forecast = require('./components/forecast');
+var Test = require('./components/test');
 
 var routes = (
-    <Route path="/" component={App}>
+    <Route path="/" component={Test}>
     	 <IndexRoute component={Splash}/>
         <Route path="splash" component={Splash}>
          	<Route path="sign-in" component={SignInForm}/>
