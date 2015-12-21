@@ -114,15 +114,4 @@ SpotStore.setNeighbors = function(spot, neighbors){
 	this.__emitChange();
 };
 
-SpotStore.getNeighbors = function(id){
-	var spot = _spots[this.findSpot(id)];
-
-	if (typeof spot.neighbors === 'undefined'){
-		return [];
-	} else {
-		return spot.neighbors;
-	}
-
-};
-
 module.exports = SpotStore;

@@ -15,22 +15,28 @@ var Hello = React.createClass({
   getInitialState: function(){
     return ({
       user: UserStore.currentUser(),
+      home: {neighbors: []},
       neighbors: []
     });
   },
   componentDidMount: function(){
     UserStore.addListener(this.updateUser);
-    SpotStore.addListener(this.updateNeighbors);
+    SpotStore.addListener(this.updateSpots);
   },
   updateUser: function(){
-    this.setState({user: UserStore.currentUser()});
-    var home = this.state.user.favorites[0];
-    SpotStore.updateSpot(home);
-    SpotAPIUtil.fetchNearbySpots(home);
+    this.setState({
+      user: UserStore.currentUser(),
+    });
+    this.updateNeighbors();
   },
-  updateNeighbors: function(){
-    var home = this.state.user.favorites[0];    
-    this.setState({neighbors: SpotStore.getNeighbors(home.id)});
+  updateSpots: function(){
+    var _home = this.state.user.favorites[0];
+    console.log("updateNeighbors");
+    debugger
+    // this.setState({
+    //   home: _home,
+    //   neighbors: _neighbors
+    // })
   },
   userInfo: function(){
 		return( <div> 
@@ -75,14 +81,9 @@ var Hello = React.createClass({
       </div>);
   },
   renderNeighbors: function(){
-    var result = ""
-    if (this.state.neighbors.count === 0){
-      result = "";
-    } else {
-      result = this.state.neighbors.map(function(neighbor){
-          return <SpotPreview spot={neighbor}/>
-        });  
-    }
+    var result = this.state.neighbors.map(function(neighbor){
+      return neighbor.name;
+    });
 
     return <div className="feature-box">{result}</div>
   },
