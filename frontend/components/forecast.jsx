@@ -1,42 +1,46 @@
 var React = require('react');
-
-//Components
-var HelloNavbar = require('./hello_navbar');
-var SpotFocus = require('./spot_focus');
-var SpotPreview = require('./spot_preview');
-
-//Stores & Utils
-var UserStore = require('../stores/user_store');
-var SpotStore = require('../stores/spot_store');
-var UserAPIUtil = require('../util/user_api_util');
 var SpotAPIUtil = require('../util/spot_api_util');
+var ForecastAPIUtil = require('../util/forecast_api_util');
 
-var Hello = React.createClass({
-  getInitialState: function(){
-    return ({
-      user: UserStore.currentUser(),
-    });
-  },
-  componentDidMount: function(){
-    UserStore.addListener(this.updateUser);
-  },
-  updateUser: function(){
-    this.setState({user: UserStore.currentUser()});
+var SpotStore = require('../stores/spot_store');
+var CountyForecastStore = require('../stores/county_forecast_store');
 
-  },
-  render: function(){
-    return(
-      <div id="hello"> 
-        <HelloNavbar history={this.props.history}/>
-        <SpotFocus spot={this.props.spot}/>
-      </div>
-    );
-  }
+var Forecast = React.createClass({
+	componentDidMount: function(){
+		SpotStore.addListener(this.updateSpot);
+		CountyForecastStore.addListener(this.updateCountyForecast);
+		var _spot = SpotStore.getSpot(this.props.spotId);
+		if (!_spot) {
+			SpotAPIUtil.fetchSpot(this.props.spotId);
+		} else {
+			this.updateSpot();
+		}
+	},
+	updateSpot: function(){
+		this.setState({spot: SpotStore.getSpot(this.props.spotId)});
+		this.updateCountyForecast();
+	},
+	updateCountyForecast: function(){
+		var _forecast = CountyForecastStore.getCountyForecast(this.state.spot.spitcast_county);
+		if (!_forecast) {
+			ForecastAPIUtil.fetchCountyForecast(this.state.spot.spitcast_county);
+		} else {
+			this.setState({countyForecast: _forecast});
+		}
+	},
+	showData: function(){
+		if (this.state && this.state.countyForecast) {
+			return JSON.stringify(this.state.countyForecast);
+		} else {
+			return "County Forecast not Defined"
+		}
+	},
+	render: function(){
+		return (<div>
+					{this.showData()}
+				</div>);
+	}
 });
 
-module.exports = Hello;
 
-
-
-
-
+module.exports = Forecast;

@@ -24,6 +24,7 @@ var routes = (
         </Route>
     	<Route path="hello" component={Hello}/>
       <Route path="forecast" component={Forecast}/>
+      <Route path="test" component={Test}/>
     </Route>
 );
 
