@@ -4,6 +4,7 @@ var UserStore = require('../stores/user_store');
 var UserAPIUtil = {
 	
 	login: function(user){
+		debugger
 		$.ajax({
 			url: '/session',
 			type: 'POST',
@@ -53,6 +54,17 @@ var UserAPIUtil = {
 			}
 		});
 	},
+	fetchCurrentUser: function(){
+		$.ajax({
+			url: 'session/',
+			type: 'GET',
+			success: function(user) {
+				if (typeof user.id !== 'undefined') {
+					UserActions.login(user);
+				}
+			}
+		})
+	}
 };
 
 module.exports = UserAPIUtil;

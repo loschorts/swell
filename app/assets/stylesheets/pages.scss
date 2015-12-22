@@ -41,5 +41,13 @@ body {
 }
 
 .feature-box {
-  border: green;
+  border-style: solid;
+  border-color: green;
+}
+
+.spot-preview {
+  border-style: solid;
+  border-style: blue;
+  display: inline;
+  float: left;
 }

@@ -20,8 +20,10 @@ var Hello = React.createClass({
   componentDidMount: function(){
     UserStore.addListener(this.updateUser);
     SpotStore.addListener(this.updateHome);
+    UserAPIUtil.fetchCurrentUser();
   },
   updateUser: function(){
+    console.log("updated user");
     this.setState({user: UserStore.currentUser()});
     SpotAPIUtil.fetchSpot(this.state.user.favorites[0]);
   },

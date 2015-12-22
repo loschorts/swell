@@ -12,6 +12,12 @@ UserActions = {
 			actionType: "LOGOUT",
 			user: user
 		});
+	},
+	show: function(user){
+		Dispatcher.dispatch({
+			actionType: "SHOW_USER",
+			user: user
+		});
 	}
 };
 

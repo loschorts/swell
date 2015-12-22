@@ -1,3 +1,5 @@
+require 'byebug'
+
 class SessionsController < ApplicationController
   before_action :require_signed_out!, only: [:new]
   before_action :require_signed_in!, only: [:destroy]
@@ -20,6 +22,14 @@ class SessionsController < ApplicationController
 
   def destroy
     render json: sign_out
+  end
+
+  def show
+    @user = current_user
+    sign_in(@user)
+    if @user
+      render 'api/users/show', user: @user
+    end
   end
 
 end

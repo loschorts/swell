@@ -31378,6 +31378,7 @@
 	var UserAPIUtil = {
 	
 		login: function (user) {
+			debugger;
 			$.ajax({
 				url: '/session',
 				type: 'POST',
@@ -31426,6 +31427,17 @@
 					console.log('cant do because ' + error);
 				}
 			});
+		},
+		fetchCurrentUser: function () {
+			$.ajax({
+				url: 'session/',
+				type: 'GET',
+				success: function (user) {
+					if (typeof user.id !== 'undefined') {
+						UserActions.login(user);
+					}
+				}
+			});
 		}
 	};
 	
@@ -31447,6 +31459,12 @@
 		logout: function (user) {
 			Dispatcher.dispatch({
 				actionType: "LOGOUT",
+				user: user
+			});
+		},
+		show: function (user) {
+			Dispatcher.dispatch({
+				actionType: "SHOW_USER",
 				user: user
 			});
 		}
@@ -31770,8 +31788,10 @@
 	  componentDidMount: function () {
 	    UserStore.addListener(this.updateUser);
 	    SpotStore.addListener(this.updateHome);
+	    UserAPIUtil.fetchCurrentUser();
 	  },
 	  updateUser: function () {
+	    console.log("updated user");
 	    this.setState({ user: UserStore.currentUser() });
 	    SpotAPIUtil.fetchSpot(this.state.user.favorites[0]);
 	  },
