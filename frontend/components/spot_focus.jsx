@@ -39,6 +39,22 @@ var SpotFocus = React.createClass({
 			ForecastAPIUtil.fetchCountyForecast(nextState.spot.spitcast_county);
 		}
 	},
+	quality: function(){
+		var quality = this.state.spotForecast.quality;
+
+		switch (quality){
+			case "Good":
+			case "Fair-Good":
+				return "spot-quality-good";
+			case "Fair":
+				return "spot-quality-fair";
+			case "Poor-Fair":
+			case "Poor": 
+				return "spot-quality-poor";
+			default:
+				return "spot-quality-unknown";
+		}
+	},
 	render: function(){
 		var spotForecast = this.state.spotForecast;
 		var countyForecast = this.state.countyForecast;
@@ -46,7 +62,7 @@ var SpotFocus = React.createClass({
 		var _wind = JSON.stringify(countyForecast.wind);
 		var _tide = JSON.stringify(countyForecast.tide);
 		return (
-			<div className="spot-focus">
+			<div className={"jumbotron spot-focus " + this.quality()}>
 				<h4>SpotFocus for {this.state.spot.name}</h4>
 				<ul>
 					<li className="detail">Hour: {spotForecast.hour}</li>

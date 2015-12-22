@@ -31,10 +31,27 @@ var SpotPreview = React.createClass({
 			ForecastAPIUtil.fetchSpotForecast(nextState.spot);
 		}
 	},
+	quality: function(){
+		var quality = this.state.forecast.quality;
+
+		switch (quality){
+			case "Good":
+			case "Fair-Good":
+				return "spot-quality-good";
+			case "Fair":
+				return "spot-quality-fair";
+			case "Poor-Fair":
+			case "Poor": 
+				return "spot-quality-poor";
+			default:
+				return "spot-quality-unknown";
+		}
+	},
 	render: function(){
 		var _forecast = this.state.forecast;
+
 		return (
-			<div className="spot-focus">
+			<div className={"col-md-4 spot-preview " + this.quality()}>
 				<h4>SpotPreview for {this.state.spot.name}</h4>
 				<ul>
 					<li className="detail">Hour: {_forecast.hour}</li>

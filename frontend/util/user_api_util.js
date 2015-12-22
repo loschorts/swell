@@ -4,7 +4,6 @@ var UserStore = require('../stores/user_store');
 var UserAPIUtil = {
 	
 	login: function(user){
-		debugger
 		$.ajax({
 			url: '/session',
 			type: 'POST',

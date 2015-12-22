@@ -48,7 +48,7 @@ var Hello = React.createClass({
     var els = favs.map(function(spot_id, idx){
       return <SpotPreview key={idx} spotId={spot_id}/>
     });
-    return <div className="feature-box"><h3>Favorites</h3>{els}</div>;
+    return <div className="container-fluid feature-box"><h3>Favorites</h3>{els}</div>;
   },
   neighbors: function(){
     if (typeof this.state.home === 'undefined'){ 
@@ -59,13 +59,12 @@ var Hello = React.createClass({
       return <SpotPreview key={idx} spotId={neighborId}/>;
     });
 
-    return <div className="feature-box"><h3>Neighbors</h3>{result}</div>;
+    return <div className="container-fluid feature-box"><h3>Spots Nearby</h3>{result}</div>;
   },
   render: function(){
     return(
-      <div className="hello">
+      <div className="container hello">
         <HelloNavbar history={this.props.history}/>
-        {this.userInfo()}
         {this.home()}
         {this.favorites()}
         {this.neighbors()}

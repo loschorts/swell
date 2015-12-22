@@ -2,8 +2,6 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-
-
 .fullscreen {
   position: fixed;
   top: 0;
@@ -27,27 +25,42 @@
   position: float;
 }
 
-body {
-  color: white;
-}
-
 .center-text {
   text-align: center;
 }
 
-.hello {
-  color: white;
-  background: #000;
+.spot-preview {
+  border-radius: 10px;
 }
 
-.feature-box {
+.col-md-4 {
+  margin: 5px;
+}
+
+.spot-quality-poor {
+  border-width: 5px;
+  border-style: solid;
+  border-color: blue;
+}
+.spot-quality-fair {
+  border-width: 5px;
   border-style: solid;
   border-color: green;
 }
-
-.spot-preview {
+.spot-quality-good {
+  border-width: 5px;
   border-style: solid;
-  border-style: blue;
-  display: inline;
-  float: left;
+  border-color: gold;
+}
+
+.spot-quality-unknown {
+  border-width: 5px;
+  border-style: dashed;
+  border-color: gray;
+}
+
+.hello-navbar {
+  color: white;
+  background: #000;
+  border-radius: 10px;
 }

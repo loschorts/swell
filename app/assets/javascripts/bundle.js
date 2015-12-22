@@ -57,8 +57,8 @@
 	var Hello = __webpack_require__(241);
 	var Navbar = __webpack_require__(233);
 	var SignInForm = __webpack_require__(236);
-	var SignUpForm = __webpack_require__(242);
-	var Forecast = __webpack_require__(243);
+	var SignUpForm = __webpack_require__(253);
+	var Forecast = __webpack_require__(254);
 	var Test = __webpack_require__(255);
 	
 	var routes = React.createElement(
@@ -31378,7 +31378,6 @@
 	var UserAPIUtil = {
 	
 		login: function (user) {
-			debugger;
 			$.ajax({
 				url: '/session',
 				type: 'POST',
@@ -31767,15 +31766,15 @@
 	var React = __webpack_require__(1);
 	
 	//Components
-	var HelloNavbar = __webpack_require__(244);
-	var SpotFocus = __webpack_require__(245);
-	var SpotPreview = __webpack_require__(254);
+	var HelloNavbar = __webpack_require__(242);
+	var SpotFocus = __webpack_require__(243);
+	var SpotPreview = __webpack_require__(252);
 	
 	//Stores & Utils
 	window.UserStore = __webpack_require__(211);
-	var SpotStore = __webpack_require__(250);
+	var SpotStore = __webpack_require__(248);
 	var UserAPIUtil = __webpack_require__(234);
-	var SpotAPIUtil = __webpack_require__(246);
+	var SpotAPIUtil = __webpack_require__(244);
 	
 	var Hello = React.createClass({
 	  displayName: 'Hello',
@@ -31833,7 +31832,7 @@
 	    });
 	    return React.createElement(
 	      'div',
-	      { className: 'feature-box' },
+	      { className: 'container-fluid feature-box' },
 	      React.createElement(
 	        'h3',
 	        null,
@@ -31853,11 +31852,11 @@
 	
 	    return React.createElement(
 	      'div',
-	      { className: 'feature-box' },
+	      { className: 'container-fluid feature-box' },
 	      React.createElement(
 	        'h3',
 	        null,
-	        'Neighbors'
+	        'Spots Nearby'
 	      ),
 	      result
 	    );
@@ -31865,9 +31864,8 @@
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      { className: 'hello' },
+	      { className: 'container hello' },
 	      React.createElement(HelloNavbar, { history: this.props.history }),
-	      this.userInfo(),
 	      this.home(),
 	      this.favorites(),
 	      this.neighbors()
@@ -31964,107 +31962,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var LinkedStateMixin = __webpack_require__(237);
-	var UserAPIUtil = __webpack_require__(234);
-	
-	var SignUpForm = React.createClass({
-		displayName: 'SignUpForm',
-	
-		mixins: [LinkedStateMixin],
-		getInitialState: function () {
-			return { username: "", password: "" };
-		},
-		createUser: function (e) {
-			e.preventDefault();
-			UserAPIUtil.createUser(this.state);
-			this.props.history.push('hello');
-		},
-		render: function () {
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(
-					'h4',
-					null,
-					'Sign Up'
-				),
-				React.createElement(
-					'form',
-					{ onSubmit: this.createUser },
-					React.createElement(
-						'label',
-						{ 'for': 'username' },
-						'Username'
-					),
-					React.createElement('input', {
-						id: 'username',
-						type: 'text',
-						valueLink: this.linkState('username') }),
-					React.createElement(
-						'label',
-						{ 'for': 'password' },
-						'Password'
-					),
-					React.createElement('input', {
-						id: 'password',
-						type: 'password',
-						valueLink: this.linkState('password') }),
-					React.createElement('input', { type: 'submit' })
-				)
-			);
-		}
-	});
-	
-	module.exports = SignUpForm;
-
-/***/ },
-/* 243 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	//Components
-	var HelloNavbar = __webpack_require__(244);
-	var SpotFocus = __webpack_require__(245);
-	var SpotPreview = __webpack_require__(254);
-	
-	//Stores & Utils
-	var UserStore = __webpack_require__(211);
-	var SpotStore = __webpack_require__(250);
-	var UserAPIUtil = __webpack_require__(234);
-	var SpotAPIUtil = __webpack_require__(246);
-	
-	var Hello = React.createClass({
-	  displayName: 'Hello',
-	
-	  getInitialState: function () {
-	    return {
-	      user: UserStore.currentUser()
-	    };
-	  },
-	  componentDidMount: function () {
-	    UserStore.addListener(this.updateUser);
-	  },
-	  updateUser: function () {
-	    this.setState({ user: UserStore.currentUser() });
-	  },
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      { id: 'hello' },
-	      React.createElement(HelloNavbar, { history: this.props.history }),
-	      React.createElement(SpotFocus, { spot: this.props.spot })
-	    );
-	  }
-	});
-	
-	module.exports = Hello;
-
-/***/ },
-/* 244 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
 	var UserStore = __webpack_require__(211);
 	var UserAPIUtil = __webpack_require__(234);
 	
@@ -32123,7 +32020,17 @@
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      { className: 'container-fluid' },
+	      { className: 'container-fluid hello-navbar' },
+	      React.createElement(
+	        'div',
+	        { className: 'navbar-header navbar-left' },
+	        React.createElement(
+	          'h1',
+	          null,
+	          'Hello, ',
+	          this.state.user.username
+	        )
+	      ),
 	      React.createElement(
 	        'div',
 	        { className: 'navbar-header navbar-right' },
@@ -32185,16 +32092,16 @@
 	module.exports = HelloNavbar;
 
 /***/ },
-/* 245 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var SpotAPIUtil = __webpack_require__(246);
-	var ForecastAPIUtil = __webpack_require__(248);
+	var SpotAPIUtil = __webpack_require__(244);
+	var ForecastAPIUtil = __webpack_require__(246);
 	
-	var SpotStore = __webpack_require__(250);
-	var CountyForecastStore = __webpack_require__(251);
-	var ForecastStore = __webpack_require__(253);
+	var SpotStore = __webpack_require__(248);
+	var CountyForecastStore = __webpack_require__(249);
+	var ForecastStore = __webpack_require__(251);
 	
 	var SpotFocus = React.createClass({
 		displayName: 'SpotFocus',
@@ -32230,6 +32137,22 @@
 				ForecastAPIUtil.fetchCountyForecast(nextState.spot.spitcast_county);
 			}
 		},
+		quality: function () {
+			var quality = this.state.spotForecast.quality;
+	
+			switch (quality) {
+				case "Good":
+				case "Fair-Good":
+					return "spot-quality-good";
+				case "Fair":
+					return "spot-quality-fair";
+				case "Poor-Fair":
+				case "Poor":
+					return "spot-quality-poor";
+				default:
+					return "spot-quality-unknown";
+			}
+		},
 		render: function () {
 			var spotForecast = this.state.spotForecast;
 			var countyForecast = this.state.countyForecast;
@@ -32238,7 +32161,7 @@
 			var _tide = JSON.stringify(countyForecast.tide);
 			return React.createElement(
 				'div',
-				{ className: 'spot-focus' },
+				{ className: "jumbotron spot-focus " + this.quality() },
 				React.createElement(
 					'h4',
 					null,
@@ -32311,10 +32234,10 @@
 	module.exports = SpotFocus;
 
 /***/ },
-/* 246 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SpotActions = __webpack_require__(247);
+	var SpotActions = __webpack_require__(245);
 	var UserStore = __webpack_require__(211);
 	
 	var SpotApiUtil = {
@@ -32334,7 +32257,7 @@
 	module.exports = SpotApiUtil;
 
 /***/ },
-/* 247 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Dispatcher = __webpack_require__(229);
@@ -32351,10 +32274,10 @@
 	module.exports = SpotActions;
 
 /***/ },
-/* 248 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ForecastActions = __webpack_require__(249);
+	var ForecastActions = __webpack_require__(247);
 	var UserStore = __webpack_require__(211);
 	
 	var ForecastAPIUtil = {
@@ -32416,7 +32339,7 @@
 	module.exports = ForecastAPIUtil;
 
 /***/ },
-/* 249 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Dispatcher = __webpack_require__(229);
@@ -32441,12 +32364,12 @@
 	module.exports = ForecastActions;
 
 /***/ },
-/* 250 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
 	var Dispatcher = __webpack_require__(229);
-	var SpotAPIUtil = __webpack_require__(246);
+	var SpotAPIUtil = __webpack_require__(244);
 	
 	var SpotStore = new Store(Dispatcher);
 	
@@ -32488,12 +32411,12 @@
 	module.exports = SpotStore;
 
 /***/ },
-/* 251 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
 	var Dispatcher = __webpack_require__(229);
-	var TimeUtil = __webpack_require__(252);
+	var TimeUtil = __webpack_require__(250);
 	
 	var _counties = {};
 	
@@ -32615,7 +32538,7 @@
 	module.exports = CountyForecastStore;
 
 /***/ },
-/* 252 */
+/* 250 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -32645,13 +32568,13 @@
 	};
 
 /***/ },
-/* 253 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
 	var Dispatcher = __webpack_require__(229);
-	var ForecastAPIUtil = __webpack_require__(248);
-	var TimeUtil = __webpack_require__(252);
+	var ForecastAPIUtil = __webpack_require__(246);
+	var TimeUtil = __webpack_require__(250);
 	
 	var ForecastStore = new Store(Dispatcher);
 	
@@ -32710,15 +32633,15 @@
 	module.exports = ForecastStore;
 
 /***/ },
-/* 254 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var SpotAPIUtil = __webpack_require__(246);
-	var ForecastAPIUtil = __webpack_require__(248);
+	var SpotAPIUtil = __webpack_require__(244);
+	var ForecastAPIUtil = __webpack_require__(246);
 	
-	var SpotStore = __webpack_require__(250);
-	window.ForecastStore = __webpack_require__(253);
+	var SpotStore = __webpack_require__(248);
+	window.ForecastStore = __webpack_require__(251);
 	
 	var SpotPreview = React.createClass({
 		displayName: 'SpotPreview',
@@ -32747,11 +32670,28 @@
 				ForecastAPIUtil.fetchSpotForecast(nextState.spot);
 			}
 		},
+		quality: function () {
+			var quality = this.state.forecast.quality;
+	
+			switch (quality) {
+				case "Good":
+				case "Fair-Good":
+					return "spot-quality-good";
+				case "Fair":
+					return "spot-quality-fair";
+				case "Poor-Fair":
+				case "Poor":
+					return "spot-quality-poor";
+				default:
+					return "spot-quality-unknown";
+			}
+		},
 		render: function () {
 			var _forecast = this.state.forecast;
+	
 			return React.createElement(
 				'div',
-				{ className: 'spot-focus' },
+				{ className: "col-md-4 spot-preview " + this.quality() },
 				React.createElement(
 					'h4',
 					null,
@@ -32805,11 +32745,112 @@
 	module.exports = SpotPreview;
 
 /***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var LinkedStateMixin = __webpack_require__(237);
+	var UserAPIUtil = __webpack_require__(234);
+	
+	var SignUpForm = React.createClass({
+		displayName: 'SignUpForm',
+	
+		mixins: [LinkedStateMixin],
+		getInitialState: function () {
+			return { username: "", password: "" };
+		},
+		createUser: function (e) {
+			e.preventDefault();
+			UserAPIUtil.createUser(this.state);
+			this.props.history.push('hello');
+		},
+		render: function () {
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'h4',
+					null,
+					'Sign Up'
+				),
+				React.createElement(
+					'form',
+					{ onSubmit: this.createUser },
+					React.createElement(
+						'label',
+						{ 'for': 'username' },
+						'Username'
+					),
+					React.createElement('input', {
+						id: 'username',
+						type: 'text',
+						valueLink: this.linkState('username') }),
+					React.createElement(
+						'label',
+						{ 'for': 'password' },
+						'Password'
+					),
+					React.createElement('input', {
+						id: 'password',
+						type: 'password',
+						valueLink: this.linkState('password') }),
+					React.createElement('input', { type: 'submit' })
+				)
+			);
+		}
+	});
+	
+	module.exports = SignUpForm;
+
+/***/ },
+/* 254 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	//Components
+	var HelloNavbar = __webpack_require__(242);
+	var SpotFocus = __webpack_require__(243);
+	var SpotPreview = __webpack_require__(252);
+	
+	//Stores & Utils
+	var UserStore = __webpack_require__(211);
+	var SpotStore = __webpack_require__(248);
+	var UserAPIUtil = __webpack_require__(234);
+	var SpotAPIUtil = __webpack_require__(244);
+	
+	var Hello = React.createClass({
+	  displayName: 'Hello',
+	
+	  getInitialState: function () {
+	    return {
+	      user: UserStore.currentUser()
+	    };
+	  },
+	  componentDidMount: function () {
+	    UserStore.addListener(this.updateUser);
+	  },
+	  updateUser: function () {
+	    this.setState({ user: UserStore.currentUser() });
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { id: 'hello' },
+	      React.createElement(HelloNavbar, { history: this.props.history }),
+	      React.createElement(SpotFocus, { spot: this.props.spot })
+	    );
+	  }
+	});
+	
+	module.exports = Hello;
+
+/***/ },
 /* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var SpotFocus = __webpack_require__(245);
+	var SpotFocus = __webpack_require__(243);
 	
 	var Test = React.createClass({
 		displayName: 'Test',

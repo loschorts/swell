@@ -40,7 +40,8 @@ var HelloNavbar = React.createClass({
   },
   render: function(){
     return(
-          <div className="container-fluid">
+          <div className="container-fluid hello-navbar">
+            <div className="navbar-header navbar-left"><h1>Hello, {this.state.user.username}</h1></div>
             <div className="navbar-header navbar-right">
               <ul className="nav navbar-nav">
 
