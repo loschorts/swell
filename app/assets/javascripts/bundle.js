@@ -57,13 +57,13 @@
 	var Hello = __webpack_require__(241);
 	var Navbar = __webpack_require__(233);
 	var SignInForm = __webpack_require__(236);
-	var SignUpForm = __webpack_require__(249);
-	var Forecast = __webpack_require__(250);
-	var Test = __webpack_require__(251);
+	var SignUpForm = __webpack_require__(242);
+	var Forecast = __webpack_require__(243);
+	var Test = __webpack_require__(255);
 	
 	var routes = React.createElement(
 	  Route,
-	  { path: '/', component: Test },
+	  { path: '/', component: App },
 	  React.createElement(IndexRoute, { component: Splash }),
 	  React.createElement(
 	    Route,
@@ -31749,15 +31749,15 @@
 	var React = __webpack_require__(1);
 	
 	//Components
-	var HelloNavbar = __webpack_require__(242);
-	var SpotFocus = __webpack_require__(243);
-	var SpotPreview = __webpack_require__(248);
+	var HelloNavbar = __webpack_require__(244);
+	var SpotFocus = __webpack_require__(245);
+	var SpotPreview = __webpack_require__(254);
 	
 	//Stores & Utils
-	var UserStore = __webpack_require__(211);
-	var SpotStore = __webpack_require__(246);
+	window.UserStore = __webpack_require__(211);
+	var SpotStore = __webpack_require__(250);
 	var UserAPIUtil = __webpack_require__(234);
-	var SpotAPIUtil = __webpack_require__(244);
+	var SpotAPIUtil = __webpack_require__(246);
 	
 	var Hello = React.createClass({
 	  displayName: 'Hello',
@@ -31769,59 +31769,26 @@
 	  },
 	  componentDidMount: function () {
 	    UserStore.addListener(this.updateUser);
-	    SpotStore.addListener(this.updateSpots);
+	    SpotStore.addListener(this.updateHome);
 	  },
 	  updateUser: function () {
-	    this.setState({
-	      user: UserStore.currentUser()
-	    });
-	    user.favorites.forEach(function (spot) {
-	      SpotAPIUtil.getSpotById(spot);
-	    });
+	    this.setState({ user: UserStore.currentUser() });
+	    SpotAPIUtil.fetchSpot(this.state.user.favorites[0]);
+	  },
+	  updateHome: function () {
+	    this.setState({ home: SpotStore.getSpot(this.state.user.favorites[0]) });
 	  },
 	  userInfo: function () {
 	    return React.createElement(
-	      'div',
+	      'h3',
 	      null,
-	      React.createElement(
-	        'h3',
-	        null,
-	        ' Hello, ',
-	        this.state.user.username || "Stranger",
-	        ' '
-	      ),
-	      React.createElement(
-	        'h3',
-	        null,
-	        ' ID: ',
-	        this.state.user.id,
-	        ' '
-	      ),
-	      React.createElement(
-	        'h3',
-	        null,
-	        ' Favorites: ',
-	        this.showFavorites(),
-	        ' '
-	      )
+	      ' Hello, ',
+	      this.state.user.username,
+	      ' '
 	    );
 	  },
-	  showFavorites: function () {
-	    return this.spotNames(this.state.user.favorites);
-	  },
-	  spotNames: function (array) {
-	    if (array.length === 0) {
-	      return [];
-	    }
-	    var names = [];
-	    array.forEach(function (spot) {
-	      names.push(spot.name);
-	    });
-	    return names;
-	  },
-	  renderHome: function () {
-	
-	    if (this.state.user.favorites.length === 0) {
+	  home: function () {
+	    if (typeof this.state.home === 'undefined') {
 	      return;
 	    }
 	    return React.createElement(
@@ -31832,52 +31799,241 @@
 	        null,
 	        'Home'
 	      ),
-	      React.createElement(SpotFocus, { spot: this.state.user.favorites[0] })
+	      React.createElement(SpotFocus, { spotId: this.state.home.id })
 	    );
 	  },
-	  renderFavorites: function () {
+	  favorites: function () {
 	    if (this.state.user.favorites.length < 2) {
 	      return;
 	    }
-	    var _favorites = this.state.user.favorites.slice(1, this.length);
-	    var result = _favorites.map(function (fav) {
-	      return React.createElement(SpotPreview, { spot: fav });
+	    var favs = this.state.user.favorites.slice(1);
+	
+	    var els = favs.map(function (spot_id, idx) {
+	      return React.createElement(SpotPreview, { key: idx, spotId: spot_id });
 	    });
 	    return React.createElement(
 	      'div',
 	      { className: 'feature-box' },
-	      result
+	      React.createElement(
+	        'h3',
+	        null,
+	        'Favorites'
+	      ),
+	      els
 	    );
 	  },
-	  renderNeighbors: function () {
-	    if (typeof this.state.user.favorites[0].neighbors === 'undefined' || typeof this.state.user) {
+	  neighbors: function () {
+	    if (typeof this.state.home === 'undefined') {
 	      return;
 	    }
-	    var _neighbors = this.state.user.neighbors;
-	    var result = _neighbors.map(function (neighbor) {
-	      var _neighbor = SpotStore.show(neighbor);
-	      if (typeof _neighbor !== 'undefined') {
-	        return React.createElement(SpotPreview, { spot: _neighbor });
-	      } else {
-	        return React.createElement('div', null);
-	      }
+	
+	    var result = this.state.home.neighbors.map(function (neighborId, idx) {
+	      return React.createElement(SpotPreview, { key: idx, spotId: neighborId });
 	    });
 	
 	    return React.createElement(
 	      'div',
 	      { className: 'feature-box' },
+	      React.createElement(
+	        'h3',
+	        null,
+	        'Neighbors'
+	      ),
 	      result
 	    );
 	  },
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      { id: 'hello' },
+	      { className: 'hello' },
 	      React.createElement(HelloNavbar, { history: this.props.history }),
 	      this.userInfo(),
-	      this.renderHome(),
-	      this.renderFavorites(),
-	      this.renderNeighbors()
+	      this.home(),
+	      this.favorites(),
+	      this.neighbors()
+	    );
+	  }
+	});
+	
+	// var Hello = React.createClass({
+	//   getInitialState: function(){
+	//     return ({
+	//       user: UserStore.currentUser(),
+	//     });
+	//   },
+	//   componentDidMount: function(){
+	//     UserStore.addListener(this.updateUser);
+	//     SpotStore.addListener(this.updateSpots);
+	//   },
+	//   updateUser: function(){
+	//     this.setState({
+	//       user: UserStore.currentUser(),
+	//     });
+	//     user.favorites.forEach(function(spot){
+	//       SpotAPIUtil.getSpotById(spot);
+	//     });
+	//   },
+	
+	//   showFavorites: function(){
+	//     return this.spotNames(this.state.user.favorites);
+	//   },
+	//   spotNames: function(array){
+	//     if (array.length === 0){
+	//       return [];
+	//     }
+	//     var names = [];
+	//     array.forEach(function(spot){
+	//       names.push(spot.name);
+	//     });
+	//     return names;
+	//   },
+	//   renderHome: function(){
+	
+	//     if (this.state.user.favorites.length === 0) {
+	//       return;
+	//     }
+	//     return (<div>
+	//               <h1>Home</h1>
+	//               <SpotFocus spotId={this.state.user.favorites[0]}/>
+	//           </div>);
+	//   },
+	//   renderFavorites: function(){
+	//     if (this.state.user.favorites.length < 2) {
+	//       return;
+	//     }
+	//     var _favorites = this.state.user.favorites.slice(1, this.length);
+	//     var result = _favorites.map(function(fav){
+	//       return (<SpotPreview spotId={fav}/>);
+	//     });
+	//     return (<div className="feature-box">{result}</div>);
+	//   },
+	//   renderNeighbors: function(){
+	//     if (typeof this.state.user.favorites[0].neighbors === 'undefined' ||
+	//         typeof this.state.user ){
+	//       return;
+	//     }
+	//     var _neighbors = this.state.user.favorites[0].neighbors
+	//     var result = _neighbors.map(function(neighbor){
+	//       var _neighbor = SpotStore.show(neighbor);
+	//       if (typeof _neighbor !== 'undefined'){
+	//         return (<SpotPreview spotId={_neighbor}/>);
+	//       } else {
+	//         return <div/>
+	//       }
+	//     });
+	
+	//     return <div className="feature-box">{result}</div>
+	//   },
+	//   render: function(){
+	//     return(
+	//       <div id="hello">
+	//         <HelloNavbar history={this.props.history}/>
+	//         {this.userInfo()}
+	//         {this.renderHome()}
+	//         {this.renderFavorites()}
+	//         {this.renderNeighbors()}
+	//       </div>
+	//     );
+	//   }
+	// });
+	
+	module.exports = Hello;
+
+/***/ },
+/* 242 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var LinkedStateMixin = __webpack_require__(237);
+	var UserAPIUtil = __webpack_require__(234);
+	
+	var SignUpForm = React.createClass({
+		displayName: 'SignUpForm',
+	
+		mixins: [LinkedStateMixin],
+		getInitialState: function () {
+			return { username: "", password: "" };
+		},
+		createUser: function (e) {
+			e.preventDefault();
+			UserAPIUtil.createUser(this.state);
+			this.props.history.push('hello');
+		},
+		render: function () {
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'h4',
+					null,
+					'Sign Up'
+				),
+				React.createElement(
+					'form',
+					{ onSubmit: this.createUser },
+					React.createElement(
+						'label',
+						{ 'for': 'username' },
+						'Username'
+					),
+					React.createElement('input', {
+						id: 'username',
+						type: 'text',
+						valueLink: this.linkState('username') }),
+					React.createElement(
+						'label',
+						{ 'for': 'password' },
+						'Password'
+					),
+					React.createElement('input', {
+						id: 'password',
+						type: 'password',
+						valueLink: this.linkState('password') }),
+					React.createElement('input', { type: 'submit' })
+				)
+			);
+		}
+	});
+	
+	module.exports = SignUpForm;
+
+/***/ },
+/* 243 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	//Components
+	var HelloNavbar = __webpack_require__(244);
+	var SpotFocus = __webpack_require__(245);
+	var SpotPreview = __webpack_require__(254);
+	
+	//Stores & Utils
+	var UserStore = __webpack_require__(211);
+	var SpotStore = __webpack_require__(250);
+	var UserAPIUtil = __webpack_require__(234);
+	var SpotAPIUtil = __webpack_require__(246);
+	
+	var Hello = React.createClass({
+	  displayName: 'Hello',
+	
+	  getInitialState: function () {
+	    return {
+	      user: UserStore.currentUser()
+	    };
+	  },
+	  componentDidMount: function () {
+	    UserStore.addListener(this.updateUser);
+	  },
+	  updateUser: function () {
+	    this.setState({ user: UserStore.currentUser() });
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { id: 'hello' },
+	      React.createElement(HelloNavbar, { history: this.props.history }),
+	      React.createElement(SpotFocus, { spot: this.props.spot })
 	    );
 	  }
 	});
@@ -31885,7 +32041,7 @@
 	module.exports = Hello;
 
 /***/ },
-/* 242 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -32009,108 +32165,136 @@
 	module.exports = HelloNavbar;
 
 /***/ },
-/* 243 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var SpotAPIUtil = __webpack_require__(244);
-	var SpotStore = __webpack_require__(246);
-	var CountyStore = __webpack_require__(247);
+	var SpotAPIUtil = __webpack_require__(246);
+	var ForecastAPIUtil = __webpack_require__(248);
 	
-	// var SpotFocus = React.createClass({
-	// 	getInitialState: function(){
-	// 		return ({
-	// 			forecast: SpotStore.emptyForecast,
-	// 			countyForecast: null
-	// 		});
-	// 	},
-	// 	componentDidMount: function(){
-	// 		SpotStore.addListener(this.receiveForecast);
-	// 		CountyStore.addListener(this.receiveCountyForecast);
-	// 		SpotAPIUtil.fetchForecast(this.props.spot);
-	// 		SpotAPIUtil.fetchCountyForecast(this.props.spot.spitcast_county);
-	// 	},
-	// 	receiveForecast: function(){	
-	// 		var _forecast = SpotStore.getCurrentForecast(this.props.spot.id);
-	// 		this.setState({forecast: _forecast});
-	// 	},
-	// 	receiveCountyForecast: function(){
-	// 		var _forecast = CountyStore.getCurrentCountyForecast(this.props.spot.spitcast_county);
-	// 		this.setState({countyForecast: _forecast});
-	// 	},
-	// 	county: function(){
-	// 		return JSON.stringify(this.state.countyForecast);
-	// 	},
-	// 	swells: function(){
-	// 		if (this.state.countyForecast === null) {
-	// 			return;
-	// 		}
+	var SpotStore = __webpack_require__(250);
+	var CountyForecastStore = __webpack_require__(251);
+	var ForecastStore = __webpack_require__(253);
 	
-	// 		var _data = this.state.countyForecast.swell;
-	// 		var _swells = [];
+	var SpotFocus = React.createClass({
+		displayName: 'SpotFocus',
 	
-	// 		for (var s = 0 ; s < 3 ; s++) {
-	// 			_swells.push({
-	// 				index: s,
-	// 				height: _data[s].hs,
-	// 				period: _data[s].tp
-	// 			});
-	// 		}
-	// 		var result = _swells.map(function(s){return JSON.stringify(s)});
-	// 		return result;
-	// 	},
-	// 	winds: function(){
-	// 		if (this.state.countyForecast === null) {
-	// 			return;
-	// 		}		
-	// 		var _data = this.state.countyForecast.wind;
-	
-	// 		return (JSON.stringify({
-	// 			degrees: _data.direction_degrees,
-	// 			direction: _data.direction_text,
-	// 			speed: _data.speed_mph
-	// 		}));
-	// 	},
-	// 	tides: function(){
-	// 		if (this.state.countyForecast === null) {
-	// 			return;
-	// 		}	
-	// 		var _data = this.state.countyForecast.tide;
-	// 		var _direction = CountyStore.getCurrentTideDirection(this.props.spot.spitcast_county);
-	
-	// 		return (JSON.stringify({
-	// 			tide: _data.tide,
-	// 			direction: _direction
-	// 		}));
-	// 	},
-	// 	render: function(){
-	// 		var _forecast = this.state.forecast;
-	// 		return (
-	// 			<div className="spot-focus">
-	// 				<h3>SpotFocus for {this.props.spot.name}</h3>
-	// 				<ul>
-	// 					<li className="detail">Hour: {_forecast.hour}</li>
-	// 					<li className="detail">Size: {_forecast.size}</li>
-	// 					<li className="detail">Quality: {_forecast.quality}</li>
-	// 					<li className="detail">Swell: {_forecast.swell_quality}</li>
-	// 					<li className="detail">Tide: {_forecast.tide_quality}</li>
-	// 					<li className="detail">Wind: {_forecast.wind_quality}</li>
-	// 					<li className="detail">Swells: {this.swells()} </li>
-	// 					<li className="detail">Wind Details: {this.winds()} </li>
-	// 					<li className="detail">Tide: {this.tides()} </li>
-	// 				</ul>
-	// 			</div>
-	// 		);
-	// 	},
-	// });
+		getInitialState: function () {
+			return {
+				spot: SpotStore.emptySpot,
+				spotForecast: ForecastStore.emptyForecast,
+				countyForecast: CountyForecastStore.emptyCountyForecast
+			};
+		},
+		componentDidMount: function () {
+			SpotStore.addListener(this.updateSpot);
+			ForecastStore.addListener(this.updateForecast);
+			CountyForecastStore.addListener(this.updateCountyForecast);
+			SpotAPIUtil.fetchSpot(this.props.spotId);
+		},
+		updateSpot: function () {
+			var spot = SpotStore.getSpot(this.props.spotId);
+			this.setState({ spot: spot });
+		},
+		updateForecast: function () {
+			var forecast = ForecastStore.getCurrentSpotForecast(this.state.spot);
+			this.setState({ spotForecast: forecast });
+		},
+		updateCountyForecast: function () {
+			var countyForecast = CountyForecastStore.getCurrentCountyForecast(this.state.spot.spitcast_county);
+			this.setState({ countyForecast: countyForecast });
+		},
+		componentWillUpdate: function (nextProps, nextState) {
+			if (typeof nextState.spot.id !== 'undefined' && nextState.spot.id !== this.state.spot.id) {
+				ForecastAPIUtil.fetchSpotForecast(nextState.spot);
+				ForecastAPIUtil.fetchCountyForecast(nextState.spot.spitcast_county);
+			}
+		},
+		render: function () {
+			var spotForecast = this.state.spotForecast;
+			var countyForecast = this.state.countyForecast;
+			var _swell = JSON.stringify(countyForecast.swell);
+			var _wind = JSON.stringify(countyForecast.wind);
+			var _tide = JSON.stringify(countyForecast.tide);
+			return React.createElement(
+				'div',
+				{ className: 'spot-focus' },
+				React.createElement(
+					'h4',
+					null,
+					'SpotFocus for ',
+					this.state.spot.name
+				),
+				React.createElement(
+					'ul',
+					null,
+					React.createElement(
+						'li',
+						{ className: 'detail' },
+						'Hour: ',
+						spotForecast.hour
+					),
+					React.createElement(
+						'li',
+						{ className: 'detail' },
+						'Size: ',
+						spotForecast.size,
+						' ft'
+					),
+					React.createElement(
+						'li',
+						{ className: 'detail' },
+						'Quality: ',
+						spotForecast.quality
+					),
+					React.createElement(
+						'li',
+						{ className: 'detail' },
+						'Swell Quality: ',
+						spotForecast.swell_quality
+					),
+					React.createElement(
+						'li',
+						{ className: 'detail' },
+						'Tide Quality: ',
+						spotForecast.tide_quality
+					),
+					React.createElement(
+						'li',
+						{ className: 'detail' },
+						'Wind Quality: ',
+						spotForecast.wind_quality
+					),
+					React.createElement(
+						'li',
+						{ className: 'detail' },
+						'Swell Summary: ',
+						_swell
+					),
+					React.createElement(
+						'li',
+						{ className: 'detail' },
+						'Wind Summary: ',
+						_wind
+					),
+					React.createElement(
+						'li',
+						{ className: 'detail' },
+						'Tide Summary: ',
+						_tide
+					)
+				)
+			);
+		}
+	});
 	
 	module.exports = SpotFocus;
 
 /***/ },
-/* 244 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SpotActions = __webpack_require__(245);
+	var SpotActions = __webpack_require__(247);
 	var UserStore = __webpack_require__(211);
 	
 	var SpotApiUtil = {
@@ -32130,7 +32314,7 @@
 	module.exports = SpotApiUtil;
 
 /***/ },
-/* 245 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Dispatcher = __webpack_require__(229);
@@ -32147,12 +32331,102 @@
 	module.exports = SpotActions;
 
 /***/ },
-/* 246 */
+/* 248 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ForecastActions = __webpack_require__(249);
+	var UserStore = __webpack_require__(211);
+	
+	var ForecastAPIUtil = {
+		fetchSpotForecast: function (spot) {
+			$.ajax({
+				url: 'http://api.spitcast.com/api/spot/forecast/' + spot.spitcast_id + '/',
+				type: 'GET',
+				success: function (data) {
+					var forecast = data.map(function (entry) {
+						var formatted = {
+							date: entry.date,
+							day: entry.day,
+							gmt: entry.gmt,
+							hour: entry.hour,
+							latitude: entry.latitude,
+							longitude: entry.longitude,
+							quality: entry.shape_full,
+							swell_quality: entry.shape_detail.swell,
+							tide_quality: entry.shape_detail.tide,
+							wind_quality: entry.shape_detail.wind,
+							size: parseFloat(entry.size_ft).toFixed(2),
+							warnings: entry.warnings,
+							spitcast_id: entry.spot_id,
+							spot_name: entry.spot_name
+						};
+						return formatted;
+					});
+					ForecastActions.setSpotForecast(spot, forecast);
+				}
+			});
+		},
+		fetchCountyForecast: function (spitcast_county) {
+			var _countyForecast = {};
+			$.ajax({
+				url: 'http://api.spitcast.com/api/county/swell/' + spitcast_county + '/',
+				type: 'GET',
+				success: function (data) {
+					_countyForecast.swell = data;
+					$.ajax({
+						url: 'http://api.spitcast.com/api/county/wind/' + spitcast_county + '/',
+						type: 'GET',
+						success: function (data) {
+							_countyForecast.wind = data;
+							$.ajax({
+								url: 'http://api.spitcast.com/api/county/tide/' + spitcast_county + '/',
+								type: 'GET',
+								success: function (data) {
+									_countyForecast.tide = data;
+									ForecastActions.setCountyForecast(spitcast_county, _countyForecast);
+								}
+							});
+						}
+					});
+				}
+			});
+		}
+	};
+	
+	module.exports = ForecastAPIUtil;
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(229);
+	
+	ForecastActions = {
+		setSpotForecast: function (spot, forecast) {
+			Dispatcher.dispatch({
+				actionType: "SET_SPOT_FORECAST",
+				spot: spot,
+				forecast: forecast
+			});
+		},
+		setCountyForecast: function (county, forecast) {
+			Dispatcher.dispatch({
+				actionType: "SET_COUNTY_FORECAST",
+				county: county,
+				forecast: forecast
+			});
+		}
+	};
+	
+	module.exports = ForecastActions;
+
+/***/ },
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
 	var Dispatcher = __webpack_require__(229);
-	var SpotAPIUtil = __webpack_require__(244);
+	var SpotAPIUtil = __webpack_require__(246);
 	
 	var SpotStore = new Store(Dispatcher);
 	
@@ -32194,49 +32468,80 @@
 	module.exports = SpotStore;
 
 /***/ },
-/* 247 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
 	var Dispatcher = __webpack_require__(229);
+	var TimeUtil = __webpack_require__(252);
 	
 	var _counties = {};
 	
-	CountyStore = new Store(Dispatcher);
+	CountyForecastStore = new Store(Dispatcher);
 	
-	CountyStore.__onDispatch = function (payload) {
+	CountyForecastStore.__onDispatch = function (payload) {
 		switch (payload.actionType) {
 			case "SET_COUNTY_FORECAST":
-				this.setCountyForecast(payload.spitcast_county, payload.forecast);
+				this.setCountyForecast(payload.county, payload.forecast);
 				break;
 		}
 	};
 	
-	CountyStore.setCountyForecast = function (spitcast_county, forecast) {
-		_counties[spitcast_county] = forecast;
+	CountyForecastStore.setCountyForecast = function (county, forecast) {
+		_counties[county] = forecast;
 		this.__emitChange();
 	};
 	
-	CountyStore.getCountyForecast = function (spitcast_county) {
-		return _counties[spitcast_county];
+	CountyForecastStore.getCountyForecast = function (county) {
+		return _counties[county];
 	};
 	
-	CountyStore.all = function () {
-		return _counties;
-	};
+	CountyForecastStore.getCurrentCountyForecast = function (county) {
+		var _forecast = this.getCountyForecast(county);
 	
-	CountyStore.getCurrentCountyForecast = function (spitcast_county) {
-		var _forecast = this.getCountyForecast(spitcast_county);
+		var swellDetail = this.findCurrentValue(_forecast.swell);
+		var windDetail = this.findCurrentValue(_forecast.wind);
+		var tideDetail = this.findCurrentValue(_forecast.tide);
+	
+		var swell = this.swellSummary(swellDetail);
+		var wind = this.windSummary(windDetail);
+		var tide = this.tideSummary(tideDetail);
+		tide.flow = this.getCurrentTideDirection(county);
 	
 		return {
-			swell: this.findCurrentValue(_forecast.swell),
-			wind: this.findCurrentValue(_forecast.wind),
-			tide: this.findCurrentValue(_forecast.tide)
+			swellDetail: swellDetail,
+			windDetail: windDetail,
+			tideDetail: tideDetail,
+			swell: swell,
+			wind: wind,
+			tide: tide
 		};
 	};
 	
-	CountyStore.getCurrentTideDirection = function (spitcast_county) {
-		var _tides = CountyStore.getCountyForecast(spitcast_county).tide;
+	CountyForecastStore.swellSummary = function (detail) {
+		var result = {};
+		result[0] = detail["0"];
+		result[1] = detail["1"];
+		result[2] = detail["2"];
+		return result;
+	};
+	
+	CountyForecastStore.windSummary = function (detail) {
+		var result = {};
+		result.degrees = detail.direction_degrees;
+		result.text = detail.direction_text;
+		result.mph = detail.speed_mph;
+		return result;
+	};
+	
+	CountyForecastStore.tideSummary = function (detail) {
+		var result = {};
+		result.tide = detail.tide;
+		return result;
+	};
+	
+	CountyForecastStore.getCurrentTideDirection = function (county) {
+		var _tides = CountyForecastStore.getCountyForecast(county).tide;
 	
 		var now = new Date().getHours();
 	
@@ -32252,21 +32557,13 @@
 		}
 	};
 	
-	CountyStore.findValueAtTime = function (hour, data) {
-	
-		if (hour === 0) {
-			hour = "12AM";
-		} else if (hour < 12) {
-			hour += "AM";
-		} else {
-			hour = hour % 12 + "PM";
-		}
+	CountyForecastStore.findValueAtTime = function (hour, set) {
 	
 		var _result = null;
 	
-		data.forEach(function (datum) {
-			if (datum.hour == hour) {
-				_result = datum;
+		set.forEach(function (entry) {
+			if (entry.hour == hour) {
+				_result = entry;
 				return;
 			}
 		});
@@ -32274,47 +32571,134 @@
 		return _result;
 	};
 	
-	CountyStore.findCurrentValue = function (data) {
-		var hour = new Date().getHours();
-	
-		if (hour === 0) {
-			hour = "12AM";
-		} else if (hour < 12) {
-			hour += "AM";
-		} else {
-			hour = hour % 12 + "PM";
-		}
+	CountyForecastStore.findCurrentValue = function (set) {
+		var hour = TimeUtil.now();
 	
 		var _result = null;
 	
-		data.forEach(function (datum) {
-			if (datum.hour == hour) {
-				_result = datum;
+		set.forEach(function (entry) {
+			if (entry.hour === hour) {
+				_result = entry;
 				return;
 			}
 		});
-	
 		return _result;
 	};
 	
-	CountyStore.emptyCountyForecast = {
+	CountyForecastStore.emptyCountyForecast = {
 		swell: {},
 		wind: {},
-		tide: {}
+		tide: {},
+		waterTemp: {}
 	};
 	
-	module.exports = CountyStore;
+	module.exports = CountyForecastStore;
 
 /***/ },
-/* 248 */
+/* 252 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		now: function () {
+			var hour = new Date().getHours();
+	
+			if (hour === 0) {
+				hour = "12AM";
+			} else if (hour < 12) {
+				hour += "AM";
+			} else {
+				hour = hour % 12 + "PM";
+			}
+			return hour;
+		},
+		convert: function (hour) {
+	
+			if (hour === 0) {
+				hour = "12AM";
+			} else if (hour < 12) {
+				hour += "AM";
+			} else {
+				hour = hour % 12 + "PM";
+			}
+			return hour;
+		}
+	};
+
+/***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var Dispatcher = __webpack_require__(229);
+	var ForecastAPIUtil = __webpack_require__(248);
+	var TimeUtil = __webpack_require__(252);
+	
+	var ForecastStore = new Store(Dispatcher);
+	
+	var _spot_forecasts = {};
+	
+	ForecastStore.__onDispatch = function (payload) {
+		switch (payload.actionType) {
+			case "SET_SPOT_FORECAST":
+				this.setSpotForecast(payload.spot, payload.forecast);
+				break;
+		}
+	};
+	
+	ForecastStore.getSpotForecast = function (spot) {
+		return _spot_forecasts[spot.id];
+	};
+	
+	ForecastStore.setSpotForecast = function (spot, forecast) {
+		_spot_forecasts[spot.id] = forecast;
+		this.__emitChange();
+	};
+	
+	ForecastStore.getCurrentSpotForecast = function (spot) {
+		var now = TimeUtil.now();
+	
+		var currentForecast = null;
+	
+		_spot_forecasts[spot.id].forEach(function (entry) {
+			if (entry.hour === now) {
+				currentForecast = entry;
+				return;
+			}
+		});
+	
+		return currentForecast;
+	};
+	
+	ForecastStore.emptyForecast = {
+		date: null,
+		day: null,
+		gmt: null,
+		hour: null,
+		latitude: null,
+		live: null,
+		longitude: null,
+		shape: null,
+		shape_detail: null,
+		shape_full: null,
+		size: null,
+		size_ft: null,
+		spot_id: null,
+		spot_name: null,
+		warnings: null
+	};
+	
+	module.exports = ForecastStore;
+
+/***/ },
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var SpotAPIUtil = __webpack_require__(244);
-	var ForecastAPIUtil = __webpack_require__(253);
+	var SpotAPIUtil = __webpack_require__(246);
+	var ForecastAPIUtil = __webpack_require__(248);
 	
-	var SpotStore = __webpack_require__(246);
-	window.ForecastStore = __webpack_require__(252);
+	var SpotStore = __webpack_require__(250);
+	window.ForecastStore = __webpack_require__(253);
 	
 	var SpotPreview = React.createClass({
 		displayName: 'SpotPreview',
@@ -32401,329 +32785,21 @@
 	module.exports = SpotPreview;
 
 /***/ },
-/* 249 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var LinkedStateMixin = __webpack_require__(237);
-	var UserAPIUtil = __webpack_require__(234);
-	
-	var SignUpForm = React.createClass({
-		displayName: 'SignUpForm',
-	
-		mixins: [LinkedStateMixin],
-		getInitialState: function () {
-			return { username: "", password: "" };
-		},
-		createUser: function (e) {
-			e.preventDefault();
-			UserAPIUtil.createUser(this.state);
-			this.props.history.push('hello');
-		},
-		render: function () {
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(
-					'h4',
-					null,
-					'Sign Up'
-				),
-				React.createElement(
-					'form',
-					{ onSubmit: this.createUser },
-					React.createElement(
-						'label',
-						{ 'for': 'username' },
-						'Username'
-					),
-					React.createElement('input', {
-						id: 'username',
-						type: 'text',
-						valueLink: this.linkState('username') }),
-					React.createElement(
-						'label',
-						{ 'for': 'password' },
-						'Password'
-					),
-					React.createElement('input', {
-						id: 'password',
-						type: 'password',
-						valueLink: this.linkState('password') }),
-					React.createElement('input', { type: 'submit' })
-				)
-			);
-		}
-	});
-	
-	module.exports = SignUpForm;
-
-/***/ },
-/* 250 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	//Components
-	var HelloNavbar = __webpack_require__(242);
-	var SpotFocus = __webpack_require__(243);
-	var SpotPreview = __webpack_require__(248);
-	
-	//Stores & Utils
-	var UserStore = __webpack_require__(211);
-	var SpotStore = __webpack_require__(246);
-	var UserAPIUtil = __webpack_require__(234);
-	var SpotAPIUtil = __webpack_require__(244);
-	
-	var Hello = React.createClass({
-	  displayName: 'Hello',
-	
-	  getInitialState: function () {
-	    return {
-	      user: UserStore.currentUser()
-	    };
-	  },
-	  componentDidMount: function () {
-	    UserStore.addListener(this.updateUser);
-	  },
-	  updateUser: function () {
-	    this.setState({ user: UserStore.currentUser() });
-	  },
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      { id: 'hello' },
-	      React.createElement(HelloNavbar, { history: this.props.history }),
-	      React.createElement(SpotFocus, { spot: this.props.spot })
-	    );
-	  }
-	});
-	
-	module.exports = Hello;
-
-/***/ },
-/* 251 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var SpotPreview = __webpack_require__(248);
+	var SpotFocus = __webpack_require__(245);
 	
 	var Test = React.createClass({
 		displayName: 'Test',
 	
 		render: function () {
-			return React.createElement(SpotPreview, { spotId: 15 });
+			return React.createElement(SpotFocus, { spotId: 15 });
 		}
 	});
 	
 	module.exports = Test;
-
-/***/ },
-/* 252 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(212).Store;
-	var Dispatcher = __webpack_require__(229);
-	var ForecastAPIUtil = __webpack_require__(253);
-	var TimeUtil = __webpack_require__(254);
-	
-	var ForecastStore = new Store(Dispatcher);
-	
-	var _spot_forecasts = {};
-	var _county_forecasts = {};
-	
-	ForecastStore.__onDispatch = function (payload) {
-		switch (payload.actionType) {
-			case "SET_SPOT_FORECAST":
-				this.setSpotForecast(payload.spot, payload.forecast);
-				break;
-			case "SET_COUNTY_FORECAST":
-				this.setCountyForecast(payload.county, payload.forecast);
-				break;
-		}
-	};
-	
-	ForecastStore.inspect = function () {
-		console.log(_spot_forecasts);
-		console.log(_county_forecasts);
-	};
-	
-	ForecastStore.getSpotForecast = function (spot) {
-		return _spot_forecasts[spot.id];
-	};
-	
-	ForecastStore.setSpotForecast = function (spot, forecast) {
-		_spot_forecasts[spot.id] = forecast;
-		this.__emitChange();
-	};
-	
-	ForecastStore.getCountyForecast = function (spitcast_county) {
-		return _county_forecasts[spitcast_county];
-	};
-	
-	ForecastStore.setCountyForecast = function (spitcast_county, forecast) {
-		_spot_forecasts[spitcast_county] = forecast;
-		this.__emitChange();
-	};
-	
-	ForecastStore.getCurrentSpotForecast = function (spot) {
-		var now = TimeUtil.now();
-	
-		var currentForecast = null;
-	
-		_spot_forecasts[spot.id].forEach(function (entry) {
-			if (entry.hour === now) {
-				currentForecast = entry;
-				return;
-			}
-		});
-	
-		return currentForecast;
-	};
-	
-	ForecastStore.getCurrentCountyForecast = function (county) {
-	
-		var now = TimeUtil.now();
-	
-		var currentForecast = null;
-	
-		_county_forecasts[spot].forEach(function (entry) {
-			if (entry.hour === now) {
-				return entry;
-			}
-		});
-	
-		return currentForecast;
-	};
-	
-	ForecastStore.emptyForecast = {
-		date: null,
-		day: null,
-		gmt: null,
-		hour: null,
-		latitude: null,
-		live: null,
-		longitude: null,
-		shape: null,
-		shape_detail: null,
-		shape_full: null,
-		size: null,
-		size_ft: null,
-		spot_id: null,
-		spot_name: null,
-		warnings: null
-	};
-	
-	module.exports = ForecastStore;
-
-/***/ },
-/* 253 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ForecastActions = __webpack_require__(255);
-	var UserStore = __webpack_require__(211);
-	
-	var ForecastAPIUtil = {
-		fetchSpotForecast: function (spot) {
-			$.ajax({
-				url: 'http://api.spitcast.com/api/spot/forecast/' + spot.spitcast_id + '/',
-				type: 'GET',
-				success: function (data) {
-					var forecast = data.map(function (entry) {
-						var formatted = {
-							date: entry.date,
-							day: entry.day,
-							gmt: entry.gmt,
-							hour: entry.hour,
-							latitude: entry.latitude,
-							longitude: entry.longitude,
-							quality: entry.shape_full,
-							swell_quality: entry.shape_detail.swell,
-							tide_quality: entry.shape_detail.tide,
-							wind_quality: entry.shape_detail.wind,
-							size: parseFloat(entry.size_ft).toFixed(2),
-							warnings: entry.warnings,
-							spitcast_id: entry.spot_id,
-							spot_name: entry.spot_name
-						};
-						return formatted;
-					});
-					ForecastActions.setSpotForecast(spot, forecast);
-				}
-			});
-		},
-		fetchCountyForecast: function (spitcast_county) {
-			var _countyForecast = {};
-			$.ajax({
-				url: 'http://api.spitcast.com/api/county/swell/' + spitcast_county + '/',
-				type: 'GET',
-				success: function (data) {
-					_countyForecast.swell = data;
-					$.ajax({
-						url: 'http://api.spitcast.com/api/county/wind/' + spitcast_county + '/',
-						type: 'GET',
-						success: function (data) {
-							_countyForecast.wind = data;
-							$.ajax({
-								url: 'http://api.spitcast.com/api/county/tide/' + spitcast_county + '/',
-								type: 'GET',
-								success: function (data) {
-									_countyForecast.tide = data;
-									ForecastActions.setCountyForecast(spitcast_county, _countyForecast);
-								}
-							});
-						}
-					});
-				}
-			});
-		}
-	};
-	
-	module.exports = ForecastAPIUtil;
-
-/***/ },
-/* 254 */
-/***/ function(module, exports) {
-
-	module.exports = {
-		now: function () {
-			var hour = new Date().getHours();
-	
-			if (hour === 0) {
-				hour = "12AM";
-			} else if (hour < 12) {
-				hour += "AM";
-			} else {
-				hour = hour % 12 + "PM";
-			}
-			return hour;
-		}
-	};
-
-/***/ },
-/* 255 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Dispatcher = __webpack_require__(229);
-	
-	ForecastActions = {
-		setSpotForecast: function (spot, forecast) {
-			Dispatcher.dispatch({
-				actionType: "SET_SPOT_FORECAST",
-				spot: spot,
-				forecast: forecast
-			});
-		},
-		setCountyForecast: function (county, forecast) {
-			Dispatcher.dispatch({
-				actionType: "SET_COUNTY_FORECAST",
-				county: county,
-				forecast: forecast
-			});
-		}
-	};
-	
-	module.exports = ForecastActions;
 
 /***/ }
 /******/ ]);

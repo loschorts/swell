@@ -36,7 +36,7 @@ var UserAPIUtil = {
 		});
 	},
 	guestLogin: function(){
-		this.login({username: 'guest', password: 'guestguest'})
+		this.login({username: 'guest', password: 'guestguest'});
 	},
 	createUser: function(user){
 		$.ajax({

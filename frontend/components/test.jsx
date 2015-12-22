@@ -1,9 +1,9 @@
 var React = require('react');
-var SpotPreview = require('./spot_preview');
+var SpotFocus = require('./spot_focus');
 
 var Test = React.createClass({
 	render: function(){
-		return (<SpotPreview spotId={15}/>);
+		return (<SpotFocus spotId={15}/>);
 	}
 });
 

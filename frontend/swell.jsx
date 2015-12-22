@@ -16,7 +16,7 @@ var Forecast = require('./components/forecast');
 var Test = require('./components/test');
 
 var routes = (
-    <Route path="/" component={Test}>
+    <Route path="/" component={App}>
     	 <IndexRoute component={Splash}/>
         <Route path="splash" component={Splash}>
          	<Route path="sign-in" component={SignInForm}/>

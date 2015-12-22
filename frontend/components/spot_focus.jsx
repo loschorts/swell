@@ -1,93 +1,67 @@
 var React = require('react');
 var SpotAPIUtil = require('../util/spot_api_util');
+var ForecastAPIUtil = require('../util/forecast_api_util');
+
 var SpotStore = require('../stores/spot_store');
-var CountyStore = require('../stores/county_store');
+var CountyForecastStore = require('../stores/county_forecast_store');
+var ForecastStore = require('../stores/forecast_store');
 
-// var SpotFocus = React.createClass({
-// 	getInitialState: function(){
-// 		return ({
-// 			forecast: SpotStore.emptyForecast,
-// 			countyForecast: null
-// 		});
-// 	},
-// 	componentDidMount: function(){
-// 		SpotStore.addListener(this.receiveForecast);
-// 		CountyStore.addListener(this.receiveCountyForecast);
-// 		SpotAPIUtil.fetchForecast(this.props.spot);
-// 		SpotAPIUtil.fetchCountyForecast(this.props.spot.spitcast_county);
-// 	},
-// 	receiveForecast: function(){	
-// 		var _forecast = SpotStore.getCurrentForecast(this.props.spot.id);
-// 		this.setState({forecast: _forecast});
-// 	},
-// 	receiveCountyForecast: function(){
-// 		var _forecast = CountyStore.getCurrentCountyForecast(this.props.spot.spitcast_county);
-// 		this.setState({countyForecast: _forecast});
-// 	},
-// 	county: function(){
-// 		return JSON.stringify(this.state.countyForecast);
-// 	},
-// 	swells: function(){
-// 		if (this.state.countyForecast === null) {
-// 			return;
-// 		}
-
-// 		var _data = this.state.countyForecast.swell;
-// 		var _swells = [];
-
-// 		for (var s = 0 ; s < 3 ; s++) {
-// 			_swells.push({
-// 				index: s,
-// 				height: _data[s].hs,
-// 				period: _data[s].tp
-// 			});
-// 		}
-// 		var result = _swells.map(function(s){return JSON.stringify(s)});
-// 		return result;
-// 	},
-// 	winds: function(){
-// 		if (this.state.countyForecast === null) {
-// 			return;
-// 		}		
-// 		var _data = this.state.countyForecast.wind;
-
-// 		return (JSON.stringify({
-// 			degrees: _data.direction_degrees,
-// 			direction: _data.direction_text,
-// 			speed: _data.speed_mph
-// 		}));
-// 	},
-// 	tides: function(){
-// 		if (this.state.countyForecast === null) {
-// 			return;
-// 		}	
-// 		var _data = this.state.countyForecast.tide;
-// 		var _direction = CountyStore.getCurrentTideDirection(this.props.spot.spitcast_county);
-
-// 		return (JSON.stringify({
-// 			tide: _data.tide,
-// 			direction: _direction
-// 		}));
-// 	},
-// 	render: function(){
-// 		var _forecast = this.state.forecast;
-// 		return (
-// 			<div className="spot-focus">
-// 				<h3>SpotFocus for {this.props.spot.name}</h3>
-// 				<ul>
-// 					<li className="detail">Hour: {_forecast.hour}</li>
-// 					<li className="detail">Size: {_forecast.size}</li>
-// 					<li className="detail">Quality: {_forecast.quality}</li>
-// 					<li className="detail">Swell: {_forecast.swell_quality}</li>
-// 					<li className="detail">Tide: {_forecast.tide_quality}</li>
-// 					<li className="detail">Wind: {_forecast.wind_quality}</li>
-// 					<li className="detail">Swells: {this.swells()} </li>
-// 					<li className="detail">Wind Details: {this.winds()} </li>
-// 					<li className="detail">Tide: {this.tides()} </li>
-// 				</ul>
-// 			</div>
-// 		);
-// 	},
-// });
+var SpotFocus = React.createClass({
+	getInitialState: function(){
+		return({
+			spot: SpotStore.emptySpot,
+			spotForecast: ForecastStore.emptyForecast,
+			countyForecast: CountyForecastStore.emptyCountyForecast
+		});
+	},
+	componentDidMount: function(){
+		SpotStore.addListener(this.updateSpot);
+		ForecastStore.addListener(this.updateForecast);
+		CountyForecastStore.addListener(this.updateCountyForecast);
+		SpotAPIUtil.fetchSpot(this.props.spotId);
+	},
+	updateSpot: function(){
+		var spot = SpotStore.getSpot(this.props.spotId);
+		this.setState({spot: spot});
+	},
+	updateForecast: function(){
+		var forecast = ForecastStore.getCurrentSpotForecast(this.state.spot);
+		this.setState({spotForecast: forecast});
+	},
+	updateCountyForecast: function(){
+		var countyForecast = CountyForecastStore.getCurrentCountyForecast(this.state.spot.spitcast_county);
+		this.setState({countyForecast: countyForecast});
+	},
+	componentWillUpdate: function(nextProps, nextState){
+		if (typeof nextState.spot.id !== 'undefined' && 
+			nextState.spot.id !== this.state.spot.id) {
+			ForecastAPIUtil.fetchSpotForecast(nextState.spot);
+			ForecastAPIUtil.fetchCountyForecast(nextState.spot.spitcast_county);
+		}
+	},
+	render: function(){
+		var spotForecast = this.state.spotForecast;
+		var countyForecast = this.state.countyForecast;
+		var _swell = JSON.stringify(countyForecast.swell);
+		var _wind = JSON.stringify(countyForecast.wind);
+		var _tide = JSON.stringify(countyForecast.tide);
+		return (
+			<div className="spot-focus">
+				<h4>SpotFocus for {this.state.spot.name}</h4>
+				<ul>
+					<li className="detail">Hour: {spotForecast.hour}</li>
+					<li className="detail">Size: {spotForecast.size} ft</li>
+					<li className="detail">Quality: {spotForecast.quality}</li>
+					<li className="detail">Swell Quality: {spotForecast.swell_quality}</li>
+					<li className="detail">Tide Quality: {spotForecast.tide_quality}</li>
+					<li className="detail">Wind Quality: {spotForecast.wind_quality}</li>
+					<li className="detail">Swell Summary: {_swell}</li>
+					<li className="detail">Wind Summary: {_wind}</li>
+					<li className="detail">Tide Summary: {_tide}</li>
+				</ul>
+			</div>
+		);
+	}
+});
 
 module.exports = SpotFocus;

@@ -34,19 +34,12 @@ body {
 .center-text {
   text-align: center;
 }
-.red {
-  vertical-align: middle;
 
-  background: #000;
-  opacity: .3;
-  height: 300px;
-}
-
-.white {
-  color: white;
-}
-
-#hello {
+.hello {
   color: white;
   background: #000;
+}
+
+.feature-box {
+  border: green;
 }
