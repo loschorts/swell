@@ -36777,8 +36777,8 @@
 		for (var i = 0; i < 3; i++) {
 			var _detail = swellDetail[JSON.stringify(i)];
 			if (_detail.dir && _detail.hs) {
-				var roundDir = JSON.stringify(_data.dir % 10 * 10 % 360);
-				_angles[roundDir] = _data.hs;
+				var roundDir = JSON.stringify(_detail.dir % 10 * 10 % 360);
+				_angles[roundDir] = _detail.hs;
 			}
 		}
 	
@@ -36798,6 +36798,8 @@
 			pointHighlightStroke: "rgba(220,220,220,1)",
 			data: _data
 		}];
+	
+		var _labels = Object.keys(_angles);
 	
 		return {
 			labels: _labels,
