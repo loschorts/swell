@@ -10,6 +10,7 @@ var WindChart = require('./wind_chart');
 var TideChart = require('./tide_chart');
 
 var SwellRadar = require('./swell_radar');
+var WindPolar = require('./wind_polar');
 
 var SpotFocus = require('./spot_focus');
 
@@ -47,7 +48,8 @@ var Forecast = React.createClass({
 						<div className="row"><WindChart data={this.state.countyForecast.wind}/></div>
 						<div className="row"><TideChart data={this.state.countyForecast.tide}/></div>
 						<div className="row">
-							<SwellRadar data={current}/>
+							<div className="col-md-4"><SwellRadar data={current}/></div>
+							<div className="col-md-4"><WindPolar data={current}/></div>
 						</div>		
 					</div>);
 		}

@@ -32745,6 +32745,7 @@
 	var TideChart = __webpack_require__(268);
 	
 	var SwellRadar = __webpack_require__(269);
+	var WindPolar = __webpack_require__(272);
 	
 	var SpotFocus = __webpack_require__(243);
 	
@@ -32808,7 +32809,16 @@
 					React.createElement(
 						'div',
 						{ className: 'row' },
-						React.createElement(SwellRadar, { data: current })
+						React.createElement(
+							'div',
+							{ className: 'col-md-4' },
+							React.createElement(SwellRadar, { data: current })
+						),
+						React.createElement(
+							'div',
+							{ className: 'col-md-4' },
+							React.createElement(WindPolar, { data: current })
+						)
 					)
 				);
 			}
@@ -36767,6 +36777,32 @@
 
 	ChartUtil = {};
 	
+	ChartUtil.windPolarData = function (windDetail) {
+		debugger;
+		var _data = [];
+	
+		var slice = {
+			value: 300,
+			color: "#F7464A",
+			highlight: "#FF5A5E",
+			label: "Red"
+		};
+	
+		for (var i = 0; i < 8; i++) {
+			_data.push({
+				value: 0,
+				color: "#F7464A",
+				highlight: "#FF5A5E",
+				label: i
+			});
+		}
+	
+		var _angle = Math.round(windDetail.direction_degrees / 8) % 8;
+		_data[_angle].value = windDetail.speed_mph;
+	
+		return _data;
+	};
+	
 	ChartUtil.swellRadarData = function (swellDetail) {
 		var _angles = {};
 	
@@ -36808,6 +36844,34 @@
 	};
 	
 	module.exports = ChartUtil;
+
+/***/ },
+/* 272 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PolarArea = __webpack_require__(256).PolarArea;
+	var chartOptions = __webpack_require__(266);
+	var parseData = __webpack_require__(271).windPolarData;
+	
+	var WindPolar = React.createClass({
+		displayName: 'WindPolar',
+	
+		getInitialState: function () {
+			return {
+				data: parseData(this.props.data.windDetail),
+				options: chartOptions
+			};
+		},
+		stringify: function () {
+			return JSON.stringify(this.props);
+		},
+		render: function () {
+			return React.createElement(PolarArea, { data: this.state.data, options: this.state.options });
+		}
+	});
+	
+	module.exports = WindPolar;
 
 /***/ }
 /******/ ]);

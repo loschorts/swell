@@ -1,5 +1,32 @@
 ChartUtil = {};
 
+ChartUtil.windPolarData = function(windDetail){
+	debugger
+	var _data = [];
+
+	var slice = {
+        value: 300,
+        color:"#F7464A",
+        highlight: "#FF5A5E",
+        label: "Red"
+    };
+
+    for (var i = 0 ; i < 8; i++) {
+    	_data.push({
+	        value: 0,
+	        color:"#F7464A",
+	        highlight: "#FF5A5E",
+	        label: i
+   		 });
+    }
+
+   var _angle = Math.round(windDetail.direction_degrees / 8) % 8;
+   _data[_angle].value = windDetail.speed_mph;
+
+   return _data;
+
+};
+
 ChartUtil.swellRadarData =  function(swellDetail){
 	var _angles = {};
 
