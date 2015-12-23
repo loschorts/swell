@@ -66,9 +66,9 @@ var ForecastAPIUtil = {
 					url:'http://api.openweathermap.org/data/2.5/weather?lat=' + spot.lat + '&lon=' + spot.lng +'&appid=7fc03a03fe39e22c9557c07d4e05cb2d',
 					type: 'GET',
 					success: function(data){
-					weather.airTemp = (data.main.temp -273.15) * 1.8 + 32;
+					weather.airTemp = ((data.main.temp -273.15) * 1.8 + 32).toFixed(1);
 					weather.conditions = data.weather.main + "-" + data.weather.description;
-					weather.wind = {speed: data.wind.speed, deg: data.wind.deg};
+					weather.wind = {speed: (data.wind.speed).toFixed(1), deg: data.wind.deg};
 
 					ForecastActions.setSpotWeather(spot, weather);
 					}

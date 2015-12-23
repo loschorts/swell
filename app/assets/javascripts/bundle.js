@@ -32272,9 +32272,9 @@
 						url: 'http://api.openweathermap.org/data/2.5/weather?lat=' + spot.lat + '&lon=' + spot.lng + '&appid=7fc03a03fe39e22c9557c07d4e05cb2d',
 						type: 'GET',
 						success: function (data) {
-							weather.airTemp = (data.main.temp - 273.15) * 1.8 + 32;
+							weather.airTemp = ((data.main.temp - 273.15) * 1.8 + 32).toFixed(1);
 							weather.conditions = data.weather.main + "-" + data.weather.description;
-							weather.wind = { speed: data.wind.speed, deg: data.wind.deg };
+							weather.wind = { speed: data.wind.speed.toFixed(1), deg: data.wind.deg };
 	
 							ForecastActions.setSpotWeather(spot, weather);
 						}
@@ -36982,11 +36982,52 @@
 			return JSON.stringify(this.state);
 		},
 		render: function () {
-			return React.createElement(
-				'div',
-				{ className: 'widget' },
-				this.stringify()
-			);
+			if (!this.state || !this.state.spot || !this.state.spot.weather) {
+				return React.createElement('div', null);
+			} else {
+				weather = this.state.spot.weather;
+				if (weather.conditions === 'undefined-undefined') {
+					weather.conditions = 'unknown';
+				}
+				return React.createElement(
+					'div',
+					{ className: 'widget' },
+					React.createElement(
+						'h4',
+						null,
+						'Current Weather'
+					),
+					React.createElement(
+						'h5',
+						null,
+						'Temp: ',
+						weather.airTemp,
+						'°'
+					),
+					React.createElement(
+						'h5',
+						null,
+						'Water Temp: ',
+						weather.waterTemp,
+						'°'
+					),
+					React.createElement(
+						'h5',
+						null,
+						'Conditions: ',
+						weather.conditions
+					),
+					React.createElement(
+						'h5',
+						null,
+						'Live Wind: ',
+						weather.wind.speed,
+						'mph @ ',
+						weather.wind.deg,
+						'°'
+					)
+				);
+			}
 		}
 	});
 	

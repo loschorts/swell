@@ -25,11 +25,23 @@ var TempWidget = React.createClass({
 		return JSON.stringify(this.state);
 	},
 	render: function(){
-		return (
-			<div className="widget">
-				{this.stringify()}					
-			</div>
-		);
+		if (!this.state || !this.state.spot || !this.state.spot.weather){
+			return <div/>;
+		} else {
+			weather = this.state.spot.weather;
+			if (weather.conditions === 'undefined-undefined') {
+				weather.conditions = 'unknown';
+			}
+			return (
+				<div className="widget">
+					<h4>Current Weather</h4>
+					<h5>Temp: {weather.airTemp}°</h5>
+					<h5>Water Temp: {weather.waterTemp}°</h5>
+					<h5>Conditions: {weather.conditions}</h5>
+					<h5>Live Wind: {weather.wind.speed}mph @ {weather.wind.deg}°</h5>
+				</div>
+			);
+		}
 	}
 });
 
