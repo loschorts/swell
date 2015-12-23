@@ -38,7 +38,8 @@ var SwellChart = React.createClass({
 			return <div/>;
 		} else {
 			return (
-				<div>
+				<div className="chart">
+					<h4>Today's Swell Height</h4>
 					<LineChart 
 						data={this.chartData()} 
 						options={ChartOptions}

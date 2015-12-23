@@ -15,7 +15,10 @@ var WindPolar = React.createClass({
 		return JSON.stringify(this.props);
 	},
 	render: function(){
-		return <PolarArea data={this.state.data} options={this.state.options}/>
+		return <div className="widget">
+			<h4>Wind</h4>
+			<PolarArea data={this.state.data} options={this.state.options}/>
+		</div>
 	}
 });
 

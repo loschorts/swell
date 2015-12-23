@@ -12,7 +12,10 @@ var SwellRadar = React.createClass({
 	},
 	render: function(){
 		return (
-			<Radar data={this.state.data} options={this.state.options}/>
+			<div className="widget">
+				<h4>Swell</h4>
+				<Radar data={this.state.data} options={this.state.options}/>
+			</div>
 		);
 	}
 });

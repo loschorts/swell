@@ -18,7 +18,7 @@
 
 .splash {
 	max-width: 1620px;
-   background: image-url('ocean-beach.jpg') no-repeat center bottom;
+  background: image-url('ocean-beach.jpg') no-repeat center bottom;
 }
 
 .logo {
@@ -59,4 +59,22 @@
   color: white;
   background: #000;
   border-radius: 10px;
+}
+
+.chart {
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+.widget {
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 10px;
+  margin: 5px;
 }

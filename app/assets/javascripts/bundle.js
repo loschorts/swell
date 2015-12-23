@@ -32794,6 +32794,20 @@
 					React.createElement(
 						'div',
 						{ className: 'row' },
+						React.createElement(
+							'div',
+							{ className: 'col-md-6' },
+							React.createElement(SwellRadar, { data: current })
+						),
+						React.createElement(
+							'div',
+							{ className: 'col-md-6' },
+							React.createElement(WindPolar, { data: current })
+						)
+					),
+					React.createElement(
+						'div',
+						{ className: 'row' },
 						React.createElement(SwellChart, { data: this.state.countyForecast.swell })
 					),
 					React.createElement(
@@ -32805,20 +32819,6 @@
 						'div',
 						{ className: 'row' },
 						React.createElement(TideChart, { data: this.state.countyForecast.tide })
-					),
-					React.createElement(
-						'div',
-						{ className: 'row' },
-						React.createElement(
-							'div',
-							{ className: 'col-md-4' },
-							React.createElement(SwellRadar, { data: current })
-						),
-						React.createElement(
-							'div',
-							{ className: 'col-md-4' },
-							React.createElement(WindPolar, { data: current })
-						)
 					)
 				);
 			}
@@ -32871,7 +32871,12 @@
 			} else {
 				return React.createElement(
 					'div',
-					null,
+					{ className: 'chart' },
+					React.createElement(
+						'h4',
+						null,
+						'Today\'s Swell Height'
+					),
 					React.createElement(LineChart, {
 						data: this.chartData(),
 						options: ChartOptions,
@@ -36653,7 +36658,12 @@
 			} else {
 				return React.createElement(
 					'div',
-					null,
+					{ className: 'chart' },
+					React.createElement(
+						'h4',
+						null,
+						'Today\'s Wind'
+					),
 					React.createElement(LineChart, {
 						data: this.chartData(),
 						options: ChartOptions,
@@ -36713,7 +36723,12 @@
 			} else {
 				return React.createElement(
 					'div',
-					null,
+					{ className: 'chart' },
+					React.createElement(
+						'h4',
+						null,
+						'Today\'s Tide'
+					),
 					React.createElement(LineChart, {
 						data: this.chartData(),
 						options: ChartOptions,
@@ -36748,7 +36763,16 @@
 			};
 		},
 		render: function () {
-			return React.createElement(Radar, { data: this.state.data, options: this.state.options });
+			return React.createElement(
+				'div',
+				{ className: 'widget' },
+				React.createElement(
+					'h4',
+					null,
+					'Swell'
+				),
+				React.createElement(Radar, { data: this.state.data, options: this.state.options })
+			);
 		}
 	});
 	
@@ -36765,7 +36789,7 @@
 	  displayName: 'Test',
 	
 	  render: function () {
-	    return React.createElement(Forecast, { spotId: 15 });
+	    return React.createElement(Forecast, { spotId: 150 });
 	  }
 	});
 	
@@ -36778,7 +36802,6 @@
 	ChartUtil = {};
 	
 	ChartUtil.windPolarData = function (windDetail) {
-		debugger;
 		var _data = [];
 	
 		var slice = {
@@ -36867,7 +36890,16 @@
 			return JSON.stringify(this.props);
 		},
 		render: function () {
-			return React.createElement(PolarArea, { data: this.state.data, options: this.state.options });
+			return React.createElement(
+				'div',
+				{ className: 'widget' },
+				React.createElement(
+					'h4',
+					null,
+					'Wind'
+				),
+				React.createElement(PolarArea, { data: this.state.data, options: this.state.options })
+			);
 		}
 	});
 	

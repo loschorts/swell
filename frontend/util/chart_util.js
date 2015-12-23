@@ -1,7 +1,6 @@
 ChartUtil = {};
 
 ChartUtil.windPolarData = function(windDetail){
-	debugger
 	var _data = [];
 
 	var slice = {

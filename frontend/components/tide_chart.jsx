@@ -38,7 +38,8 @@ var WindChart = React.createClass({
 			return <div/>;
 		} else {
 			return (
-				<div>
+				<div className="chart">
+					<h4>Today's Tide</h4>
 					<LineChart 
 						data={this.chartData()} 
 						options={ChartOptions}

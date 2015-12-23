@@ -44,13 +44,13 @@ var Forecast = React.createClass({
 			current = CountyForecastStore.getCurrentCountyForecast(this.state.spot.spitcast_county);
 			return	(<div className="container">
 						<div className="row"><SpotFocus spotId={this.props.spotId}/></div>
+						<div className="row">
+							<div className="col-md-6"><SwellRadar data={current}/></div>
+							<div className="col-md-6"><WindPolar data={current}/></div>
+						</div>		
 						<div className="row"><SwellChart data={this.state.countyForecast.swell}/></div>
 						<div className="row"><WindChart data={this.state.countyForecast.wind}/></div>
 						<div className="row"><TideChart data={this.state.countyForecast.tide}/></div>
-						<div className="row">
-							<div className="col-md-4"><SwellRadar data={current}/></div>
-							<div className="col-md-4"><WindPolar data={current}/></div>
-						</div>		
 					</div>);
 		}
 	}
