@@ -3,14 +3,14 @@ ChartUtil = {};
 ChartUtil.swellRadarData =  function(swellDetail){
 	var _angles = {};
 
-	for (var i = 0 ; i < 360 ; i += 10) {
+	for (var i = 0 ; i < 360 ; i += 45) {
 		_angles[JSON.stringify(i)] = 0;
 	}
 
-	for (var i = 0 ; i < 3 ; i ++){
+	for (var i = 0 ; i < 5 ; i ++){
 		var _detail = swellDetail[JSON.stringify(i)];
-		if (_detail.dir && _detail.hs){
-			var roundDir = JSON.stringify((_detail.dir % 10 * 10) % 360);
+		if (_detail.dir && _detail.hs && _detail.tp){
+			var roundDir = JSON.stringify(Math.round(_detail.dir / 45) * 45);
 			_angles[roundDir] = _detail.hs;
 		}
 	}
@@ -35,7 +35,7 @@ ChartUtil.swellRadarData =  function(swellDetail){
 	];
 
 	var _labels = Object.keys(_angles);
-	
+
 	return {
 		labels: _labels,
 		datasets: _datasets
