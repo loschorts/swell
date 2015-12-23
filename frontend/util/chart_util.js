@@ -19,7 +19,7 @@ ChartUtil.windPolarData = function(windDetail){
    		 });
     }
 
-   var _angle = Math.round(windDetail.direction_degrees / 8) % 8;
+   var _angle = Math.round(windDetail.direction_degrees / 45) % 8;
    _data[_angle].value = windDetail.speed_mph;
 
    return _data;
@@ -36,7 +36,7 @@ ChartUtil.swellRadarData =  function(swellDetail){
 	for (var i = 0 ; i < 5 ; i ++){
 		var _detail = swellDetail[JSON.stringify(i)];
 		if (_detail.dir && _detail.hs && _detail.tp){
-			var roundDir = JSON.stringify(Math.round(_detail.dir / 45) * 45);
+			var roundDir = JSON.stringify(Math.round((_detail.dir + 180) / 45) * 45);
 			_angles[roundDir] = _detail.hs;
 		}
 	}
