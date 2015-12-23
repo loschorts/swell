@@ -11,6 +11,9 @@ SpotStore.__onDispatch = function(payload){
 		case "SET_SPOT":
 			this.setSpot(payload.spot);
 			break;
+		case "SET_SPOT_WEATHER":
+			this.setSpotWeather(payload.spot, payload.weather);
+			break;
 	}
 };
 
@@ -25,6 +28,12 @@ SpotStore.all = function(){
 
 SpotStore.getSpot = function(id){
 	return _spots[id];
+};
+
+SpotStore.setSpotWeather = function(spot, weather){
+	spot.weather = weather;
+	_spots[spot.id] = spot;
+	this.__emitChange();
 };
 
 SpotStore.emptySpot = {

@@ -32264,7 +32264,7 @@
 		fetchWeather: function (spot) {
 			var weather = {};
 			$.ajax({
-				url: 'http://api.spitcast.com/api/county/water-temperature/' + spitcast_county + '/',
+				url: 'http://api.spitcast.com/api/county/water-temperature/' + spot.spitcast_county + '/',
 				type: 'GET',
 				success: function (data) {
 					weather.waterTemp = data.fahrenheit;
@@ -32306,6 +32306,13 @@
 				county: county,
 				forecast: forecast
 			});
+		},
+		setSpotWeather: function (spot, weather) {
+			Dispatcher.dispatch({
+				actionType: "SET_SPOT_WEATHER",
+				spot: spot,
+				weather: weather
+			});
 		}
 	};
 	
@@ -32328,6 +32335,9 @@
 			case "SET_SPOT":
 				this.setSpot(payload.spot);
 				break;
+			case "SET_SPOT_WEATHER":
+				this.setSpotWeather(payload.spot, payload.weather);
+				break;
 		}
 	};
 	
@@ -32342,6 +32352,12 @@
 	
 	SpotStore.getSpot = function (id) {
 		return _spots[id];
+	};
+	
+	SpotStore.setSpotWeather = function (spot, weather) {
+		spot.weather = weather;
+		_spots[spot.id] = spot;
+		this.__emitChange();
 	};
 	
 	SpotStore.emptySpot = {
@@ -36941,8 +36957,6 @@
 	var SpotStore = __webpack_require__(248);
 	var SpotAPIUtil = __webpack_require__(244);
 	var ForecastAPIUtil = __webpack_require__(246);
-	var ForecastStore = __webpack_require__(251);
-	var CountyForecastStore = __webpack_require__(249);
 	
 	var TempWidget = React.createClass({
 		displayName: 'TempWidget',
@@ -36960,14 +36974,18 @@
 			this.setState({
 				spot: SpotStore.getSpot(this.props.spotId)
 			});
-	
-			ForecastAPIUtil.fetchTemps(spot);
+			if (this.state && this.state.spot && !this.state.spot.weather) {
+				ForecastAPIUtil.fetchWeather(this.state.spot);
+			}
+		},
+		stringify: function () {
+			return JSON.stringify(this.state);
 		},
 		render: function () {
 			return React.createElement(
 				'div',
 				{ className: 'widget' },
-				'HELLO'
+				this.stringify()
 			);
 		}
 	});

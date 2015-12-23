@@ -14,6 +14,13 @@ ForecastActions = {
 			county: county,
 			forecast: forecast
 		});	
+	},
+	setSpotWeather: function(spot, weather){
+		Dispatcher.dispatch({
+			actionType: "SET_SPOT_WEATHER",
+			spot: spot,
+			weather: weather
+		});
 	}
 };
 

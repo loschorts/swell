@@ -2,8 +2,6 @@ var React = require('react');
 var SpotStore = require('../stores/spot_store');
 var SpotAPIUtil = require('../util/spot_api_util');
 var ForecastAPIUtil = require('../util/forecast_api_util');
-var ForecastStore = require('../stores/forecast_store');
-var CountyForecastStore = require('../stores/county_forecast_store');
 
 var TempWidget = React.createClass({
 	componentDidMount: function(){
@@ -19,14 +17,17 @@ var TempWidget = React.createClass({
 		this.setState({
 			spot: SpotStore.getSpot(this.props.spotId)
 		});
-
-		ForecastAPIUtil.fetchTemps(spot);
-
+		if (this.state && this.state.spot && !this.state.spot.weather) {
+			ForecastAPIUtil.fetchWeather(this.state.spot);
+		}
+	},
+	stringify: function(){
+		return JSON.stringify(this.state);
 	},
 	render: function(){
 		return (
 			<div className="widget">
-				HELLO					
+				{this.stringify()}					
 			</div>
 		);
 	}

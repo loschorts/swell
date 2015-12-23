@@ -58,7 +58,7 @@ var ForecastAPIUtil = {
 	fetchWeather: function(spot){
 		var weather = {};
 		$.ajax({
-			url: 'http://api.spitcast.com/api/county/water-temperature/' + spitcast_county + '/',
+			url: 'http://api.spitcast.com/api/county/water-temperature/' + spot.spitcast_county + '/',
 			type: 'GET',
 			success: function(data){
 				weather.waterTemp = data.fahrenheit;
