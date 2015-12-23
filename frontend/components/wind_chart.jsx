@@ -4,7 +4,7 @@ var ChartOptions = require('../util/chart_options');
 var TimeUtil = require('../util/time_util');
 
 
-var SwellChart = React.createClass({
+var WindChart = React.createClass({
 	chartData: function(){
 		var _labels = [];
 		for (var i = 0 ; i < 24 ; i++) {
@@ -13,7 +13,7 @@ var SwellChart = React.createClass({
 
 		var _data = [];
 		this.props.data.forEach(function(entry){
-			_data.push(entry[0].hs);
+			_data.push(entry.speed_mph);
 		});
 
 		_chartData = {};
@@ -52,4 +52,4 @@ var SwellChart = React.createClass({
 	}
 });
 
-module.exports = SwellChart;
+module.exports = WindChart;

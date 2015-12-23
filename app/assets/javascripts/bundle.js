@@ -32815,6 +32815,10 @@
 	var CountyForecastStore = __webpack_require__(249);
 	
 	var SwellChart = __webpack_require__(268);
+	var WindChart = __webpack_require__(269);
+	var TideChart = __webpack_require__(270);
+	
+	var SpotFocus = __webpack_require__(243);
 	
 	var Forecast = React.createClass({
 		displayName: 'Forecast',
@@ -32841,6 +32845,9 @@
 				this.setState({ countyForecast: _forecast });
 			}
 		},
+		stringify: function (data) {
+			return JSON.stringify(data);
+		},
 		render: function () {
 			if (!this.state || !this.state.countyForecast) {
 				return React.createElement(
@@ -32851,8 +32858,27 @@
 			} else {
 				return React.createElement(
 					'div',
-					null,
-					React.createElement(SwellChart, { swellData: this.state.countyForecast.swell })
+					{ className: 'container' },
+					React.createElement(
+						'div',
+						{ className: 'row' },
+						React.createElement(SpotFocus, { spotId: this.props.spotId })
+					),
+					React.createElement(
+						'div',
+						{ className: 'row' },
+						React.createElement(SwellChart, { data: this.state.countyForecast.swell })
+					),
+					React.createElement(
+						'div',
+						{ className: 'row' },
+						React.createElement(WindChart, { data: this.state.countyForecast.wind })
+					),
+					React.createElement(
+						'div',
+						{ className: 'row' },
+						React.createElement(TideChart, { data: this.state.countyForecast.tide })
+					)
 				);
 			}
 		}
@@ -36619,7 +36645,7 @@
 			}
 	
 			var _data = [];
-			this.props.swellData.forEach(function (entry) {
+			this.props.data.forEach(function (entry) {
 				_data.push(entry[0].hs);
 			});
 	
@@ -36627,18 +36653,19 @@
 			_chartData.labels = _labels;
 			_chartData.datasets = [{
 				label: "Swell",
-				fillColor: "rgba(220,220,220,0.2)",
-				strokeColor: "rgba(220,220,220,1)",
-				pointColor: "rgba(220,220,220,1)",
-				pointStrokeColor: "#fff",
+				fillColor: "rgba(0, 61, 255,0.2)",
+				strokeColor: "rgba(0, 24, 102,1)",
+				pointColor: "rgba(0, 24, 102,1)",
+				pointStrokeColor: "rgba(0, 24, 102,1)",
 				pointHighlightFill: "#fff",
+				highlightFill: "#fff",
 				pointHighlightStroke: "rgba(220,220,220,1)",
 				data: _data
 			}];
 			return _chartData;
 		},
 		display: function () {
-			if (!this.props || !this.props.swellData) {
+			if (!this.props || !this.props.data) {
 				return React.createElement('div', null);
 			} else {
 				return React.createElement(
@@ -36658,6 +36685,126 @@
 	});
 	
 	module.exports = SwellChart;
+
+/***/ },
+/* 269 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var LineChart = __webpack_require__(256).Line;
+	var ChartOptions = __webpack_require__(266);
+	var TimeUtil = __webpack_require__(250);
+	
+	var WindChart = React.createClass({
+		displayName: 'WindChart',
+	
+		chartData: function () {
+			var _labels = [];
+			for (var i = 0; i < 24; i++) {
+				_labels.push(TimeUtil.convert(i));
+			}
+	
+			var _data = [];
+			this.props.data.forEach(function (entry) {
+				_data.push(entry.speed_mph);
+			});
+	
+			_chartData = {};
+			_chartData.labels = _labels;
+			_chartData.datasets = [{
+				label: "Swell",
+				fillColor: "rgba(0, 61, 255,0.2)",
+				strokeColor: "rgba(0, 24, 102,1)",
+				pointColor: "rgba(0, 24, 102,1)",
+				pointStrokeColor: "rgba(0, 24, 102,1)",
+				pointHighlightFill: "#fff",
+				highlightFill: "#fff",
+				pointHighlightStroke: "rgba(220,220,220,1)",
+				data: _data
+			}];
+			return _chartData;
+		},
+		display: function () {
+			if (!this.props || !this.props.data) {
+				return React.createElement('div', null);
+			} else {
+				return React.createElement(
+					'div',
+					null,
+					React.createElement(LineChart, {
+						data: this.chartData(),
+						options: ChartOptions,
+						height: '300px',
+						width: '800px' })
+				);
+			}
+		},
+		render: function () {
+			return this.display();
+		}
+	});
+	
+	module.exports = WindChart;
+
+/***/ },
+/* 270 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var LineChart = __webpack_require__(256).Line;
+	var ChartOptions = __webpack_require__(266);
+	var TimeUtil = __webpack_require__(250);
+	
+	var WindChart = React.createClass({
+		displayName: 'WindChart',
+	
+		chartData: function () {
+			var _labels = [];
+			for (var i = 0; i < 24; i++) {
+				_labels.push(TimeUtil.convert(i));
+			}
+	
+			var _data = [];
+			this.props.data.forEach(function (entry) {
+				_data.push(entry.tide);
+			});
+	
+			_chartData = {};
+			_chartData.labels = _labels;
+			_chartData.datasets = [{
+				label: "Swell",
+				fillColor: "rgba(0, 61, 255,0.2)",
+				strokeColor: "rgba(0, 24, 102,1)",
+				pointColor: "rgba(0, 24, 102,1)",
+				pointStrokeColor: "rgba(0, 24, 102,1)",
+				pointHighlightFill: "#fff",
+				highlightFill: "#fff",
+				pointHighlightStroke: "rgba(220,220,220,1)",
+				data: _data
+			}];
+			return _chartData;
+		},
+		display: function () {
+			if (!this.props || !this.props.data) {
+				return React.createElement('div', null);
+			} else {
+				return React.createElement(
+					'div',
+					null,
+					React.createElement(LineChart, {
+						data: this.chartData(),
+						options: ChartOptions,
+						height: '300px',
+						width: '800px' })
+				);
+			}
+		},
+		render: function () {
+			return this.display();
+		}
+	});
+	
+	module.exports = WindChart;
 
 /***/ }
 /******/ ]);
