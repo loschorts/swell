@@ -55,6 +55,27 @@ var ForecastAPIUtil = {
 			}
 		});
 	},
+	fetchWeather: function(spot){
+		var weather = {};
+		$.ajax({
+			url: 'http://api.spitcast.com/api/county/water-temperature/' + spitcast_county + '/',
+			type: 'GET',
+			success: function(data){
+				weather.waterTemp = data.fahrenheit;
+				$.ajax({
+					url:'http://api.openweathermap.org/data/2.5/weather?lat=' + spot.lat + '&lon=' + spot.lng +'&appid=7fc03a03fe39e22c9557c07d4e05cb2d',
+					type: 'GET',
+					success: function(data){
+					weather.airTemp = (data.main.temp -273.15) * 1.8 + 32;
+					weather.conditions = data.weather.main + "-" + data.weather.description;
+					weather.wind = {speed: data.wind.speed, deg: data.wind.deg};
+
+					ForecastActions.setSpotWeather(spot, weather);
+					}
+				});
+			}
+		})
+	}
 };
 
 module.exports = ForecastAPIUtil;

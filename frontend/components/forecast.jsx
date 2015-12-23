@@ -9,8 +9,10 @@ var SwellChart = require('./swell_chart');
 var WindChart = require('./wind_chart');
 var TideChart = require('./tide_chart');
 
+//widgets
 var SwellRadar = require('./swell_radar');
 var WindPolar = require('./wind_polar');
+var TempWidget = require('./temp_widget');
 
 var SpotFocus = require('./spot_focus');
 
@@ -45,8 +47,9 @@ var Forecast = React.createClass({
 			return	(<div className="container">
 						<div className="row"><SpotFocus spotId={this.props.spotId}/></div>
 						<div className="row">
-							<div className="col-md-6"><SwellRadar data={current}/></div>
-							<div className="col-md-6"><WindPolar data={current}/></div>
+							<div className="col-md-4"><SwellRadar data={current}/></div>
+							<div className="col-md-4"><WindPolar data={current}/></div>
+							<div className="col-md-4"><TempWidget spotId={this.props.spotId}/></div>
 						</div>		
 						<div className="row"><SwellChart data={this.state.countyForecast.swell}/></div>
 						<div className="row"><WindChart data={this.state.countyForecast.wind}/></div>

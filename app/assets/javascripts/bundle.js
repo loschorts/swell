@@ -32260,6 +32260,27 @@
 					});
 				}
 			});
+		},
+		fetchWeather: function (spot) {
+			var weather = {};
+			$.ajax({
+				url: 'http://api.spitcast.com/api/county/water-temperature/' + spitcast_county + '/',
+				type: 'GET',
+				success: function (data) {
+					weather.waterTemp = data.fahrenheit;
+					$.ajax({
+						url: 'http://api.openweathermap.org/data/2.5/weather?lat=' + spot.lat + '&lon=' + spot.lng + '&appid=7fc03a03fe39e22c9557c07d4e05cb2d',
+						type: 'GET',
+						success: function (data) {
+							weather.airTemp = (data.main.temp - 273.15) * 1.8 + 32;
+							weather.conditions = data.weather.main + "-" + data.weather.description;
+							weather.wind = { speed: data.wind.speed, deg: data.wind.deg };
+	
+							ForecastActions.setSpotWeather(spot, weather);
+						}
+					});
+				}
+			});
 		}
 	};
 	
@@ -32744,8 +32765,10 @@
 	var WindChart = __webpack_require__(267);
 	var TideChart = __webpack_require__(268);
 	
+	//widgets
 	var SwellRadar = __webpack_require__(269);
 	var WindPolar = __webpack_require__(272);
+	var TempWidget = __webpack_require__(273);
 	
 	var SpotFocus = __webpack_require__(243);
 	
@@ -32796,13 +32819,18 @@
 						{ className: 'row' },
 						React.createElement(
 							'div',
-							{ className: 'col-md-6' },
+							{ className: 'col-md-4' },
 							React.createElement(SwellRadar, { data: current })
 						),
 						React.createElement(
 							'div',
-							{ className: 'col-md-6' },
+							{ className: 'col-md-4' },
 							React.createElement(WindPolar, { data: current })
+						),
+						React.createElement(
+							'div',
+							{ className: 'col-md-4' },
+							React.createElement(TempWidget, { spotId: this.props.spotId })
 						)
 					),
 					React.createElement(
@@ -36904,6 +36932,47 @@
 	});
 	
 	module.exports = WindPolar;
+
+/***/ },
+/* 273 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var SpotStore = __webpack_require__(248);
+	var SpotAPIUtil = __webpack_require__(244);
+	var ForecastAPIUtil = __webpack_require__(246);
+	var ForecastStore = __webpack_require__(251);
+	var CountyForecastStore = __webpack_require__(249);
+	
+	var TempWidget = React.createClass({
+		displayName: 'TempWidget',
+	
+		componentDidMount: function () {
+			SpotStore.addListener(this.updateSpot);
+			var _spot = SpotStore.getSpot(this.props.spotId);
+			if (!_spot) {
+				SpotAPIUtil.fetchSpot(this.props.spotId);
+			} else {
+				this.updateSpot();
+			}
+		},
+		updateSpot: function () {
+			this.setState({
+				spot: SpotStore.getSpot(this.props.spotId)
+			});
+	
+			ForecastAPIUtil.fetchTemps(spot);
+		},
+		render: function () {
+			return React.createElement(
+				'div',
+				{ className: 'widget' },
+				'HELLO'
+			);
+		}
+	});
+	
+	module.exports = TempWidget;
 
 /***/ }
 /******/ ]);
