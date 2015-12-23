@@ -5,6 +5,8 @@ var ForecastAPIUtil = require('../util/forecast_api_util');
 var SpotStore = require('../stores/spot_store');
 var CountyForecastStore = require('../stores/county_forecast_store');
 
+var SwellChart = require('./swell_chart');
+
 var Forecast = React.createClass({
 	componentDidMount: function(){
 		SpotStore.addListener(this.updateSpot);
@@ -28,17 +30,14 @@ var Forecast = React.createClass({
 			this.setState({countyForecast: _forecast});
 		}
 	},
-	showData: function(){
-		if (this.state && this.state.countyForecast) {
-			return JSON.stringify(this.state.countyForecast);
-		} else {
-			return "County Forecast not Defined"
-		}
-	},
 	render: function(){
-		return (<div>
-					{this.showData()}
-				</div>);
+		if (!this.state || !this.state.countyForecast) {
+			return <div>Fetching Forecast</div>;
+		} else {		
+			return	(<div>
+						<SwellChart swellData={this.state.countyForecast.swell}/>
+					</div>);
+		}
 	}
 });
 
