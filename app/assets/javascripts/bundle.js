@@ -31829,7 +31829,11 @@
 	    var favs = this.state.user.favorites.slice(1);
 	
 	    var els = favs.map(function (spot_id, idx) {
-	      return React.createElement(SpotPreview, { key: idx, spotId: spot_id });
+	      return React.createElement(
+	        'div',
+	        { className: 'col-md-4' },
+	        React.createElement(SpotPreview, { key: idx, spotId: spot_id })
+	      );
 	    });
 	    return React.createElement(
 	      'div',
@@ -31848,7 +31852,11 @@
 	    }
 	
 	    var result = this.state.home.neighbors.map(function (neighborId, idx) {
-	      return React.createElement(SpotPreview, { key: idx, spotId: neighborId });
+	      return React.createElement(
+	        'div',
+	        { className: 'col-md-4' },
+	        React.createElement(SpotPreview, { key: idx, spotId: neighborId })
+	      );
 	    });
 	
 	    return React.createElement(
@@ -32692,7 +32700,7 @@
 	
 			return React.createElement(
 				'div',
-				{ className: "col-md-4 spot-preview " + this.quality() },
+				{ className: "spot-preview " + this.quality() },
 				React.createElement(
 					'h4',
 					null,
@@ -32844,9 +32852,6 @@
 			} else {
 				this.setState({ countyForecast: _forecast });
 			}
-		},
-		stringify: function (data) {
-			return JSON.stringify(data);
 		},
 		render: function () {
 			if (!this.state || !this.state.countyForecast) {

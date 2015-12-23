@@ -33,28 +33,24 @@
   border-radius: 10px;
 }
 
-.col-md-4 {
-  margin: 5px;
-}
-
 .spot-quality-poor {
-  border-width: 5px;
+  border-width: 2px;
   border-style: solid;
   border-color: blue;
 }
 .spot-quality-fair {
-  border-width: 5px;
+  border-width: 2px;
   border-style: solid;
   border-color: green;
 }
 .spot-quality-good {
-  border-width: 5px;
+  border-width: 2px;
   border-style: solid;
   border-color: gold;
 }
 
 .spot-quality-unknown {
-  border-width: 5px;
+  border-width: 2px;
   border-style: dashed;
   border-color: gray;
 }

@@ -34,9 +34,6 @@ var Forecast = React.createClass({
 			this.setState({countyForecast: _forecast});
 		}
 	},
-	stringify: function(data){
-		return JSON.stringify(data);
-	},
 	render: function(){
 		if (!this.state || !this.state.countyForecast) {
 			return <div>Fetching Forecast</div>;

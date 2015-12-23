@@ -46,7 +46,7 @@ var Hello = React.createClass({
     var favs = this.state.user.favorites.slice(1);
 
     var els = favs.map(function(spot_id, idx){
-      return <SpotPreview key={idx} spotId={spot_id}/>
+      return <div className="col-md-4"><SpotPreview key={idx} spotId={spot_id}/></div>
     });
     return <div className="container-fluid feature-box"><h3>Favorites</h3>{els}</div>;
   },
@@ -56,7 +56,7 @@ var Hello = React.createClass({
     }
 
     var result = this.state.home.neighbors.map(function(neighborId, idx){
-      return <SpotPreview key={idx} spotId={neighborId}/>;
+      return <div className="col-md-4"><SpotPreview key={idx} spotId={neighborId}/></div>;
     });
 
     return <div className="container-fluid feature-box"><h3>Spots Nearby</h3>{result}</div>;

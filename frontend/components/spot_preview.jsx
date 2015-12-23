@@ -51,7 +51,7 @@ var SpotPreview = React.createClass({
 		var _forecast = this.state.forecast;
 
 		return (
-			<div className={"col-md-4 spot-preview " + this.quality()}>
+			<div className={"spot-preview " + this.quality()}>
 				<h4>SpotPreview for {this.state.spot.name}</h4>
 				<ul>
 					<li className="detail">Hour: {_forecast.hour}</li>
