@@ -9,6 +9,8 @@ var SwellChart = require('./swell_chart');
 var WindChart = require('./wind_chart');
 var TideChart = require('./tide_chart');
 
+var SwellRadar = require('./swell_radar');
+
 var SpotFocus = require('./spot_focus');
 
 var Forecast = React.createClass({
@@ -38,11 +40,15 @@ var Forecast = React.createClass({
 		if (!this.state || !this.state.countyForecast) {
 			return <div>Fetching Forecast</div>;
 		} else {		
+			current = CountyForecastStore.getCurrentCountyForecast(this.state.spot.spitcast_county);
 			return	(<div className="container">
 						<div className="row"><SpotFocus spotId={this.props.spotId}/></div>
 						<div className="row"><SwellChart data={this.state.countyForecast.swell}/></div>
 						<div className="row"><WindChart data={this.state.countyForecast.wind}/></div>
-						<div className="row"><TideChart data={this.state.countyForecast.tide}/></div>		
+						<div className="row"><TideChart data={this.state.countyForecast.tide}/></div>
+						<div className="row">
+							<SwellRadar data={current}/>
+						</div>		
 					</div>);
 		}
 	}

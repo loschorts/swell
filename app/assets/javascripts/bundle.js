@@ -53,13 +53,13 @@
 	
 	// Components
 	var App = __webpack_require__(210);
-	var Splash = __webpack_require__(211);
+	var Splash = __webpack_require__(235);
 	var Hello = __webpack_require__(241);
-	var Navbar = __webpack_require__(212);
+	var Navbar = __webpack_require__(232);
 	var SignInForm = __webpack_require__(236);
 	var SignUpForm = __webpack_require__(253);
 	var Forecast = __webpack_require__(254);
-	var Test = __webpack_require__(267);
+	var Test = __webpack_require__(270);
 	
 	var routes = React.createElement(
 	  Route,
@@ -24442,7 +24442,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var UserStore = __webpack_require__(213);
+	var UserStore = __webpack_require__(211);
 	
 	var App = React.createClass({
 		displayName: 'App',
@@ -24462,174 +24462,8 @@
 /* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(1);
-	var Navbar = __webpack_require__(212);
-	var History = __webpack_require__(159).History;
-	var SignInForm = __webpack_require__(236);
-	var UserStore = __webpack_require__(213);
-	
-	var Splash = React.createClass({
-		displayName: 'Splash',
-	
-		getInitialState: function () {
-			return { form: "", user: UserStore.currentUser() };
-		},
-		updateUser: function () {
-			this.setState({ user: UserStore.currentUser() });
-		},
-		componentDidMount: function () {
-			UserStore.addListener(this.updateUser);
-		},
-		showForm: function (formName) {
-			this.props.history.push(formName);
-		},
-		goToMain: function () {
-			this.props.history.push('hello');
-		},
-		render: function () {
-			return React.createElement(
-				'div',
-				{ className: 'splash fullscreen' },
-				React.createElement(Navbar, { history: this.props.history }),
-				React.createElement(
-					'div',
-					{ className: 'row' },
-					React.createElement('img', {
-						onClick: this.goToMain,
-						className: 'logo center-block', src: 'http://res.cloudinary.com/swell/image/upload/v1450301564/swell-logo_1_imizgd.png' })
-				),
-				this.props.children
-			);
-		}
-	});
-	
-	module.exports = Splash;
-
-/***/ },
-/* 212 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var UserStore = __webpack_require__(213);
-	var UserAPIUtil = __webpack_require__(234);
-	
-	var Navbar = React.createClass({
-	  displayName: 'Navbar',
-	
-	  getInitialState: function () {
-	    return { user: UserStore.currentUser() };
-	  },
-	  componentDidMount: function () {
-	    UserStore.addListener(this.updateUser);
-	  },
-	  updateUser: function () {
-	    this.setState({ user: UserStore.currentUser() });
-	  },
-	  guestLogin: function (e) {
-	    e.preventDefault();
-	    UserAPIUtil.guestLogin();
-	    this.props.history.push('/hello');
-	  },
-	  newUser: function (e) {
-	    e.preventDefault();
-	    this.props.history.push('/splash/sign-up');
-	  },
-	  signIn: function (e) {
-	    e.preventDefault();
-	    this.props.history.push('/splash/sign-in');
-	  },
-	  signOut: function (e) {
-	    UserAPIUtil.logout();
-	    this.props.history.push('/');
-	  },
-	  logToggle: function () {
-	    if (this.state.user.username === null || typeof this.state.user === 'undefined') {
-	      return React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'a',
-	          { onClick: this.signIn, href: '/sign-in' },
-	          'Sign In'
-	        )
-	      );
-	    } else {
-	      return React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'a',
-	          { onClick: this.signOut, href: '/' },
-	          'Sign Out'
-	        )
-	      );
-	    }
-	  },
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      { className: 'container-fluid' },
-	      React.createElement(
-	        'h1',
-	        { className: 'white' },
-	        this.state.user.username
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'navbar-header navbar-right' },
-	        React.createElement(
-	          'ul',
-	          { className: 'nav navbar-nav' },
-	          React.createElement(
-	            'li',
-	            { className: 'dropdown' },
-	            React.createElement(
-	              'a',
-	              { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
-	              React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/c_scale,h_71/v1450302743/--logo_2_a32kqk.png' })
-	            ),
-	            React.createElement(
-	              'ul',
-	              { className: 'dropdown-menu' },
-	              React.createElement(
-	                'li',
-	                null,
-	                React.createElement(
-	                  'a',
-	                  {
-	                    onClick: this.guestLogin,
-	                    href: '/guest-login' },
-	                  'Sign in as Guest'
-	                )
-	              ),
-	              React.createElement(
-	                'li',
-	                null,
-	                React.createElement(
-	                  'a',
-	                  {
-	                    onClick: this.newUser,
-	                    href: '/users/new' },
-	                  'Create Account'
-	                )
-	              ),
-	              this.logToggle()
-	            )
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = Navbar;
-
-/***/ },
-/* 213 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(214).Store;
-	var Dispatcher = __webpack_require__(231);
+	var Store = __webpack_require__(212).Store;
+	var Dispatcher = __webpack_require__(229);
 	
 	var UserStore = new Store(Dispatcher);
 	
@@ -24665,7 +24499,7 @@
 	module.exports = UserStore;
 
 /***/ },
-/* 214 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -24677,15 +24511,15 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 	
-	module.exports.Container = __webpack_require__(215);
-	module.exports.MapStore = __webpack_require__(219);
-	module.exports.Mixin = __webpack_require__(230);
-	module.exports.ReduceStore = __webpack_require__(220);
-	module.exports.Store = __webpack_require__(221);
+	module.exports.Container = __webpack_require__(213);
+	module.exports.MapStore = __webpack_require__(217);
+	module.exports.Mixin = __webpack_require__(228);
+	module.exports.ReduceStore = __webpack_require__(218);
+	module.exports.Store = __webpack_require__(219);
 
 
 /***/ },
-/* 215 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -24707,10 +24541,10 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxStoreGroup = __webpack_require__(216);
+	var FluxStoreGroup = __webpack_require__(214);
 	
-	var invariant = __webpack_require__(217);
-	var shallowEqual = __webpack_require__(218);
+	var invariant = __webpack_require__(215);
+	var shallowEqual = __webpack_require__(216);
 	
 	var DEFAULT_OPTIONS = {
 	  pure: true,
@@ -24868,7 +24702,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 216 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -24887,7 +24721,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var invariant = __webpack_require__(217);
+	var invariant = __webpack_require__(215);
 	
 	/**
 	 * FluxStoreGroup allows you to execute a callback on every dispatch after
@@ -24949,7 +24783,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 217 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25004,7 +24838,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 218 */
+/* 216 */
 /***/ function(module, exports) {
 
 	/**
@@ -25059,7 +24893,7 @@
 	module.exports = shallowEqual;
 
 /***/ },
-/* 219 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25080,10 +24914,10 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxReduceStore = __webpack_require__(220);
-	var Immutable = __webpack_require__(229);
+	var FluxReduceStore = __webpack_require__(218);
+	var Immutable = __webpack_require__(227);
 	
-	var invariant = __webpack_require__(217);
+	var invariant = __webpack_require__(215);
 	
 	/**
 	 * This is a simple store. It allows caching key value pairs. An implementation
@@ -25209,7 +25043,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 220 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25230,10 +25064,10 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxStore = __webpack_require__(221);
+	var FluxStore = __webpack_require__(219);
 	
-	var abstractMethod = __webpack_require__(228);
-	var invariant = __webpack_require__(217);
+	var abstractMethod = __webpack_require__(226);
+	var invariant = __webpack_require__(215);
 	
 	var FluxReduceStore = (function (_FluxStore) {
 	  _inherits(FluxReduceStore, _FluxStore);
@@ -25316,7 +25150,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 221 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25335,11 +25169,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _require = __webpack_require__(222);
+	var _require = __webpack_require__(220);
 	
 	var EventEmitter = _require.EventEmitter;
 	
-	var invariant = __webpack_require__(217);
+	var invariant = __webpack_require__(215);
 	
 	/**
 	 * This class should be extended by the stores in your application, like so:
@@ -25499,7 +25333,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 222 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -25512,14 +25346,14 @@
 	 */
 	
 	var fbemitter = {
-	  EventEmitter: __webpack_require__(223)
+	  EventEmitter: __webpack_require__(221)
 	};
 	
 	module.exports = fbemitter;
 
 
 /***/ },
-/* 223 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25538,11 +25372,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var EmitterSubscription = __webpack_require__(224);
-	var EventSubscriptionVendor = __webpack_require__(226);
+	var EmitterSubscription = __webpack_require__(222);
+	var EventSubscriptionVendor = __webpack_require__(224);
 	
-	var emptyFunction = __webpack_require__(227);
-	var invariant = __webpack_require__(217);
+	var emptyFunction = __webpack_require__(225);
+	var invariant = __webpack_require__(215);
 	
 	/**
 	 * @class BaseEventEmitter
@@ -25716,7 +25550,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 224 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -25737,7 +25571,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var EventSubscription = __webpack_require__(225);
+	var EventSubscription = __webpack_require__(223);
 	
 	/**
 	 * EmitterSubscription represents a subscription with listener and context data.
@@ -25769,7 +25603,7 @@
 	module.exports = EmitterSubscription;
 
 /***/ },
-/* 225 */
+/* 223 */
 /***/ function(module, exports) {
 
 	/**
@@ -25820,7 +25654,7 @@
 	module.exports = EventSubscription;
 
 /***/ },
-/* 226 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25839,7 +25673,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var invariant = __webpack_require__(217);
+	var invariant = __webpack_require__(215);
 	
 	/**
 	 * EventSubscriptionVendor stores a set of EventSubscriptions that are
@@ -25929,7 +25763,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 227 */
+/* 225 */
 /***/ function(module, exports) {
 
 	/**
@@ -25972,7 +25806,7 @@
 	module.exports = emptyFunction;
 
 /***/ },
-/* 228 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25989,7 +25823,7 @@
 	
 	'use strict';
 	
-	var invariant = __webpack_require__(217);
+	var invariant = __webpack_require__(215);
 	
 	function abstractMethod(className, methodName) {
 	   true ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Subclasses of %s must override %s() with their own implementation.', className, methodName) : invariant(false) : undefined;
@@ -25999,7 +25833,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 229 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -30986,7 +30820,7 @@
 	}));
 
 /***/ },
-/* 230 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -31003,9 +30837,9 @@
 	
 	'use strict';
 	
-	var FluxStoreGroup = __webpack_require__(216);
+	var FluxStoreGroup = __webpack_require__(214);
 	
-	var invariant = __webpack_require__(217);
+	var invariant = __webpack_require__(215);
 	
 	/**
 	 * `FluxContainer` should be preferred over this mixin, but it requires using
@@ -31109,15 +30943,15 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 231 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Dispatcher = __webpack_require__(232).Dispatcher;
+	var Dispatcher = __webpack_require__(230).Dispatcher;
 	
 	module.exports = new Dispatcher();
 
 /***/ },
-/* 232 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31129,11 +30963,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 	
-	module.exports.Dispatcher = __webpack_require__(233);
+	module.exports.Dispatcher = __webpack_require__(231);
 
 
 /***/ },
-/* 233 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -31155,7 +30989,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var invariant = __webpack_require__(217);
+	var invariant = __webpack_require__(215);
 	
 	var _prefix = 'ID_';
 	
@@ -31370,11 +31204,130 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 234 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var UserActions = __webpack_require__(235);
-	var UserStore = __webpack_require__(213);
+	var React = __webpack_require__(1);
+	var UserStore = __webpack_require__(211);
+	var UserAPIUtil = __webpack_require__(233);
+	
+	var Navbar = React.createClass({
+	  displayName: 'Navbar',
+	
+	  getInitialState: function () {
+	    return { user: UserStore.currentUser() };
+	  },
+	  componentDidMount: function () {
+	    UserStore.addListener(this.updateUser);
+	  },
+	  updateUser: function () {
+	    this.setState({ user: UserStore.currentUser() });
+	  },
+	  guestLogin: function (e) {
+	    e.preventDefault();
+	    UserAPIUtil.guestLogin();
+	    this.props.history.push('/hello');
+	  },
+	  newUser: function (e) {
+	    e.preventDefault();
+	    this.props.history.push('/splash/sign-up');
+	  },
+	  signIn: function (e) {
+	    e.preventDefault();
+	    this.props.history.push('/splash/sign-in');
+	  },
+	  signOut: function (e) {
+	    UserAPIUtil.logout();
+	    this.props.history.push('/');
+	  },
+	  logToggle: function () {
+	    if (this.state.user.username === null || typeof this.state.user === 'undefined') {
+	      return React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'a',
+	          { onClick: this.signIn, href: '/sign-in' },
+	          'Sign In'
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'a',
+	          { onClick: this.signOut, href: '/' },
+	          'Sign Out'
+	        )
+	      );
+	    }
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'container-fluid' },
+	      React.createElement(
+	        'h1',
+	        { className: 'white' },
+	        this.state.user.username
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'navbar-header navbar-right' },
+	        React.createElement(
+	          'ul',
+	          { className: 'nav navbar-nav' },
+	          React.createElement(
+	            'li',
+	            { className: 'dropdown' },
+	            React.createElement(
+	              'a',
+	              { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
+	              React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/c_scale,h_71/v1450302743/--logo_2_a32kqk.png' })
+	            ),
+	            React.createElement(
+	              'ul',
+	              { className: 'dropdown-menu' },
+	              React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                  'a',
+	                  {
+	                    onClick: this.guestLogin,
+	                    href: '/guest-login' },
+	                  'Sign in as Guest'
+	                )
+	              ),
+	              React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                  'a',
+	                  {
+	                    onClick: this.newUser,
+	                    href: '/users/new' },
+	                  'Create Account'
+	                )
+	              ),
+	              this.logToggle()
+	            )
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = Navbar;
+
+/***/ },
+/* 233 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var UserActions = __webpack_require__(234);
+	var UserStore = __webpack_require__(211);
 	
 	var UserAPIUtil = {
 	
@@ -31444,10 +31397,10 @@
 	module.exports = UserAPIUtil;
 
 /***/ },
-/* 235 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Dispatcher = __webpack_require__(231);
+	var Dispatcher = __webpack_require__(229);
 	
 	UserActions = {
 		login: function (user) {
@@ -31473,12 +31426,59 @@
 	module.exports = UserActions;
 
 /***/ },
+/* 235 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var Navbar = __webpack_require__(232);
+	var History = __webpack_require__(159).History;
+	var SignInForm = __webpack_require__(236);
+	var UserStore = __webpack_require__(211);
+	
+	var Splash = React.createClass({
+		displayName: 'Splash',
+	
+		getInitialState: function () {
+			return { form: "", user: UserStore.currentUser() };
+		},
+		updateUser: function () {
+			this.setState({ user: UserStore.currentUser() });
+		},
+		componentDidMount: function () {
+			UserStore.addListener(this.updateUser);
+		},
+		showForm: function (formName) {
+			this.props.history.push(formName);
+		},
+		goToMain: function () {
+			this.props.history.push('hello');
+		},
+		render: function () {
+			return React.createElement(
+				'div',
+				{ className: 'splash fullscreen' },
+				React.createElement(Navbar, { history: this.props.history }),
+				React.createElement(
+					'div',
+					{ className: 'row' },
+					React.createElement('img', {
+						onClick: this.goToMain,
+						className: 'logo center-block', src: 'http://res.cloudinary.com/swell/image/upload/v1450301564/swell-logo_1_imizgd.png' })
+				),
+				this.props.children
+			);
+		}
+	});
+	
+	module.exports = Splash;
+
+/***/ },
 /* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var LinkedStateMixin = __webpack_require__(237);
-	var UserAPIUtil = __webpack_require__(234);
+	var UserAPIUtil = __webpack_require__(233);
 	
 	var SignInForm = React.createClass({
 		displayName: 'SignInForm',
@@ -31772,9 +31772,9 @@
 	var SpotPreview = __webpack_require__(252);
 	
 	//Stores & Utils
-	window.UserStore = __webpack_require__(213);
+	window.UserStore = __webpack_require__(211);
 	var SpotStore = __webpack_require__(248);
-	var UserAPIUtil = __webpack_require__(234);
+	var UserAPIUtil = __webpack_require__(233);
 	var SpotAPIUtil = __webpack_require__(244);
 	
 	var Hello = React.createClass({
@@ -31889,8 +31889,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var UserStore = __webpack_require__(213);
-	var UserAPIUtil = __webpack_require__(234);
+	var UserStore = __webpack_require__(211);
+	var UserAPIUtil = __webpack_require__(233);
 	
 	var HelloNavbar = React.createClass({
 	  displayName: 'HelloNavbar',
@@ -32165,7 +32165,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var SpotActions = __webpack_require__(245);
-	var UserStore = __webpack_require__(213);
+	var UserStore = __webpack_require__(211);
 	
 	var SpotApiUtil = {
 		fetchSpot: function (id) {
@@ -32187,7 +32187,7 @@
 /* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Dispatcher = __webpack_require__(231);
+	var Dispatcher = __webpack_require__(229);
 	
 	SpotActions = {
 		setSpot: function (spot) {
@@ -32205,7 +32205,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var ForecastActions = __webpack_require__(247);
-	var UserStore = __webpack_require__(213);
+	var UserStore = __webpack_require__(211);
 	
 	var ForecastAPIUtil = {
 		fetchSpotForecast: function (spot) {
@@ -32269,7 +32269,7 @@
 /* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Dispatcher = __webpack_require__(231);
+	var Dispatcher = __webpack_require__(229);
 	
 	ForecastActions = {
 		setSpotForecast: function (spot, forecast) {
@@ -32294,8 +32294,8 @@
 /* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(214).Store;
-	var Dispatcher = __webpack_require__(231);
+	var Store = __webpack_require__(212).Store;
+	var Dispatcher = __webpack_require__(229);
 	var SpotAPIUtil = __webpack_require__(244);
 	
 	var SpotStore = new Store(Dispatcher);
@@ -32341,8 +32341,8 @@
 /* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(214).Store;
-	var Dispatcher = __webpack_require__(231);
+	var Store = __webpack_require__(212).Store;
+	var Dispatcher = __webpack_require__(229);
 	var TimeUtil = __webpack_require__(250);
 	
 	var _counties = {};
@@ -32498,8 +32498,8 @@
 /* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(214).Store;
-	var Dispatcher = __webpack_require__(231);
+	var Store = __webpack_require__(212).Store;
+	var Dispatcher = __webpack_require__(229);
 	var ForecastAPIUtil = __webpack_require__(246);
 	var TimeUtil = __webpack_require__(250);
 	
@@ -32677,7 +32677,7 @@
 
 	var React = __webpack_require__(1);
 	var LinkedStateMixin = __webpack_require__(237);
-	var UserAPIUtil = __webpack_require__(234);
+	var UserAPIUtil = __webpack_require__(233);
 	
 	var SignUpForm = React.createClass({
 		displayName: 'SignUpForm',
@@ -32740,9 +32740,11 @@
 	var SpotStore = __webpack_require__(248);
 	var CountyForecastStore = __webpack_require__(249);
 	
-	var SwellChart = __webpack_require__(268);
-	var WindChart = __webpack_require__(269);
-	var TideChart = __webpack_require__(270);
+	var SwellChart = __webpack_require__(255);
+	var WindChart = __webpack_require__(267);
+	var TideChart = __webpack_require__(268);
+	
+	var SwellRadar = __webpack_require__(269);
 	
 	var SpotFocus = __webpack_require__(243);
 	
@@ -32779,6 +32781,7 @@
 					'Fetching Forecast'
 				);
 			} else {
+				current = CountyForecastStore.getCurrentCountyForecast(this.state.spot.spitcast_county);
 				return React.createElement(
 					'div',
 					{ className: 'container' },
@@ -32801,6 +32804,11 @@
 						'div',
 						{ className: 'row' },
 						React.createElement(TideChart, { data: this.state.countyForecast.tide })
+					),
+					React.createElement(
+						'div',
+						{ className: 'row' },
+						React.createElement(SwellRadar, { data: current })
 					)
 				);
 			}
@@ -32810,7 +32818,66 @@
 	module.exports = Forecast;
 
 /***/ },
-/* 255 */,
+/* 255 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var LineChart = __webpack_require__(256).Line;
+	var ChartOptions = __webpack_require__(266);
+	var TimeUtil = __webpack_require__(250);
+	
+	var SwellChart = React.createClass({
+		displayName: 'SwellChart',
+	
+		chartData: function () {
+			var _labels = [];
+			for (var i = 0; i < 24; i++) {
+				_labels.push(TimeUtil.convert(i));
+			}
+	
+			var _data = [];
+			this.props.data.forEach(function (entry) {
+				_data.push(entry[0].hs);
+			});
+	
+			_chartData = {};
+			_chartData.labels = _labels;
+			_chartData.datasets = [{
+				label: "Swell",
+				fillColor: "rgba(0, 61, 255,0.2)",
+				strokeColor: "rgba(0, 24, 102,1)",
+				pointColor: "rgba(0, 24, 102,1)",
+				pointStrokeColor: "rgba(0, 24, 102,1)",
+				pointHighlightFill: "#fff",
+				highlightFill: "#fff",
+				pointHighlightStroke: "rgba(220,220,220,1)",
+				data: _data
+			}];
+			return _chartData;
+		},
+		display: function () {
+			if (!this.props || !this.props.data) {
+				return React.createElement('div', null);
+			} else {
+				return React.createElement(
+					'div',
+					null,
+					React.createElement(LineChart, {
+						data: this.chartData(),
+						options: ChartOptions,
+						height: '300px',
+						width: '800px' })
+				);
+			}
+		},
+		render: function () {
+			return this.display();
+		}
+	});
+	
+	module.exports = SwellChart;
+
+/***/ },
 /* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -36537,83 +36604,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var Forecast = __webpack_require__(254);
-	
-	var Test = React.createClass({
-	  displayName: 'Test',
-	
-	  render: function () {
-	    return React.createElement(Forecast, { spotId: 15 });
-	  }
-	});
-	
-	module.exports = Test;
-
-/***/ },
-/* 268 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var LineChart = __webpack_require__(256).Line;
-	var ChartOptions = __webpack_require__(266);
-	var TimeUtil = __webpack_require__(250);
-	
-	var SwellChart = React.createClass({
-		displayName: 'SwellChart',
-	
-		chartData: function () {
-			var _labels = [];
-			for (var i = 0; i < 24; i++) {
-				_labels.push(TimeUtil.convert(i));
-			}
-	
-			var _data = [];
-			this.props.data.forEach(function (entry) {
-				_data.push(entry[0].hs);
-			});
-	
-			_chartData = {};
-			_chartData.labels = _labels;
-			_chartData.datasets = [{
-				label: "Swell",
-				fillColor: "rgba(0, 61, 255,0.2)",
-				strokeColor: "rgba(0, 24, 102,1)",
-				pointColor: "rgba(0, 24, 102,1)",
-				pointStrokeColor: "rgba(0, 24, 102,1)",
-				pointHighlightFill: "#fff",
-				highlightFill: "#fff",
-				pointHighlightStroke: "rgba(220,220,220,1)",
-				data: _data
-			}];
-			return _chartData;
-		},
-		display: function () {
-			if (!this.props || !this.props.data) {
-				return React.createElement('div', null);
-			} else {
-				return React.createElement(
-					'div',
-					null,
-					React.createElement(LineChart, {
-						data: this.chartData(),
-						options: ChartOptions,
-						height: '300px',
-						width: '800px' })
-				);
-			}
-		},
-		render: function () {
-			return this.display();
-		}
-	});
-	
-	module.exports = SwellChart;
-
-/***/ },
-/* 269 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
 	var LineChart = __webpack_require__(256).Line;
 	var ChartOptions = __webpack_require__(266);
 	var TimeUtil = __webpack_require__(250);
@@ -36670,7 +36660,7 @@
 	module.exports = WindChart;
 
 /***/ },
-/* 270 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -36728,6 +36718,47 @@
 	});
 	
 	module.exports = WindChart;
+
+/***/ },
+/* 269 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var Radar = __webpack_require__(256).Radar;
+	
+	var SwellRadar = React.createClass({
+		displayName: 'SwellRadar',
+	
+		stringify: function () {
+			return JSON.stringify(this.props);
+		},
+		render: function () {
+			return React.createElement(
+				'div',
+				null,
+				this.stringify()
+			);
+		}
+	});
+	
+	module.exports = SwellRadar;
+
+/***/ },
+/* 270 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var Forecast = __webpack_require__(254);
+	
+	var Test = React.createClass({
+	  displayName: 'Test',
+	
+	  render: function () {
+	    return React.createElement(Forecast, { spotId: 15 });
+	  }
+	});
+	
+	module.exports = Test;
 
 /***/ }
 /******/ ]);
