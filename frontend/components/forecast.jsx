@@ -17,7 +17,7 @@ var TempWidget = require('./temp_widget');
 var SpotFocus = require('./spot_focus');
 
 var Forecast = React.createClass({
-	componentWillMount: function(){
+	componentDidMount: function(){
 		SpotStore.addListener(this.updateSpot);
 		CountyForecastStore.addListener(this.updateCountyForecast);
 		var _spot = SpotStore.getSpot(this.props.params.spotId);
@@ -29,10 +29,14 @@ var Forecast = React.createClass({
 	},
 	updateSpot: function(){
 		_spot = SpotStore.getSpot(this.props.params.spotId);
-		this.setState({spot: _spot});
-		this.updateCountyForecast(_spot);
+		if (_spot) {
+			this.setState({spot: _spot});
+		}
+		this.updateCountyForecast();
 	},
-	updateCountyForecast: function(spot){
+	updateCountyForecast: function(){
+		var spot = SpotStore.getSpot(this.props.params.spotId);
+		debugger
 		if (!spot) {return;}
 		var _forecast = CountyForecastStore.getCountyForecast(spot.spitcast_county);
 		if (!_forecast) {

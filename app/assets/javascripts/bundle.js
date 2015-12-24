@@ -32798,7 +32798,7 @@
 	var Forecast = React.createClass({
 		displayName: 'Forecast',
 	
-		componentWillMount: function () {
+		componentDidMount: function () {
 			SpotStore.addListener(this.updateSpot);
 			CountyForecastStore.addListener(this.updateCountyForecast);
 			var _spot = SpotStore.getSpot(this.props.params.spotId);
@@ -32810,10 +32810,14 @@
 		},
 		updateSpot: function () {
 			_spot = SpotStore.getSpot(this.props.params.spotId);
-			this.setState({ spot: _spot });
-			this.updateCountyForecast(_spot);
+			if (_spot) {
+				this.setState({ spot: _spot });
+			}
+			this.updateCountyForecast();
 		},
-		updateCountyForecast: function (spot) {
+		updateCountyForecast: function () {
+			var spot = SpotStore.getSpot(this.props.params.spotId);
+			debugger;
 			if (!spot) {
 				return;
 			}
