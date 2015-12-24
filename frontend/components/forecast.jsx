@@ -20,15 +20,15 @@ var Forecast = React.createClass({
 	componentDidMount: function(){
 		SpotStore.addListener(this.updateSpot);
 		CountyForecastStore.addListener(this.updateCountyForecast);
-		var _spot = SpotStore.getSpot(this.props.spotId);
+		var _spot = SpotStore.getSpot(this.props.params.spotId);
 		if (!_spot) {
-			SpotAPIUtil.fetchSpot(this.props.spotId);
+			SpotAPIUtil.fetchSpot(this.props.params.spotId);
 		} else {
 			this.updateSpot();
 		}
 	},
 	updateSpot: function(){
-		this.setState({spot: SpotStore.getSpot(this.props.spotId)});
+		this.setState({spot: SpotStore.getSpot(this.props.params.spotId)});
 		this.updateCountyForecast();
 	},
 	updateCountyForecast: function(){
@@ -45,11 +45,11 @@ var Forecast = React.createClass({
 		} else {		
 			current = CountyForecastStore.getCurrentCountyForecast(this.state.spot.spitcast_county);
 			return	(<div className="container">
-						<div className="row"><SpotFocus spotId={this.props.spotId}/></div>
+						<div className="row"><SpotFocus spotId={this.props.params.spotId}/></div>
 						<div className="row">
 							<div className="col-md-4"><SwellRadar data={current}/></div>
 							<div className="col-md-4"><WindPolar data={current}/></div>
-							<div className="col-md-4"><TempWidget spotId={this.props.spotId}/></div>
+							<div className="col-md-4"><TempWidget spotId={this.props.params.spotId}/></div>
 						</div>		
 						<div className="row"><SwellChart data={this.state.countyForecast.swell}/></div>
 						<div className="row"><WindChart data={this.state.countyForecast.wind}/></div>

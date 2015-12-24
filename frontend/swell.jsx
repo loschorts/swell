@@ -23,7 +23,7 @@ var routes = (
          	<Route path="sign-up" component={SignUpForm}/>
         </Route>
     	<Route path="hello" component={Hello}/>
-      <Route path="forecast" component={Forecast}/>
+      <Route path="forecast/:spotId" component={Forecast}/>
       <Route path="test" component={Test}/>
     </Route>
 );

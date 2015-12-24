@@ -29,10 +29,6 @@
   text-align: center;
 }
 
-.spot-preview {
-  border-radius: 10px;
-}
-
 .spot-quality-poor {
   border-width: 2px;
   border-style: solid;
@@ -53,6 +49,10 @@
   border-width: 2px;
   border-style: dashed;
   border-color: gray;
+}
+
+.spot-focus {
+  border-radius: 10px;
 }
 
 .hello-navbar {

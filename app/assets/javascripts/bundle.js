@@ -72,7 +72,7 @@
 	    React.createElement(Route, { path: 'sign-up', component: SignUpForm })
 	  ),
 	  React.createElement(Route, { path: 'hello', component: Hello }),
-	  React.createElement(Route, { path: 'forecast', component: Forecast }),
+	  React.createElement(Route, { path: 'forecast/:spotId', component: Forecast }),
 	  React.createElement(Route, { path: 'test', component: Test })
 	);
 	
@@ -31871,6 +31871,7 @@
 	    );
 	  },
 	  render: function () {
+	    debugger;
 	    return React.createElement(
 	      'div',
 	      { className: 'container hello' },
@@ -32794,15 +32795,15 @@
 		componentDidMount: function () {
 			SpotStore.addListener(this.updateSpot);
 			CountyForecastStore.addListener(this.updateCountyForecast);
-			var _spot = SpotStore.getSpot(this.props.spotId);
+			var _spot = SpotStore.getSpot(this.props.params.spotId);
 			if (!_spot) {
-				SpotAPIUtil.fetchSpot(this.props.spotId);
+				SpotAPIUtil.fetchSpot(this.props.params.spotId);
 			} else {
 				this.updateSpot();
 			}
 		},
 		updateSpot: function () {
-			this.setState({ spot: SpotStore.getSpot(this.props.spotId) });
+			this.setState({ spot: SpotStore.getSpot(this.props.params.spotId) });
 			this.updateCountyForecast();
 		},
 		updateCountyForecast: function () {
@@ -32828,7 +32829,7 @@
 					React.createElement(
 						'div',
 						{ className: 'row' },
-						React.createElement(SpotFocus, { spotId: this.props.spotId })
+						React.createElement(SpotFocus, { spotId: this.props.params.spotId })
 					),
 					React.createElement(
 						'div',
@@ -32846,7 +32847,7 @@
 						React.createElement(
 							'div',
 							{ className: 'col-md-4' },
-							React.createElement(TempWidget, { spotId: this.props.spotId })
+							React.createElement(TempWidget, { spotId: this.props.params.spotId })
 						)
 					),
 					React.createElement(
@@ -36998,7 +36999,7 @@
 						'Current Weather'
 					),
 					React.createElement(
-						'h5',
+						'h4',
 						null,
 						'Temp: ',
 						weather.airTemp,

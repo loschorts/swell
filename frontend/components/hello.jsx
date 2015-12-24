@@ -62,6 +62,7 @@ var Hello = React.createClass({
     return <div className="container-fluid feature-box"><h3>Spots Nearby</h3>{result}</div>;
   },
   render: function(){
+    debugger
     return(
       <div className="container hello">
         <HelloNavbar history={this.props.history}/>

@@ -35,7 +35,7 @@ var TempWidget = React.createClass({
 			return (
 				<div className="widget">
 					<h4>Current Weather</h4>
-					<h5>Temp: {weather.airTemp}°</h5>
+					<h4>Temp: {weather.airTemp}°</h4>
 					<h5>Water Temp: {weather.waterTemp}°</h5>
 					<h5>Conditions: {weather.conditions}</h5>
 					<h5>Live Wind: {weather.wind.speed}mph @ {weather.wind.deg}°</h5>
