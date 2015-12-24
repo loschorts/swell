@@ -61,6 +61,8 @@
 	var Forecast = __webpack_require__(254);
 	var Test = __webpack_require__(273);
 	var Search = __webpack_require__(274);
+	var County = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./components/county\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	
 	var routes = React.createElement(
 	  Route,
 	  { path: '/', component: App },
@@ -74,7 +76,8 @@
 	  React.createElement(Route, { path: 'hello', component: Hello }),
 	  React.createElement(Route, { path: 'forecast/:spotId', component: Forecast }),
 	  React.createElement(Route, { path: 'test', component: Test }),
-	  React.createElement(Route, { path: 'search', component: Search })
+	  React.createElement(Route, { path: 'search', component: Search }),
+	  React.createElement(Route, { path: 'county/:id', component: County })
 	);
 	
 	document.addEventListener('DOMContentLoaded', function () {

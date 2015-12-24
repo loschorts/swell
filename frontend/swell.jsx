@@ -15,6 +15,8 @@ var SignUpForm = require('./components/sign_up_form');
 var Forecast = require('./components/forecast');
 var Test = require('./components/test');
 var Search = require('./components/search');
+var County = require('./components/county');
+
 var routes = (
     <Route path="/" component={App}>
     	 <IndexRoute component={Splash}/>
@@ -26,6 +28,7 @@ var routes = (
       <Route path="forecast/:spotId" component={Forecast}/>
       <Route path="test" component={Test}/>
       <Route path="search" component={Search}/>
+      <Route path="county/:id" component={County}/>
     </Route>
 );
 
