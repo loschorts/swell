@@ -1,9 +1,15 @@
 var React = require('react');
-var Forecast = require('./forecast');
+var Search = require('./search');
+var Linkbox = require('./linkbox');
 
 var Test = React.createClass({
   render: function() {
-    return <Forecast spotId={47}/>
+
+    return (
+    	<div className="container">
+    		<Search/>
+    	</div>
+    	);
   }
 });
 

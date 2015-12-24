@@ -1,4 +1,5 @@
 class PagesController < ApplicationController
-  def landing
+  def search_terms
+  	@items = Spot.all + County.all + Region.all
   end
 end
