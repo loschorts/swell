@@ -15,8 +15,7 @@ Rails.application.routes.draw do
   end
 
   root to: 'pages#home'
-  get 'api/search-terms', to: 'pages#search_terms', defaults: {format: :Json}
-
+  get 'api/search-terms', to: 'pages#search_terms', defaults: {format: :son}
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

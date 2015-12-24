@@ -1,7 +1,9 @@
 class Spot < ActiveRecord::Base
   has_many :spot_photos
 
-  belongs_to :county
+  belongs_to :county,
+  	primary_key: :spitcast_county,
+  	foreign_key: :spitcast_county
 
   has_one :region, through: :county
 

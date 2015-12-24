@@ -7,7 +7,7 @@ var Search = React.createClass({
 	mixins: [linkedState],
 	getInitialState: function(){
 		return {
-			query: "",
+			query: this.props.query || "",
 			terms: {}
 		};
 	},
@@ -22,7 +22,6 @@ var Search = React.createClass({
 			success: function(data){
 				self.setState({terms: data});
 			}
-
 		});
 	},
 	results: function(){
