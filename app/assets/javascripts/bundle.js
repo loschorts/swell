@@ -62,6 +62,7 @@
 	var Test = __webpack_require__(273);
 	var Search = __webpack_require__(274);
 	var County = __webpack_require__(276);
+	var Region = __webpack_require__(277);
 	
 	var routes = React.createElement(
 	  Route,
@@ -77,7 +78,8 @@
 	  React.createElement(Route, { path: 'forecast/:spotId', component: Forecast }),
 	  React.createElement(Route, { path: 'test', component: Test }),
 	  React.createElement(Route, { path: 'search', component: Search }),
-	  React.createElement(Route, { path: 'county/:id', component: County })
+	  React.createElement(Route, { path: 'county/:id', component: County }),
+	  React.createElement(Route, { path: 'region/:id', component: Region })
 	);
 	
 	document.addEventListener('DOMContentLoaded', function () {
@@ -37187,6 +37189,59 @@
 			var self = this;
 			$.ajax({
 				url: 'api/counties/' + self.props.params.id + '/spots/',
+				type: 'GET',
+				success: function (data) {
+					self.setState({ spots: data });
+				}
+			});
+		},
+		formatResponse: function () {
+			var result = [];
+			var self = this;
+			this.state.spots.forEach(function (spot) {
+				result.push(React.createElement(
+					'div',
+					{ className: 'col-md-3' },
+					React.createElement(Linkbox, { history: self.props.history, text: spot.name, link: '/forecast/' + spot.id })
+				));
+			});
+			return result;
+		},
+		render: function () {
+			if (!this.state || !this.state.spots) {
+				return React.createElement(
+					'div',
+					null,
+					'Loading'
+				);
+			} else {
+				return React.createElement(
+					'div',
+					{ className: 'container' },
+					this.formatResponse()
+				);
+			}
+		}
+	});
+	
+	module.exports = County;
+
+/***/ },
+/* 277 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var Search = __webpack_require__(274);
+	var Linkbox = __webpack_require__(275);
+	
+	var County = React.createClass({
+		displayName: 'County',
+	
+		componentDidMount: function () {
+	
+			var self = this;
+			$.ajax({
+				url: 'api/regions/' + self.props.params.id + '/spots/',
 				type: 'GET',
 				success: function (data) {
 					self.setState({ spots: data });

@@ -16,6 +16,7 @@ var Forecast = require('./components/forecast');
 var Test = require('./components/test');
 var Search = require('./components/search');
 var County = require('./components/county');
+var Region = require('./components/region');
 
 var routes = (
     <Route path="/" component={App}>
@@ -29,6 +30,7 @@ var routes = (
       <Route path="test" component={Test}/>
       <Route path="search" component={Search}/>
       <Route path="county/:id" component={County}/>
+      <Route path="region/:id" component={Region}/>
     </Route>
 );
 
