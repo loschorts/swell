@@ -31830,11 +31830,11 @@
 	      return;
 	    }
 	    var favs = this.state.user.favorites.slice(1);
-	
+	    var self = this;
 	    var els = favs.map(function (spot_id, idx) {
 	      return React.createElement(
 	        'div',
-	        { className: 'col-md-4' },
+	        { className: 'col-md-4', onClick: self.redirectForecast.bind(self, spot_id) },
 	        React.createElement(SpotPreview, { key: idx, spotId: spot_id })
 	      );
 	    });
@@ -31853,11 +31853,11 @@
 	    if (typeof this.state.home === 'undefined') {
 	      return;
 	    }
-	
+	    var self = this;
 	    var result = this.state.home.neighbors.map(function (neighborId, idx) {
 	      return React.createElement(
 	        'div',
-	        { className: 'col-md-4' },
+	        { className: 'col-md-4', onClick: self.redirectForecast.bind(self, neighborId) },
 	        React.createElement(SpotPreview, { key: idx, spotId: neighborId })
 	      );
 	    });
@@ -31986,6 +31986,9 @@
 			this.updateCountyForecast(_spot);
 		},
 		updateCountyForecast: function (spot) {
+			if (!spot) {
+				return;
+			}
 			var _forecast = CountyForecastStore.getCountyForecast(spot.spitcast_county);
 			if (!_forecast) {
 				ForecastAPIUtil.fetchCountyForecast(spot.spitcast_county);

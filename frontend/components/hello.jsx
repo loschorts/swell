@@ -52,9 +52,13 @@ var Hello = React.createClass({
       return;
     }
     var favs = this.state.user.favorites.slice(1);
-
+    var self = this;
     var els = favs.map(function(spot_id, idx){
-      return <div className="col-md-4"><SpotPreview key={idx} spotId={spot_id}/></div>
+      return (
+        <div className="col-md-4" onClick={self.redirectForecast.bind(self, spot_id)}>
+          <SpotPreview key={idx} spotId={spot_id}/>
+        </div>
+      );
     });
     return <div className="container-fluid feature-box"><h3>Favorites</h3>{els}</div>;
   },
@@ -62,12 +66,17 @@ var Hello = React.createClass({
     if (typeof this.state.home === 'undefined'){ 
       return;
     }
-
+    var self = this;
     var result = this.state.home.neighbors.map(function(neighborId, idx){
-      return <div className="col-md-4"><SpotPreview key={idx} spotId={neighborId}/></div>;
+      return (
+        <div className="col-md-4" onClick={self.redirectForecast.bind(self, neighborId)}>
+          <SpotPreview key={idx} spotId={neighborId}/>
+        </div>
+      );
     });
 
-    return <div className="container-fluid feature-box"><h3>Spots Nearby</h3>{result}</div>;
+    return <div className="container-fluid feature-box">
+    <h3>Spots Nearby</h3>{result}</div>;
   },
   render: function(){
     return(

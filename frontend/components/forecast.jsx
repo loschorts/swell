@@ -33,6 +33,7 @@ var Forecast = React.createClass({
 		this.updateCountyForecast(_spot);
 	},
 	updateCountyForecast: function(spot){
+		if (!spot) {return;}
 		var _forecast = CountyForecastStore.getCountyForecast(spot.spitcast_county);
 		if (!_forecast) {
 			ForecastAPIUtil.fetchCountyForecast(spot.spitcast_county);
