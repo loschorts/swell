@@ -17,10 +17,7 @@ var TempWidget = require('./temp_widget');
 var SpotFocus = require('./spot_focus');
 
 var Forecast = React.createClass({
-	getInitialState:function(){
-		return {};
-	},
-	componentDidMount: function(){
+	componentWillMount: function(){
 		SpotStore.addListener(this.updateSpot);
 		CountyForecastStore.addListener(this.updateCountyForecast);
 		var _spot = SpotStore.getSpot(this.props.params.spotId);
@@ -31,21 +28,20 @@ var Forecast = React.createClass({
 		}
 	},
 	updateSpot: function(){
-		this.setState({spot: 5});
-		// this.setState({spot: SpotStore.getSpot(this.props.params.spotId)});
-		debugger
-		this.updateCountyForecast();
+		_spot = SpotStore.getSpot(this.props.params.spotId);
+		this.setState({spot: _spot});
+		this.updateCountyForecast(_spot);
 	},
-	updateCountyForecast: function(){
-		var _forecast = CountyForecastStore.getCountyForecast(this.state.spot.spitcast_county);
+	updateCountyForecast: function(spot){
+		var _forecast = CountyForecastStore.getCountyForecast(spot.spitcast_county);
 		if (!_forecast) {
-			ForecastAPIUtil.fetchCountyForecast(this.state.spot.spitcast_county);
+			ForecastAPIUtil.fetchCountyForecast(spot.spitcast_county);
 		} else {
 			this.setState({countyForecast: _forecast});
 		}
 	},
 	render: function(){
-		if (!this.state || !this.state.spot || !this.state.countyForecast) {
+		if (!this.state || !this.state.countyForecast) {
 			return <div>Fetching Forecast</div>;
 		} else {		
 			current = CountyForecastStore.getCurrentCountyForecast(this.state.spot.spitcast_county);
