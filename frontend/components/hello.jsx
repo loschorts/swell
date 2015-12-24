@@ -1,7 +1,6 @@
 var React = require('react');
 
 //Components
-var HelloNavbar = require('./hello_navbar');
 var SpotFocus = require('./spot_focus');
 var SpotPreview = require('./spot_preview');
 
@@ -81,7 +80,6 @@ var Hello = React.createClass({
   render: function(){
     return(
       <div className="container hello">
-        <HelloNavbar history={this.props.history}/>
         {this.home()}
         {this.favorites()}
         {this.neighbors()}

@@ -24443,6 +24443,7 @@
 
 	var React = __webpack_require__(1);
 	var UserStore = __webpack_require__(211);
+	var HelloNavbar = __webpack_require__(272);
 	
 	var App = React.createClass({
 		displayName: 'App',
@@ -24451,6 +24452,15 @@
 			return React.createElement(
 				'div',
 				null,
+				React.createElement(
+					'div',
+					{ className: 'container' },
+					React.createElement(
+						'div',
+						{ className: 'row' },
+						React.createElement(HelloNavbar, { history: this.props.history })
+					)
+				),
 				this.props.children
 			);
 		}
@@ -31315,11 +31325,6 @@
 	      'div',
 	      { className: 'container-fluid' },
 	      React.createElement(
-	        'h1',
-	        { className: 'white' },
-	        this.state.user.username
-	      ),
-	      React.createElement(
 	        'div',
 	        { className: 'navbar-header navbar-right' },
 	        React.createElement(
@@ -31767,7 +31772,6 @@
 	var React = __webpack_require__(1);
 	
 	//Components
-	var HelloNavbar = __webpack_require__(272);
 	var SpotFocus = __webpack_require__(269);
 	var SpotPreview = __webpack_require__(273);
 	
@@ -31877,7 +31881,6 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'container hello' },
-	      React.createElement(HelloNavbar, { history: this.props.history }),
 	      this.home(),
 	      this.favorites(),
 	      this.neighbors()
