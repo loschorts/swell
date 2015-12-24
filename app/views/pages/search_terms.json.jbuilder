@@ -11,7 +11,13 @@ def getLink item
 	end
 end
 
+result = {}
+
+@items.each do |item|
+	result[item.name] = getLink(item)
+end
+
 json.array! @items do |item|
-	json.term item.name
+	json.text item.name
 	json.link getLink(item)
 end

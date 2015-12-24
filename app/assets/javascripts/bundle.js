@@ -60,7 +60,7 @@
 	var SignUpForm = __webpack_require__(253);
 	var Forecast = __webpack_require__(254);
 	var Test = __webpack_require__(273);
-	
+	var Search = __webpack_require__(274);
 	var routes = React.createElement(
 	  Route,
 	  { path: '/', component: App },
@@ -73,7 +73,8 @@
 	  ),
 	  React.createElement(Route, { path: 'hello', component: Hello }),
 	  React.createElement(Route, { path: 'forecast/:spotId', component: Forecast }),
-	  React.createElement(Route, { path: 'test', component: Test })
+	  React.createElement(Route, { path: 'test', component: Test }),
+	  React.createElement(Route, { path: 'search', component: Search })
 	);
 	
 	document.addEventListener('DOMContentLoaded', function () {
@@ -37031,8 +37032,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var Search = __webpack_require__(275);
-	var Linkbox = __webpack_require__(274);
+	var Search = __webpack_require__(274);
+	var Linkbox = __webpack_require__(275);
 	
 	var Test = React.createClass({
 	  displayName: 'Test',
@@ -37051,6 +37052,81 @@
 
 /***/ },
 /* 274 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var linkedState = __webpack_require__(238);
+	
+	var LinkBox = __webpack_require__(275);
+	
+	var Search = React.createClass({
+		displayName: 'Search',
+	
+		mixins: [linkedState],
+		getInitialState: function () {
+			return {
+				query: "",
+				terms: {}
+			};
+		},
+		componentDidMount: function () {
+			this.getTerms();
+		},
+		getTerms: function () {
+			var self = this;
+			$.ajax({
+				url: '/api/search-terms',
+				type: 'get',
+				success: function (data) {
+					self.setState({ terms: data });
+				}
+	
+			});
+		},
+		results: function () {
+			if (!this.state.terms) {
+				return;
+			}
+			var _results = [];
+			for (var term in this.state.terms) if (term.toLowerCase().includes(this.state.query.toLowerCase())) {
+				_results.push(React.createElement(
+					'div',
+					{ className: 'col-md-3' },
+					React.createElement(LinkBox, { history: this.props.history,
+						text: term,
+						link: this.state.terms[term] })
+				));
+			}
+			return _results;
+		},
+		render: function () {
+			return React.createElement(
+				'div',
+				{ className: 'container' },
+				React.createElement(
+					'div',
+					{ className: 'centered' },
+					React.createElement(
+						'h3',
+						null,
+						'Search: '
+					),
+					React.createElement('input', { className: 'search-field', valueLink: this.linkState('query') })
+				),
+				React.createElement(
+					'div',
+					{ className: 'row featurebox' },
+					this.results()
+				)
+			);
+		}
+	
+	});
+	
+	module.exports = Search;
+
+/***/ },
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -37076,37 +37152,6 @@
 	});
 	
 	module.exports = Linkbox;
-
-/***/ },
-/* 275 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var linkedState = __webpack_require__(238);
-	
-	var Search = React.createClass({
-		displayName: 'Search',
-	
-		mixins: [linkedState],
-		getInitialState: function () {
-			return {
-				query: ""
-			};
-		},
-		componentWillMount: function () {},
-		result: function () {},
-		render: function () {
-			return React.createElement(
-				'div',
-				null,
-				React.createElement('input', { valueLink: this.linkState('query') }),
-				this.state.query
-			);
-		}
-	
-	});
-	
-	module.exports = Search;
 
 /***/ }
 /******/ ]);
