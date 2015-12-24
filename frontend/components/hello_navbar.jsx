@@ -38,6 +38,10 @@ var HelloNavbar = React.createClass({
       return <li><a onClick={this.signOut} href="/sign-out">Sign Out</a></li>;
     }
   },
+  search: function(e){
+    e.preventDefault();
+    this.props.history.push('search');
+  },
   render: function(){
     return(
           <div className="container-fluid hello-navbar">
@@ -52,7 +56,8 @@ var HelloNavbar = React.createClass({
                   </a>
                   <ul className="dropdown-menu">
                       <li><a 
-                      href="#">Customize Me!!!</a></li>
+                      onClick={this.search}
+                      href="/search">Search</a></li>
                     <li><a 
                       onClick={this.guestLogin}
                       href="/guest-login">Sign in as Guest</a></li>

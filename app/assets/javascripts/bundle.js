@@ -31274,6 +31274,10 @@
 	      );
 	    }
 	  },
+	  search: function (e) {
+	    e.preventDefault();
+	    this.props.history.push('search');
+	  },
 	  render: function () {
 	    return React.createElement(
 	      'div',
@@ -31311,8 +31315,9 @@
 	                React.createElement(
 	                  'a',
 	                  {
-	                    href: '#' },
-	                  'Customize Me!!!'
+	                    onClick: this.search,
+	                    href: '/search' },
+	                  'Search'
 	                )
 	              ),
 	              React.createElement(
@@ -32817,7 +32822,6 @@
 		},
 		updateCountyForecast: function () {
 			var spot = SpotStore.getSpot(this.props.params.spotId);
-			debugger;
 			if (!spot) {
 				return;
 			}
@@ -36981,7 +36985,15 @@
 		},
 		render: function () {
 			if (!this.state || !this.state.spot || !this.state.spot.weather) {
-				return React.createElement('div', null);
+				return React.createElement(
+					'div',
+					{ className: 'widget' },
+					React.createElement(
+						'h4',
+						null,
+						'Current Weather'
+					)
+				);
 			} else {
 				weather = this.state.spot.weather;
 				if (weather.conditions === 'undefined-undefined') {

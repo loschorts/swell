@@ -26,7 +26,7 @@ var TempWidget = React.createClass({
 	},
 	render: function(){
 		if (!this.state || !this.state.spot || !this.state.spot.weather){
-			return <div/>;
+			return <div className="widget"><h4>Current Weather</h4></div>;
 		} else {
 			weather = this.state.spot.weather;
 			if (weather.conditions === 'undefined-undefined') {
