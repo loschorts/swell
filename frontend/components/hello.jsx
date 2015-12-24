@@ -33,11 +33,19 @@ var Hello = React.createClass({
   userInfo: function(){
     return <h3> Hello, {this.state.user.username} </h3>;
   },
+  redirectForecast: function(id){
+    this.props.history.push('/forecast/'+id);
+  },
   home: function(){
     if (typeof this.state.home === 'undefined') {
       return;
     }
-    return <div><h1>Home</h1><SpotFocus spotId={this.state.home.id}/></div>;
+    return (
+        <div onClick={this.redirectForecast.bind(this, this.state.home.id)}>
+          <h1>Home</h1>
+          <SpotFocus spotId={this.state.home.id}/>
+        </div>
+    );
   },
   favorites: function(){
     if (this.state.user.favorites.length < 2) {
@@ -62,7 +70,6 @@ var Hello = React.createClass({
     return <div className="container-fluid feature-box"><h3>Spots Nearby</h3>{result}</div>;
   },
   render: function(){
-    debugger
     return(
       <div className="container hello">
         <HelloNavbar history={this.props.history}/>
