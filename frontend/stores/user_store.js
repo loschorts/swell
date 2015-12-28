@@ -15,6 +15,9 @@ UserStore.__onDispatch = function(payload){
 		case "LOGOUT":
 			UserStore.logout();
 			break;
+		case "UPDATE":
+			UserStore.update(payload.user);
+			break;
 	}
 };
 
@@ -30,6 +33,11 @@ UserStore.login = function(user){
 
 UserStore.logout = function(){
 	_currentUser = nullUser;
+	UserStore.__emitChange();
+};
+
+UserStore.update = function(user){
+	_currentUser = user;
 	UserStore.__emitChange();
 };
 

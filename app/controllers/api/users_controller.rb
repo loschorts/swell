@@ -1,3 +1,4 @@
+require 'byebug'
 class Api::UsersController < ApplicationController
 
   def create
@@ -22,11 +23,11 @@ class Api::UsersController < ApplicationController
     user = User.find(params[:id])
     render json: "destroyed #{user.username}"
   end
-
+  
   private
 
   def user_params
-    params.require(:user).permit(:username, :password)
+    params.require(:user).permit(:username, :password, :favorites)
   end
 
 end

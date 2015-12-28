@@ -1,13 +1,13 @@
 var React = require('react');
 var Search = require('./search');
-var Linkbox = require('./linkbox');
+var FavoriteButton = require('./favorite_button');
 
 var Test = React.createClass({
   render: function() {
 
     return (
     	<div className="container">
-    		<Search/>
+    		<FavoriteButton id={15}/>
     	</div>
     	);
   }

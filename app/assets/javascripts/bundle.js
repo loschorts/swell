@@ -24495,6 +24495,9 @@
 			case "LOGOUT":
 				UserStore.logout();
 				break;
+			case "UPDATE":
+				UserStore.update(payload.user);
+				break;
 		}
 	};
 	
@@ -24509,6 +24512,11 @@
 	
 	UserStore.logout = function () {
 		_currentUser = nullUser;
+		UserStore.__emitChange();
+	};
+	
+	UserStore.update = function (user) {
+		_currentUser = user;
 		UserStore.__emitChange();
 	};
 	
@@ -31427,6 +31435,39 @@
 					}
 				}
 			});
+		},
+		addFavorite: function (spotId) {
+			var user = UserStore.currentUser();
+			if (!user.id) {
+				return;
+			}
+	
+			var favorite = { user_id: user.id, spot_id: spotId };
+			$.ajax({
+				url: 'api/favorites/',
+				type: 'POST',
+				data: { favorite: favorite },
+				success: function (user) {
+					UserActions.update(user);
+				}
+			});
+		},
+		removeFavorite: function (spotId) {
+			var user = UserStore.currentUser();
+			if (!user.id) {
+				return;
+			}
+	
+			var favorite = { user_id: user.id, spot_id: spotId };
+	
+			$.ajax({
+				url: 'api/favorites/' + spotId + '/',
+				type: 'DELETE',
+				data: { favorite: favorite },
+				success: function (user) {
+					UserActions.update(user);
+				}
+			});
 		}
 	};
 	
@@ -31454,6 +31495,12 @@
 		show: function (user) {
 			Dispatcher.dispatch({
 				actionType: "SHOW_USER",
+				user: user
+			});
+		},
+		update: function (user) {
+			Dispatcher.dispatch({
+				actionType: "UPDATE",
 				user: user
 			});
 		}
@@ -37054,7 +37101,7 @@
 
 	var React = __webpack_require__(1);
 	var Search = __webpack_require__(274);
-	var Linkbox = __webpack_require__(275);
+	var FavoriteButton = __webpack_require__(278);
 	
 	var Test = React.createClass({
 	  displayName: 'Test',
@@ -37064,7 +37111,7 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'container' },
-	      React.createElement(Search, null)
+	      React.createElement(FavoriteButton, { id: 15 })
 	    );
 	  }
 	});
@@ -37278,6 +37325,81 @@
 	});
 	
 	module.exports = County;
+
+/***/ },
+/* 278 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserStore = __webpack_require__(211);
+	var UserApiUtil = __webpack_require__(233);
+	
+	var FavoriteButton = React.createClass({
+		displayName: 'FavoriteButton',
+	
+		getInitialState: function () {
+			return {
+				favorites: UserStore.currentUser().favorites
+			};
+		},
+		componentDidMount: function () {
+			UserStore.addListener(this.updateFavorites);
+		},
+		updateFavorites: function () {
+			this.setState({ favorites: UserStore.currentUser().favorites });
+		},
+		button: function () {
+			var thisIsFav = false;
+			if (this.state.favorites.length < 1) {
+				return "BUTTON";
+			}
+			var self = this;
+			this.state.favorites.forEach(function (fav) {
+				if (fav === self.props.id) {
+					thisIsFav = true;
+				}
+			});
+	
+			if (thisIsFav) {
+				return this.favorite();
+			} else {
+				return this.notFavorite();
+			}
+		},
+		favorite: function () {
+			var self = this;
+			return React.createElement(
+				'div',
+				null,
+				React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/v1451331378/fav.png',
+					onClick: function () {
+						UserApiUtil.removeFavorite(self.props.id);
+					}
+				})
+			);
+		},
+		notFavorite: function () {
+			var self = this;
+			return React.createElement(
+				'div',
+				null,
+				React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/v1451331329/not_fav.png',
+					onClick: function () {
+						UserApiUtil.addFavorite(self.props.id);
+					}
+				})
+			);
+		},
+		render: function () {
+			return React.createElement(
+				'div',
+				null,
+				this.button()
+			);
+		}
+	});
+	
+	module.exports = FavoriteButton;
 
 /***/ }
 /******/ ]);

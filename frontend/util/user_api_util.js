@@ -62,7 +62,36 @@ var UserAPIUtil = {
 					UserActions.login(user);
 				}
 			}
-		})
+		});
+	},
+	addFavorite: function(spotId){
+		var user = UserStore.currentUser();
+		if (!user.id){return;}
+
+		var favorite = {user_id: user.id, spot_id: spotId};
+		$.ajax({
+			url: 'api/favorites/',
+			type: 'POST',
+			data: {favorite: favorite},
+			success: function(user){
+				UserActions.update(user);
+			}
+		});
+	},
+	removeFavorite: function(spotId){
+		var user = UserStore.currentUser();
+		if (!user.id){return;}
+
+		var favorite = {user_id: user.id, spot_id: spotId};
+
+		$.ajax({
+			url: 'api/favorites/' + spotId + '/',
+			type: 'DELETE',
+			data: {favorite: favorite},
+			success: function(user) {
+				UserActions.update(user);
+			}
+		});
 	}
 };
 

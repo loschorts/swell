@@ -18,6 +18,12 @@ UserActions = {
 			actionType: "SHOW_USER",
 			user: user
 		});
+	},
+	update: function(user){
+		Dispatcher.dispatch({
+			actionType: "UPDATE",
+			user: user
+		});
 	}
 };
 
