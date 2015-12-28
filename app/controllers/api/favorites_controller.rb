@@ -6,13 +6,15 @@ class Api::FavoritesController < ApplicationController
 
 		if @favorite.save
 			@user = User.find(params[:favorite][:user_id])
-			render 'api/users/user/', user: @user
+			render 'api/users/show/', user: @user
 		end
 	end
 
 	def destroy
-		@favorite = Favorite.find(params[:id])
-		render json: @favorite.destroy
+		if Favorite.destroy(Favorite.find_by(spot_id: params[:id]))
+			@user = User.find(params[:favorite][:user_id])
+			render 'api/users/show/', user: @user
+		end
 	end
 
 	private
