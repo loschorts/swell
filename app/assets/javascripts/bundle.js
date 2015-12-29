@@ -31966,9 +31966,10 @@
 	//Components
 	var SpotFocus = __webpack_require__(243);
 	var SpotPreview = __webpack_require__(252);
+	var FavoriteButton = __webpack_require__(278);
 	
 	//Stores & Utils
-	window.UserStore = __webpack_require__(211);
+	var UserStore = __webpack_require__(211);
 	var SpotStore = __webpack_require__(248);
 	var UserAPIUtil = __webpack_require__(233);
 	var SpotAPIUtil = __webpack_require__(244);
@@ -31983,42 +31984,28 @@
 	  },
 	  componentDidMount: function () {
 	    UserStore.addListener(this.updateUser);
-	    SpotStore.addListener(this.updateHome);
 	    UserAPIUtil.fetchCurrentUser();
 	  },
 	  updateUser: function () {
-	    console.log("updated user");
 	    this.setState({ user: UserStore.currentUser() });
-	    SpotAPIUtil.fetchSpot(this.state.user.favorites[0]);
-	  },
-	  updateHome: function () {
-	    this.setState({ home: SpotStore.getSpot(this.state.user.favorites[0]) });
-	  },
-	  userInfo: function () {
-	    return React.createElement(
-	      'h3',
-	      null,
-	      ' Hello, ',
-	      this.state.user.username,
-	      ' '
-	    );
 	  },
 	  redirectForecast: function (id) {
 	    this.props.history.push('/forecast/' + id);
 	  },
 	  home: function () {
-	    if (typeof this.state.home === 'undefined') {
+	    var homeId = this.state.user.favorites[0];
+	    if (!homeId) {
 	      return;
 	    }
 	    return React.createElement(
 	      'div',
-	      { onClick: this.redirectForecast.bind(this, this.state.home.id) },
+	      { onClick: this.redirectForecast.bind(this, homeId) },
 	      React.createElement(
 	        'h1',
 	        null,
 	        'Home'
 	      ),
-	      React.createElement(SpotFocus, { spotId: this.state.home.id })
+	      React.createElement(SpotFocus, { spotId: homeId })
 	    );
 	  },
 	  favorites: function () {
@@ -32027,11 +32014,11 @@
 	    }
 	    var favs = this.state.user.favorites.slice(1);
 	    var self = this;
-	    var els = favs.map(function (spot_id, idx) {
+	    var els = favs.map(function (spotId, idx) {
 	      return React.createElement(
 	        'div',
-	        { className: 'col-md-4', onClick: self.redirectForecast.bind(self, spot_id) },
-	        React.createElement(SpotPreview, { key: idx, spotId: spot_id })
+	        { className: 'col-md-4', onClick: self.redirectForecast.bind(self, spotId) },
+	        React.createElement(SpotPreview, { key: idx, spotId: spotId })
 	      );
 	    });
 	    return React.createElement(
@@ -32046,11 +32033,12 @@
 	    );
 	  },
 	  neighbors: function () {
-	    if (typeof this.state.home === 'undefined') {
+	    var home = SpotStore.getSpot(this.state.user.favorites[0]);
+	    if (!home) {
 	      return;
 	    }
 	    var self = this;
-	    var result = this.state.home.neighbors.map(function (neighborId, idx) {
+	    var result = home.neighbors.map(function (neighborId, idx) {
 	      return React.createElement(
 	        'div',
 	        { className: 'col-md-4', onClick: self.redirectForecast.bind(self, neighborId) },
@@ -32073,6 +32061,7 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'container hello' },
+	      React.createElement(FavoriteButton, { id: this.state.user.favorites[0] }),
 	      this.home(),
 	      this.favorites(),
 	      this.neighbors()

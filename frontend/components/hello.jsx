@@ -3,9 +3,10 @@ var React = require('react');
 //Components
 var SpotFocus = require('./spot_focus');
 var SpotPreview = require('./spot_preview');
+var FavoriteButton = require('./favorite_button');
 
 //Stores & Utils
-window.UserStore = require('../stores/user_store');
+var UserStore = require('../stores/user_store');
 var SpotStore = require('../stores/spot_store');
 var UserAPIUtil = require('../util/user_api_util');
 var SpotAPIUtil = require('../util/spot_api_util');
@@ -18,31 +19,23 @@ var Hello = React.createClass({
   },
   componentDidMount: function(){
     UserStore.addListener(this.updateUser);
-    SpotStore.addListener(this.updateHome);
     UserAPIUtil.fetchCurrentUser();
   },
   updateUser: function(){
-    console.log("updated user");
     this.setState({user: UserStore.currentUser()});
-    SpotAPIUtil.fetchSpot(this.state.user.favorites[0]);
-  },
-  updateHome: function(){
-    this.setState({home: SpotStore.getSpot(this.state.user.favorites[0])});
-  },
-  userInfo: function(){
-    return <h3> Hello, {this.state.user.username} </h3>;
   },
   redirectForecast: function(id){
     this.props.history.push('/forecast/'+id);
   },
   home: function(){
-    if (typeof this.state.home === 'undefined') {
+    var homeId = this.state.user.favorites[0];
+    if (!homeId) {
       return;
     }
     return (
-        <div onClick={this.redirectForecast.bind(this, this.state.home.id)}>
+        <div onClick={this.redirectForecast.bind(this, homeId)}>
           <h1>Home</h1>
-          <SpotFocus spotId={this.state.home.id}/>
+          <SpotFocus spotId={homeId}/>
         </div>
     );
   },
@@ -52,21 +45,22 @@ var Hello = React.createClass({
     }
     var favs = this.state.user.favorites.slice(1);
     var self = this;
-    var els = favs.map(function(spot_id, idx){
+    var els = favs.map(function(spotId, idx){
       return (
-        <div className="col-md-4" onClick={self.redirectForecast.bind(self, spot_id)}>
-          <SpotPreview key={idx} spotId={spot_id}/>
+        <div className="col-md-4" onClick={self.redirectForecast.bind(self, spotId)}>
+          <SpotPreview key={idx} spotId={spotId}/>
         </div>
       );
     });
     return <div className="container-fluid feature-box"><h3>Favorites</h3>{els}</div>;
   },
   neighbors: function(){
-    if (typeof this.state.home === 'undefined'){ 
+    var home = SpotStore.getSpot(this.state.user.favorites[0]);
+    if (!home){ 
       return;
     }
     var self = this;
-    var result = this.state.home.neighbors.map(function(neighborId, idx){
+    var result = home.neighbors.map(function(neighborId, idx){
       return (
         <div className="col-md-4" onClick={self.redirectForecast.bind(self, neighborId)}>
           <SpotPreview key={idx} spotId={neighborId}/>
@@ -80,6 +74,7 @@ var Hello = React.createClass({
   render: function(){
     return(
       <div className="container hello">
+        <FavoriteButton id={this.state.user.favorites[0]}/>
         {this.home()}
         {this.favorites()}
         {this.neighbors()}
