@@ -12,7 +12,6 @@ var SpotApiUtil = {
 			}
 		});
 	},
-
 };
 
 module.exports = SpotApiUtil;

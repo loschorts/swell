@@ -7,3 +7,4 @@ json.name 				spot.name
 json.description 		spot.description
 json.county_name 		spot.county.name 
 json.neighbors			spot.neighbors.map {|n| n.id}
+json.region				spot.region

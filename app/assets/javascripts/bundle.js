@@ -31970,13 +31970,14 @@
 	
 	//Stores & Utils
 	var UserStore = __webpack_require__(211);
+	var SpotStore = __webpack_require__(248);
 	var UserAPIUtil = __webpack_require__(233);
 	var SpotAPIUtil = __webpack_require__(244);
 	
 	var Hello = React.createClass({
 	  displayName: 'Hello',
 	
-	  // lifecycle methods
+	  // lifecycle events
 	  getInitialState: function () {
 	    return {
 	      user: UserStore.nullUser()
@@ -31984,6 +31985,7 @@
 	  },
 	  componentDidMount: function () {
 	    UserStore.addListener(this.updateUser);
+	    SpotStore.addListener(this.updateHome);
 	    UserAPIUtil.fetchCurrentUser();
 	  },
 	
@@ -31991,6 +31993,14 @@
 	  updateUser: function () {
 	    this.setState({
 	      user: UserStore.currentUser()
+	    });
+	  },
+	  updateHome: function () {
+	    if (this.state.user.favorites.length < 1) {
+	      return;
+	    }
+	    this.setState({
+	      home: SpotStore.getSpot(this.state.user.favorites[0])
 	    });
 	  },
 	
@@ -32017,16 +32027,39 @@
 	    if (this.state.user.favorites.length < 2) {
 	      return;
 	    }
-	    return this.state.user.favorites.slice(1).map(function (spotId) {
-	      return React.createElement(SpotPreview, { spotId: spotId });
+	
+	    var favs = [];
+	
+	    this.state.user.favorites.slice(1).forEach(function (spotId, idx) {
+	      favs.push(React.createElement(SpotPreview, { key: idx, spotId: spotId }));
 	    });
+	
+	    return favs;
 	  },
 	  links: function () {
-	    return [React.createElement(Linkbox, {
+	    var links = [];
+	
+	    links.push(React.createElement(Linkbox, {
+	      key: links.length,
 	      history: this.props.history,
 	      link: "/search",
 	      text: "Search for a Spot"
-	    })];
+	    }));
+	
+	    if (this.state.home) {
+	      links.push(React.createElement(Linkbox, {
+	        key: links.length,
+	        history: this.props.history,
+	        link: "/region/" + this.state.home.region.id,
+	        text: this.state.home.region.name
+	      }));
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'container featurebox' },
+	      links
+	    );
 	  }
 	});
 	
@@ -32095,8 +32128,6 @@
 			}
 		},
 		render: function () {
-			console.log({ props: this.props, state: this.state });
-	
 			var spotForecast = this.state.spotForecast;
 			var countyForecast = this.state.countyForecast;
 			var _swell = JSON.stringify(countyForecast.swell);
@@ -32194,7 +32225,6 @@
 				}
 			});
 		}
-	
 	};
 	
 	module.exports = SpotApiUtil;

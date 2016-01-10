@@ -7,12 +7,13 @@ var Linkbox = require('./linkbox');
 
 //Stores & Utils
 var UserStore = require('../stores/user_store');
+var SpotStore = require('../stores/spot_store');
 var UserAPIUtil = require('../util/user_api_util');
 var SpotAPIUtil = require('../util/spot_api_util');
 
 var Hello = React.createClass({
 
-  // lifecycle methods
+  // lifecycle events
   getInitialState: function(){
     return({
       user: UserStore.nullUser()
@@ -20,6 +21,7 @@ var Hello = React.createClass({
   },
   componentDidMount: function(){
     UserStore.addListener(this.updateUser);
+    SpotStore.addListener(this.updateHome);
     UserAPIUtil.fetchCurrentUser();
   },
 
@@ -27,6 +29,12 @@ var Hello = React.createClass({
   updateUser: function(){
     this.setState({
       user: UserStore.currentUser()
+    });
+  },
+  updateHome: function(){
+    if (this.state.user.favorites.length < 1) {return;}
+    this.setState({
+      home: SpotStore.getSpot(this.state.user.favorites[0])
     });
   },
 
@@ -53,20 +61,41 @@ var Hello = React.createClass({
     if (this.state.user.favorites.length < 2) {
       return;
     }
-    return this.state.user.favorites.slice(1).map(function(spotId){
-      return <SpotPreview spotId={spotId}/>
+
+    var favs = [];
+
+    this.state.user.favorites.slice(1).forEach(function(spotId, idx){
+      favs.push(<SpotPreview key={idx} spotId={spotId}/>);
     });
+
+    return favs;
   },
   links: function(){
-    return [
-    <Linkbox 
-      history={this.props.history} 
-      link={"/search"} 
-      text={"Search for a Spot"}
-    />
+    var links = []
 
+    links.push(
+      <Linkbox 
+        key={links.length}
+        history={this.props.history} 
+        link={"/search"} 
+        text={"Search for a Spot"}
+      />   
+    );
 
-    ];
+    if (this.state.home) {
+      links.push(
+        <Linkbox 
+          key={links.length}
+          history={this.props.history} 
+          link={"/region/" + this.state.home.region.id} 
+          text={this.state.home.region.name}
+        />
+      );
+    }
+
+    return (
+        <div className="container featurebox">{links}</div>
+    );
   }
 });
 
