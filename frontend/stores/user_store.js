@@ -25,6 +25,9 @@ UserStore.currentUser = function(){
 	return _currentUser;
 };
 
+UserStore.nullUser = function(){
+	return nullUser;
+};
 
 UserStore.login = function(user){
 	_currentUser = user;
@@ -32,7 +35,7 @@ UserStore.login = function(user){
 };
 
 UserStore.logout = function(){
-	_currentUser = nullUser;
+	_currentUser = this.nullUser;
 	UserStore.__emitChange();
 };
 

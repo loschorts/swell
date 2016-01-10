@@ -57,12 +57,12 @@
 	var Hello = __webpack_require__(242);
 	var Navbar = __webpack_require__(236);
 	var SignInForm = __webpack_require__(237);
-	var SignUpForm = __webpack_require__(253);
-	var Forecast = __webpack_require__(254);
-	var Test = __webpack_require__(273);
-	var Search = __webpack_require__(274);
-	var County = __webpack_require__(276);
-	var Region = __webpack_require__(277);
+	var SignUpForm = __webpack_require__(254);
+	var Forecast = __webpack_require__(255);
+	var Test = __webpack_require__(274);
+	var Search = __webpack_require__(275);
+	var County = __webpack_require__(277);
+	var Region = __webpack_require__(278);
 	
 	var routes = React.createElement(
 	  Route,
@@ -24458,15 +24458,6 @@
 			return React.createElement(
 				'div',
 				null,
-				React.createElement(
-					'div',
-					{ className: 'container' },
-					React.createElement(
-						'div',
-						{ className: 'row' },
-						React.createElement(HelloNavbar, { history: this.props.history })
-					)
-				),
 				this.props.children
 			);
 		}
@@ -24505,13 +24496,17 @@
 		return _currentUser;
 	};
 	
+	UserStore.nullUser = function () {
+		return nullUser;
+	};
+	
 	UserStore.login = function (user) {
 		_currentUser = user;
 		UserStore.__emitChange();
 	};
 	
 	UserStore.logout = function () {
-		_currentUser = nullUser;
+		_currentUser = this.nullUser;
 		UserStore.__emitChange();
 	};
 	
@@ -31966,106 +31961,50 @@
 	//Components
 	var SpotFocus = __webpack_require__(243);
 	var SpotPreview = __webpack_require__(252);
-	var FavoriteButton = __webpack_require__(278);
 	
 	//Stores & Utils
 	var UserStore = __webpack_require__(211);
-	var SpotStore = __webpack_require__(248);
 	var UserAPIUtil = __webpack_require__(233);
 	var SpotAPIUtil = __webpack_require__(244);
 	
 	var Hello = React.createClass({
 	  displayName: 'Hello',
 	
+	  // lifecycle methods
 	  getInitialState: function () {
 	    return {
-	      user: UserStore.currentUser()
+	      user: UserStore.nullUser()
 	    };
 	  },
 	  componentDidMount: function () {
 	    UserStore.addListener(this.updateUser);
 	    UserAPIUtil.fetchCurrentUser();
 	  },
-	  updateUser: function () {
-	    this.setState({ user: UserStore.currentUser() });
-	  },
-	  redirectForecast: function (id) {
-	    this.props.history.push('/forecast/' + id);
-	  },
-	  home: function () {
-	    var homeId = this.state.user.favorites[0];
-	    if (!homeId) {
-	      return;
-	    }
-	    return React.createElement(
-	      'div',
-	      { onClick: this.redirectForecast.bind(this, homeId) },
-	      React.createElement(
-	        'h1',
-	        null,
-	        'Home'
-	      ),
-	      React.createElement(SpotFocus, { spotId: homeId })
-	    );
-	  },
-	  favorites: function () {
-	    if (this.state.user.favorites.length < 2) {
-	      return;
-	    }
-	    var favs = this.state.user.favorites.slice(1);
-	    var self = this;
-	    var els = favs.map(function (spotId, idx) {
-	      return React.createElement(
-	        'div',
-	        { className: 'col-md-4', onClick: self.redirectForecast.bind(self, spotId) },
-	        React.createElement(SpotPreview, { key: idx, spotId: spotId })
-	      );
-	    });
-	    return React.createElement(
-	      'div',
-	      { className: 'container-fluid feature-box' },
-	      React.createElement(
-	        'h3',
-	        null,
-	        'Favorites'
-	      ),
-	      els
-	    );
-	  },
-	  neighbors: function () {
-	    var home = SpotStore.getSpot(this.state.user.favorites[0]);
-	    if (!home) {
-	      return;
-	    }
-	    var self = this;
-	    var result = home.neighbors.map(function (neighborId, idx) {
-	      return React.createElement(
-	        'div',
-	        { className: 'col-md-4', onClick: self.redirectForecast.bind(self, neighborId) },
-	        React.createElement(SpotPreview, { key: idx, spotId: neighborId })
-	      );
-	    });
 	
-	    return React.createElement(
-	      'div',
-	      { className: 'container-fluid feature-box' },
-	      React.createElement(
-	        'h3',
-	        null,
-	        'Spots Nearby'
-	      ),
-	      result
-	    );
+	  //listeners
+	  updateUser: function () {
+	    this.setState({
+	      user: UserStore.currentUser()
+	    });
 	  },
+	
+	  //render
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      { className: 'container hello' },
-	      React.createElement(FavoriteButton, { id: this.state.user.favorites[0] }),
-	      this.home(),
-	      this.favorites(),
-	      this.neighbors()
+	      null,
+	      JSON.stringify(this.state.user),
+	      this.favorites()
 	    );
+	  },
+	
+	  //render helpers
+	
+	  favorites: function () {
+	    debugger;
+	    return this.state.user.favorites.map(function (spotId) {
+	      return React.createElement(SpotFocus, { spotId: spotId });
+	    });
 	  }
 	});
 	
@@ -32134,6 +32073,8 @@
 			}
 		},
 		render: function () {
+			console.log({ props: this.props, state: this.state });
+	
 			var spotForecast = this.state.spotForecast;
 			var countyForecast = this.state.countyForecast;
 			var _swell = JSON.stringify(countyForecast.swell);
@@ -32766,6 +32707,81 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	var UserStore = __webpack_require__(211);
+	var UserApiUtil = __webpack_require__(233);
+	
+	var FavoriteButton = React.createClass({
+		displayName: 'FavoriteButton',
+	
+		getInitialState: function () {
+			return {
+				favorites: UserStore.currentUser().favorites
+			};
+		},
+		componentDidMount: function () {
+			UserStore.addListener(this.updateFavorites);
+		},
+		updateFavorites: function () {
+			this.setState({ favorites: UserStore.currentUser().favorites });
+		},
+		button: function () {
+			var thisIsFav = false;
+			if (this.state.favorites.length < 1) {
+				return "BUTTON";
+			}
+			var self = this;
+			this.state.favorites.forEach(function (fav) {
+				if (fav === self.props.id) {
+					thisIsFav = true;
+				}
+			});
+	
+			if (thisIsFav) {
+				return this.favorite();
+			} else {
+				return this.notFavorite();
+			}
+		},
+		favorite: function () {
+			var self = this;
+			return React.createElement(
+				'div',
+				null,
+				React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/v1451331378/fav.png',
+					onClick: function () {
+						UserApiUtil.removeFavorite(self.props.id);
+					}
+				})
+			);
+		},
+		notFavorite: function () {
+			var self = this;
+			return React.createElement(
+				'div',
+				null,
+				React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/v1451331329/not_fav.png',
+					onClick: function () {
+						UserApiUtil.addFavorite(self.props.id);
+					}
+				})
+			);
+		},
+		render: function () {
+			return React.createElement(
+				'div',
+				null,
+				this.button()
+			);
+		}
+	});
+	
+	module.exports = FavoriteButton;
+
+/***/ },
+/* 254 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
 	var LinkedStateMixin = __webpack_require__(238);
 	var UserAPIUtil = __webpack_require__(233);
 	
@@ -32820,7 +32836,7 @@
 	module.exports = SignUpForm;
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -32830,14 +32846,14 @@
 	var SpotStore = __webpack_require__(248);
 	var CountyForecastStore = __webpack_require__(249);
 	
-	var SwellChart = __webpack_require__(255);
-	var WindChart = __webpack_require__(267);
-	var TideChart = __webpack_require__(268);
+	var SwellChart = __webpack_require__(256);
+	var WindChart = __webpack_require__(268);
+	var TideChart = __webpack_require__(269);
 	
 	//widgets
-	var SwellRadar = __webpack_require__(269);
-	var WindPolar = __webpack_require__(271);
-	var TempWidget = __webpack_require__(272);
+	var SwellRadar = __webpack_require__(270);
+	var WindPolar = __webpack_require__(272);
+	var TempWidget = __webpack_require__(273);
 	
 	var SpotFocus = __webpack_require__(243);
 	
@@ -32932,12 +32948,12 @@
 	module.exports = Forecast;
 
 /***/ },
-/* 255 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var LineChart = __webpack_require__(256).Line;
-	var ChartOptions = __webpack_require__(266);
+	var LineChart = __webpack_require__(257).Line;
+	var ChartOptions = __webpack_require__(267);
 	var TimeUtil = __webpack_require__(250);
 	
 	var SwellChart = React.createClass({
@@ -32997,31 +33013,31 @@
 	module.exports = SwellChart;
 
 /***/ },
-/* 256 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  Bar: __webpack_require__(257),
-	  Doughnut: __webpack_require__(261),
-	  Line: __webpack_require__(262),
-	  Pie: __webpack_require__(263),
-	  PolarArea: __webpack_require__(264),
-	  Radar: __webpack_require__(265),
-	  createClass: __webpack_require__(258).createClass
+	  Bar: __webpack_require__(258),
+	  Doughnut: __webpack_require__(262),
+	  Line: __webpack_require__(263),
+	  Pie: __webpack_require__(264),
+	  PolarArea: __webpack_require__(265),
+	  Radar: __webpack_require__(266),
+	  createClass: __webpack_require__(259).createClass
 	};
 
 
 /***/ },
-/* 257 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var vars = __webpack_require__(258);
+	var vars = __webpack_require__(259);
 	
 	module.exports = vars.createClass('Bar', ['getBarsAtEvent']);
 
 
 /***/ },
-/* 258 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
@@ -33073,7 +33089,7 @@
 	    };
 	
 	    classData.initializeChart = function(nextProps) {
-	      var Chart = __webpack_require__(259);
+	      var Chart = __webpack_require__(260);
 	      var el = this.getDOMNode();
 	      var ctx = el.getContext("2d");
 	      var chart = new Chart(ctx)[chartType](nextProps.data, nextProps.options || {});
@@ -33131,7 +33147,7 @@
 
 
 /***/ },
-/* 259 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -33438,7 +33454,7 @@
 				//Method for warning of errors
 				if (window.console && typeof window.console.warn == "function") console.warn(str);
 			},
-			amd = helpers.amd = ("function" == 'function' && __webpack_require__(260)),
+			amd = helpers.amd = ("function" == 'function' && __webpack_require__(261)),
 			//-- Math methods
 			isNumber = helpers.isNumber = function(n){
 				return !isNaN(parseFloat(n)) && isFinite(n);
@@ -36613,7 +36629,7 @@
 	}).call(this);
 
 /***/ },
-/* 260 */
+/* 261 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
@@ -36621,52 +36637,52 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
-/* 261 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var vars = __webpack_require__(258);
-	
-	module.exports = vars.createClass('Doughnut', ['getSegmentsAtEvent']);
-
-
-/***/ },
 /* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var vars = __webpack_require__(258);
+	var vars = __webpack_require__(259);
 	
-	module.exports = vars.createClass('Line', ['getPointsAtEvent']);
+	module.exports = vars.createClass('Doughnut', ['getSegmentsAtEvent']);
 
 
 /***/ },
 /* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var vars = __webpack_require__(258);
+	var vars = __webpack_require__(259);
 	
-	module.exports = vars.createClass('Pie', ['getSegmentsAtEvent']);
+	module.exports = vars.createClass('Line', ['getPointsAtEvent']);
 
 
 /***/ },
 /* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var vars = __webpack_require__(258);
+	var vars = __webpack_require__(259);
 	
-	module.exports = vars.createClass('PolarArea', ['getSegmentsAtEvent']);
+	module.exports = vars.createClass('Pie', ['getSegmentsAtEvent']);
 
 
 /***/ },
 /* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var vars = __webpack_require__(258);
+	var vars = __webpack_require__(259);
+	
+	module.exports = vars.createClass('PolarArea', ['getSegmentsAtEvent']);
+
+
+/***/ },
+/* 266 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var vars = __webpack_require__(259);
 	
 	module.exports = vars.createClass('Radar', ['getPointsAtEvent']);
 
 
 /***/ },
-/* 266 */
+/* 267 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -36719,12 +36735,12 @@
 	};
 
 /***/ },
-/* 267 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var LineChart = __webpack_require__(256).Line;
-	var ChartOptions = __webpack_require__(266);
+	var LineChart = __webpack_require__(257).Line;
+	var ChartOptions = __webpack_require__(267);
 	var TimeUtil = __webpack_require__(250);
 	
 	var WindChart = React.createClass({
@@ -36784,12 +36800,12 @@
 	module.exports = WindChart;
 
 /***/ },
-/* 268 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var LineChart = __webpack_require__(256).Line;
-	var ChartOptions = __webpack_require__(266);
+	var LineChart = __webpack_require__(257).Line;
+	var ChartOptions = __webpack_require__(267);
 	var TimeUtil = __webpack_require__(250);
 	
 	var WindChart = React.createClass({
@@ -36849,13 +36865,13 @@
 	module.exports = WindChart;
 
 /***/ },
-/* 269 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var Radar = __webpack_require__(256).Radar;
-	var chartOptions = __webpack_require__(266);
-	var parseData = __webpack_require__(270).swellRadarData;
+	var Radar = __webpack_require__(257).Radar;
+	var chartOptions = __webpack_require__(267);
+	var parseData = __webpack_require__(271).swellRadarData;
 	
 	var SwellRadar = React.createClass({
 		displayName: 'SwellRadar',
@@ -36883,7 +36899,7 @@
 	module.exports = SwellRadar;
 
 /***/ },
-/* 270 */
+/* 271 */
 /***/ function(module, exports) {
 
 	ChartUtil = {};
@@ -36956,13 +36972,13 @@
 	module.exports = ChartUtil;
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PolarArea = __webpack_require__(256).PolarArea;
-	var chartOptions = __webpack_require__(266);
-	var parseData = __webpack_require__(270).windPolarData;
+	var PolarArea = __webpack_require__(257).PolarArea;
+	var chartOptions = __webpack_require__(267);
+	var parseData = __webpack_require__(271).windPolarData;
 	
 	var WindPolar = React.createClass({
 		displayName: 'WindPolar',
@@ -36993,7 +37009,7 @@
 	module.exports = WindPolar;
 
 /***/ },
-/* 272 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -37085,12 +37101,12 @@
 	module.exports = TempWidget;
 
 /***/ },
-/* 273 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var Search = __webpack_require__(274);
-	var FavoriteButton = __webpack_require__(278);
+	var Search = __webpack_require__(275);
+	var FavoriteButton = __webpack_require__(253);
 	
 	var Test = React.createClass({
 	  displayName: 'Test',
@@ -37108,13 +37124,13 @@
 	module.exports = Test;
 
 /***/ },
-/* 274 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var linkedState = __webpack_require__(238);
 	
-	var LinkBox = __webpack_require__(275);
+	var LinkBox = __webpack_require__(276);
 	
 	var Search = React.createClass({
 		displayName: 'Search',
@@ -37182,7 +37198,7 @@
 	module.exports = Search;
 
 /***/ },
-/* 275 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -37210,12 +37226,12 @@
 	module.exports = Linkbox;
 
 /***/ },
-/* 276 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var Search = __webpack_require__(274);
-	var Linkbox = __webpack_require__(275);
+	var Search = __webpack_require__(275);
+	var Linkbox = __webpack_require__(276);
 	
 	var County = React.createClass({
 		displayName: 'County',
@@ -37263,12 +37279,12 @@
 	module.exports = County;
 
 /***/ },
-/* 277 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var Search = __webpack_require__(274);
-	var Linkbox = __webpack_require__(275);
+	var Search = __webpack_require__(275);
+	var Linkbox = __webpack_require__(276);
 	
 	var County = React.createClass({
 		displayName: 'County',
@@ -37314,81 +37330,6 @@
 	});
 	
 	module.exports = County;
-
-/***/ },
-/* 278 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var UserStore = __webpack_require__(211);
-	var UserApiUtil = __webpack_require__(233);
-	
-	var FavoriteButton = React.createClass({
-		displayName: 'FavoriteButton',
-	
-		getInitialState: function () {
-			return {
-				favorites: UserStore.currentUser().favorites
-			};
-		},
-		componentDidMount: function () {
-			UserStore.addListener(this.updateFavorites);
-		},
-		updateFavorites: function () {
-			this.setState({ favorites: UserStore.currentUser().favorites });
-		},
-		button: function () {
-			var thisIsFav = false;
-			if (this.state.favorites.length < 1) {
-				return "BUTTON";
-			}
-			var self = this;
-			this.state.favorites.forEach(function (fav) {
-				if (fav === self.props.id) {
-					thisIsFav = true;
-				}
-			});
-	
-			if (thisIsFav) {
-				return this.favorite();
-			} else {
-				return this.notFavorite();
-			}
-		},
-		favorite: function () {
-			var self = this;
-			return React.createElement(
-				'div',
-				null,
-				React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/v1451331378/fav.png',
-					onClick: function () {
-						UserApiUtil.removeFavorite(self.props.id);
-					}
-				})
-			);
-		},
-		notFavorite: function () {
-			var self = this;
-			return React.createElement(
-				'div',
-				null,
-				React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/v1451331329/not_fav.png',
-					onClick: function () {
-						UserApiUtil.addFavorite(self.props.id);
-					}
-				})
-			);
-		},
-		render: function () {
-			return React.createElement(
-				'div',
-				null,
-				this.button()
-			);
-		}
-	});
-	
-	module.exports = FavoriteButton;
 
 /***/ }
 /******/ ]);

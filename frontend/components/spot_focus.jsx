@@ -56,6 +56,8 @@ var SpotFocus = React.createClass({
 		}
 	},
 	render: function(){
+		console.log({props: this.props, state: this.state});
+		
 		var spotForecast = this.state.spotForecast;
 		var countyForecast = this.state.countyForecast;
 		var _swell = JSON.stringify(countyForecast.swell);
