@@ -24458,6 +24458,11 @@
 			return React.createElement(
 				'div',
 				null,
+				React.createElement(
+					'div',
+					{ className: 'container nav' },
+					React.createElement(HelloNavbar, null)
+				),
 				this.props.children
 			);
 		}
@@ -31961,6 +31966,7 @@
 	//Components
 	var SpotFocus = __webpack_require__(243);
 	var SpotPreview = __webpack_require__(252);
+	var Linkbox = __webpack_require__(276);
 	
 	//Stores & Utils
 	var UserStore = __webpack_require__(211);
@@ -31992,19 +31998,35 @@
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      null,
-	      JSON.stringify(this.state.user),
-	      this.favorites()
+	      { className: 'container hello' },
+	      this.home(),
+	      this.favorites(),
+	      this.links()
 	    );
 	  },
 	
 	  //render helpers
-	
+	  home: function () {
+	    if (this.state.user.favorites.length < 1) {
+	      return;
+	    } else {
+	      return React.createElement(SpotFocus, { spotId: this.state.user.favorites[0] });
+	    }
+	  },
 	  favorites: function () {
-	    debugger;
-	    return this.state.user.favorites.map(function (spotId) {
-	      return React.createElement(SpotFocus, { spotId: spotId });
+	    if (this.state.user.favorites.length < 2) {
+	      return;
+	    }
+	    return this.state.user.favorites.slice(1).map(function (spotId) {
+	      return React.createElement(SpotPreview, { spotId: spotId });
 	    });
+	  },
+	  links: function () {
+	    return [React.createElement(Linkbox, {
+	      history: this.props.history,
+	      link: "/search",
+	      text: "Search for a Spot"
+	    })];
 	  }
 	});
 	
