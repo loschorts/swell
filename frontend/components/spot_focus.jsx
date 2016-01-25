@@ -6,6 +6,8 @@ var SpotStore = require('../stores/spot_store');
 var CountyForecastStore = require('../stores/county_forecast_store');
 var ForecastStore = require('../stores/forecast_store');
 
+var FavoriteButton = require('./favorite_button');
+
 var SpotFocus = React.createClass({
 	getInitialState: function(){
 		return({
@@ -57,7 +59,7 @@ var SpotFocus = React.createClass({
 	},
 	go: function(){
 		console.log(this.props.history);
-		this.props.history.push("/forecast/" + this.state.spot.id);
+		this.props.history.push("/forecast/" + this.props.spotId);
 	},
 	render: function(){		
 		var spotForecast = this.state.spotForecast;
@@ -70,6 +72,7 @@ var SpotFocus = React.createClass({
 				onClick={this.go}>
 				<h4>SpotFocus for {this.state.spot.name}</h4>
 				<ul>
+					<FavoriteButton id={this.props.spotId}/>
 					<li className="detail">Hour: {spotForecast.hour}</li>
 					<li className="detail">Size: {spotForecast.size} ft</li>
 					<li className="detail">Quality: {spotForecast.quality}</li>

@@ -24461,7 +24461,7 @@
 				React.createElement(
 					'div',
 					{ className: 'container nav' },
-					React.createElement(HelloNavbar, null)
+					React.createElement(HelloNavbar, { history: this.props.history })
 				),
 				this.props.children
 			);
@@ -31563,6 +31563,14 @@
 	var UserStore = __webpack_require__(211);
 	var UserAPIUtil = __webpack_require__(233);
 	
+	var warn = console.warn;
+	console.warn = function (warning) {
+	  if (/(setState)/.test(warning)) {
+	    throw new Error(warning);
+	  }
+	  warn.apply(console, arguments);
+	};
+	
 	var Navbar = React.createClass({
 	  displayName: 'Navbar',
 	
@@ -32081,6 +32089,8 @@
 	var CountyForecastStore = __webpack_require__(249);
 	var ForecastStore = __webpack_require__(251);
 	
+	var FavoriteButton = __webpack_require__(276);
+	
 	var SpotFocus = React.createClass({
 		displayName: 'SpotFocus',
 	
@@ -32133,7 +32143,7 @@
 		},
 		go: function () {
 			console.log(this.props.history);
-			this.props.history.push("/forecast/" + this.state.spot.id);
+			this.props.history.push("/forecast/" + this.props.spotId);
 		},
 		render: function () {
 			var spotForecast = this.state.spotForecast;
@@ -32154,6 +32164,7 @@
 				React.createElement(
 					'ul',
 					null,
+					React.createElement(FavoriteButton, { id: this.props.spotId }),
 					React.createElement(
 						'li',
 						{ className: 'detail' },
@@ -37231,7 +37242,7 @@
 				favorites: UserStore.currentUser().favorites
 			};
 		},
-		componentDidMount: function () {
+		componentWillMount: function () {
 			UserStore.addListener(this.updateFavorites);
 		},
 		updateFavorites: function () {
@@ -37283,7 +37294,9 @@
 			return React.createElement(
 				'div',
 				null,
-				this.button()
+				JSON.stringify(this.state.favorites),
+				this.button(),
+				'}'
 			);
 		}
 	});

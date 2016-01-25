@@ -11,8 +11,6 @@ var SpotStore = require('../stores/spot_store');
 var UserAPIUtil = require('../util/user_api_util');
 var SpotAPIUtil = require('../util/spot_api_util');
 
-
-
 var Hello = React.createClass({
   // lifecycle events
   getInitialState: function(){

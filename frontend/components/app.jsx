@@ -4,10 +4,13 @@ var HelloNavbar = require('./hello_navbar');
 
 var App = React.createClass({
 	render: function(){
-		return <div>
-		<div className="container nav"><HelloNavbar/></div>
-		{this.props.children}
-		</div>
+		return (
+		<div>
+			<div className="container nav">
+				<HelloNavbar history={this.props.history}/>
+			</div>
+			{this.props.children}
+		</div>);
 	}
 });
 

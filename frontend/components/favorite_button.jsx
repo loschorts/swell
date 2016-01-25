@@ -8,7 +8,7 @@ var FavoriteButton = React.createClass({
 			favorites: UserStore.currentUser().favorites
 		};
 	},
-	componentDidMount: function(){
+	componentWillMount: function(){
 		UserStore.addListener(this.updateFavorites);
 	},
 	updateFavorites: function(){
@@ -55,7 +55,9 @@ var FavoriteButton = React.createClass({
 	render: function(){
 		return (
 			<div>
+				{JSON.stringify(this.state.favorites)}
 				{this.button()}
+				}
 			</div>
 			);
 	}

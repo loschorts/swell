@@ -2,6 +2,13 @@ var React = require('react');
 var UserStore = require('../stores/user_store');
 var UserAPIUtil = require('../util/user_api_util');
 
+var warn = console.warn;
+console.warn = function(warning) {
+  if (/(setState)/.test(warning)) {
+    throw new Error(warning);
+  }
+  warn.apply(console, arguments);
+};
 
 var Navbar = React.createClass({
   getInitialState: function(){
