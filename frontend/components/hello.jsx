@@ -11,8 +11,9 @@ var SpotStore = require('../stores/spot_store');
 var UserAPIUtil = require('../util/user_api_util');
 var SpotAPIUtil = require('../util/spot_api_util');
 
-var Hello = React.createClass({
 
+
+var Hello = React.createClass({
   // lifecycle events
   getInitialState: function(){
     return({
@@ -54,18 +55,22 @@ var Hello = React.createClass({
     if (this.state.user.favorites.length < 1) { 
       return
     } else {
-      return <SpotFocus spotId={this.state.user.favorites[0]}/>;
+      return <SpotFocus 
+        spotId={this.state.user.favorites[0]}
+        history={this.props.history}
+      />;
     }
   },
   favorites: function(){
+    var self = this;
     if (this.state.user.favorites.length < 2) {
       return;
     }
 
     var favs = [];
-
     this.state.user.favorites.slice(1).forEach(function(spotId, idx){
-      favs.push(<SpotPreview key={idx} spotId={spotId}/>);
+      favs.push(<SpotPreview key={idx} spotId={spotId}
+          history={self.props.history}/>);
     });
 
     return favs;

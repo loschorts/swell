@@ -47,11 +47,15 @@ var SpotPreview = React.createClass({
 				return "spot-quality-unknown";
 		}
 	},
+	go: function(){
+		console.log(this.props.history);
+		this.props.history.push("/forecast/" + this.state.spot.id);
+	},
 	render: function(){
 		var _forecast = this.state.forecast;
-
 		return (
-			<div className={"spot-preview " + this.quality()}>
+			<div className={"spot-preview " + this.quality()}
+				onClick={this.go}>
 				<h4>SpotPreview for {this.state.spot.name}</h4>
 				<ul>
 					<li className="detail">Hour: {_forecast.hour}</li>

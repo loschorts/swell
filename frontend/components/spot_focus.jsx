@@ -55,6 +55,10 @@ var SpotFocus = React.createClass({
 				return "spot-quality-unknown";
 		}
 	},
+	go: function(){
+		console.log(this.props.history);
+		this.props.history.push("/forecast/" + this.state.spot.id);
+	},
 	render: function(){		
 		var spotForecast = this.state.spotForecast;
 		var countyForecast = this.state.countyForecast;
@@ -62,7 +66,8 @@ var SpotFocus = React.createClass({
 		var _wind = JSON.stringify(countyForecast.wind);
 		var _tide = JSON.stringify(countyForecast.tide);
 		return (
-			<div className={"jumbotron spot-focus " + this.quality()}>
+			<div className={"jumbotron spot-focus " + this.quality()}
+				onClick={this.go}>
 				<h4>SpotFocus for {this.state.spot.name}</h4>
 				<ul>
 					<li className="detail">Hour: {spotForecast.hour}</li>

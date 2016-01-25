@@ -31966,7 +31966,7 @@
 	//Components
 	var SpotFocus = __webpack_require__(243);
 	var SpotPreview = __webpack_require__(252);
-	var Linkbox = __webpack_require__(276);
+	var Linkbox = __webpack_require__(253);
 	
 	//Stores & Utils
 	var UserStore = __webpack_require__(211);
@@ -32020,18 +32020,22 @@
 	    if (this.state.user.favorites.length < 1) {
 	      return;
 	    } else {
-	      return React.createElement(SpotFocus, { spotId: this.state.user.favorites[0] });
+	      return React.createElement(SpotFocus, {
+	        spotId: this.state.user.favorites[0],
+	        history: this.props.history
+	      });
 	    }
 	  },
 	  favorites: function () {
+	    var self = this;
 	    if (this.state.user.favorites.length < 2) {
 	      return;
 	    }
 	
 	    var favs = [];
-	
 	    this.state.user.favorites.slice(1).forEach(function (spotId, idx) {
-	      favs.push(React.createElement(SpotPreview, { key: idx, spotId: spotId }));
+	      favs.push(React.createElement(SpotPreview, { key: idx, spotId: spotId,
+	        history: self.props.history }));
 	    });
 	
 	    return favs;
@@ -32127,6 +32131,10 @@
 					return "spot-quality-unknown";
 			}
 		},
+		go: function () {
+			console.log(this.props.history);
+			this.props.history.push("/forecast/" + this.state.spot.id);
+		},
 		render: function () {
 			var spotForecast = this.state.spotForecast;
 			var countyForecast = this.state.countyForecast;
@@ -32135,7 +32143,8 @@
 			var _tide = JSON.stringify(countyForecast.tide);
 			return React.createElement(
 				'div',
-				{ className: "jumbotron spot-focus " + this.quality() },
+				{ className: "jumbotron spot-focus " + this.quality(),
+					onClick: this.go },
 				React.createElement(
 					'h4',
 					null,
@@ -32696,12 +32705,16 @@
 					return "spot-quality-unknown";
 			}
 		},
+		go: function () {
+			console.log(this.props.history);
+			this.props.history.push("/forecast/" + this.state.spot.id);
+		},
 		render: function () {
 			var _forecast = this.state.forecast;
-	
 			return React.createElement(
 				'div',
-				{ className: "spot-preview " + this.quality() },
+				{ className: "spot-preview " + this.quality(),
+					onClick: this.go },
 				React.createElement(
 					'h4',
 					null,
@@ -32759,75 +32772,28 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var UserStore = __webpack_require__(211);
-	var UserApiUtil = __webpack_require__(233);
 	
-	var FavoriteButton = React.createClass({
-		displayName: 'FavoriteButton',
+	var Linkbox = React.createClass({
+		displayName: "Linkbox",
 	
-		getInitialState: function () {
-			return {
-				favorites: UserStore.currentUser().favorites
-			};
-		},
-		componentDidMount: function () {
-			UserStore.addListener(this.updateFavorites);
-		},
-		updateFavorites: function () {
-			this.setState({ favorites: UserStore.currentUser().favorites });
-		},
-		button: function () {
-			var thisIsFav = false;
-			if (this.state.favorites.length < 1) {
-				return "BUTTON";
-			}
-			var self = this;
-			this.state.favorites.forEach(function (fav) {
-				if (fav === self.props.id) {
-					thisIsFav = true;
-				}
-			});
-	
-			if (thisIsFav) {
-				return this.favorite();
-			} else {
-				return this.notFavorite();
-			}
-		},
-		favorite: function () {
-			var self = this;
-			return React.createElement(
-				'div',
-				null,
-				React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/v1451331378/fav.png',
-					onClick: function () {
-						UserApiUtil.removeFavorite(self.props.id);
-					}
-				})
-			);
-		},
-		notFavorite: function () {
-			var self = this;
-			return React.createElement(
-				'div',
-				null,
-				React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/v1451331329/not_fav.png',
-					onClick: function () {
-						UserApiUtil.addFavorite(self.props.id);
-					}
-				})
-			);
+		go: function () {
+			this.props.history.push(this.props.link);
 		},
 		render: function () {
 			return React.createElement(
-				'div',
-				null,
-				this.button()
+				"div",
+				{ className: "linkbox widget", onClick: this.go },
+				React.createElement(
+					"h1",
+					null,
+					this.props.text
+				)
 			);
 		}
+	
 	});
 	
-	module.exports = FavoriteButton;
+	module.exports = Linkbox;
 
 /***/ },
 /* 254 */
@@ -37158,7 +37124,7 @@
 
 	var React = __webpack_require__(1);
 	var Search = __webpack_require__(275);
-	var FavoriteButton = __webpack_require__(253);
+	var FavoriteButton = __webpack_require__(276);
 	
 	var Test = React.createClass({
 	  displayName: 'Test',
@@ -37182,7 +37148,7 @@
 	var React = __webpack_require__(1);
 	var linkedState = __webpack_require__(238);
 	
-	var LinkBox = __webpack_require__(276);
+	var LinkBox = __webpack_require__(253);
 	
 	var Search = React.createClass({
 		displayName: 'Search',
@@ -37254,28 +37220,75 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	var UserStore = __webpack_require__(211);
+	var UserApiUtil = __webpack_require__(233);
 	
-	var Linkbox = React.createClass({
-		displayName: "Linkbox",
+	var FavoriteButton = React.createClass({
+		displayName: 'FavoriteButton',
 	
-		go: function () {
-			this.props.history.push(this.props.link);
+		getInitialState: function () {
+			return {
+				favorites: UserStore.currentUser().favorites
+			};
+		},
+		componentDidMount: function () {
+			UserStore.addListener(this.updateFavorites);
+		},
+		updateFavorites: function () {
+			this.setState({ favorites: UserStore.currentUser().favorites });
+		},
+		button: function () {
+			var thisIsFav = false;
+			if (this.state.favorites.length < 1) {
+				return "BUTTON";
+			}
+			var self = this;
+			this.state.favorites.forEach(function (fav) {
+				if (fav === self.props.id) {
+					thisIsFav = true;
+				}
+			});
+	
+			if (thisIsFav) {
+				return this.favorite();
+			} else {
+				return this.notFavorite();
+			}
+		},
+		favorite: function () {
+			var self = this;
+			return React.createElement(
+				'div',
+				null,
+				React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/v1451331378/fav.png',
+					onClick: function () {
+						UserApiUtil.removeFavorite(self.props.id);
+					}
+				})
+			);
+		},
+		notFavorite: function () {
+			var self = this;
+			return React.createElement(
+				'div',
+				null,
+				React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/v1451331329/not_fav.png',
+					onClick: function () {
+						UserApiUtil.addFavorite(self.props.id);
+					}
+				})
+			);
 		},
 		render: function () {
 			return React.createElement(
-				"div",
-				{ className: "linkbox widget", onClick: this.go },
-				React.createElement(
-					"h1",
-					null,
-					this.props.text
-				)
+				'div',
+				null,
+				this.button()
 			);
 		}
-	
 	});
 	
-	module.exports = Linkbox;
+	module.exports = FavoriteButton;
 
 /***/ },
 /* 277 */
@@ -37283,7 +37296,7 @@
 
 	var React = __webpack_require__(1);
 	var Search = __webpack_require__(275);
-	var Linkbox = __webpack_require__(276);
+	var Linkbox = __webpack_require__(253);
 	
 	var County = React.createClass({
 		displayName: 'County',
@@ -37336,7 +37349,7 @@
 
 	var React = __webpack_require__(1);
 	var Search = __webpack_require__(275);
-	var Linkbox = __webpack_require__(276);
+	var Linkbox = __webpack_require__(253);
 	
 	var County = React.createClass({
 		displayName: 'County',
