@@ -25,11 +25,7 @@ class SessionsController < ApplicationController
   end
 
   def show
-    @user = current_user
-    sign_in(@user)
-    if @user
-      render 'api/users/show', user: @user
-    end
+    render 'api/users/show', user: @user if signed_in?
   end
 
 end

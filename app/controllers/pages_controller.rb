@@ -5,11 +5,15 @@ class PagesController < ApplicationController
 		result = {}
 
 		@items.each do |item|
-			result[item.name] = getLink(item)
+			entry = item.name
+			entry += " County" if item.class.to_s == "County" && item.name != "Orange County"
+			result[entry] = getLink(item)
 		end
 
 		render json: result
 	end
+
+	private
 
 	def getLink(item)
 		case (item.class.to_s)
