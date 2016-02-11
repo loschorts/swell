@@ -2,6 +2,11 @@ var React = require('react');
 var UserStore = require('../stores/user_store');
 var UserApiUtil = require('../util/user_api_util');
 
+var Image = {
+	not_fav: "http://res.cloudinary.com/swell/image/upload/v1451331329/not_fav.png",
+	fav: "http://res.cloudinary.com/swell/image/upload/v1451331378/fav.png"
+};
+
 var FavoriteButton = React.createClass({
 	getInitialState: function(){
 		return {
@@ -11,53 +16,31 @@ var FavoriteButton = React.createClass({
 	componentWillMount: function(){
 		UserStore.addListener(this.updateFavorites);
 	},
-	updateFavorites: function(){
-		this.setState({favorites: UserStore.currentUser().favorites});
+	toggle: function(event){
+		event.stopPropagation();
+		if (this.state.favorites.includes(this.props.id)) {
+				UserApiUtil.removeFavorite(this.props.id);
+		} else {
+			UserApiUtil.addFavorite(this.props.id);
+		}
 	},
 	button: function(){
-		var thisIsFav = false;
-		if (this.state.favorites.length < 1){
-			return "BUTTON";
-		}
-		var self = this;
-		this.state.favorites.forEach(function(fav){
-			if (fav === self.props.id) {
-				thisIsFav = true;
-			}
-		});
+		if (!this.state.favorites || !this.props.user){return 'loading fav button'};
 
-		if (thisIsFav) {
-			return this.favorite();
+		var _button;
+
+		if (this.state.favorites.includes(this.props.id)) {
+			_button = <img src={Image['fav']}/>
 		} else {
-			return this.notFavorite();
+			_button = <img src={Image['not_fav']}/>
 		}
-	},
-	favorite: function(){
-		var self = this;
-		return(
-			<div>
-				<img src="http://res.cloudinary.com/swell/image/upload/v1451331378/fav.png"
-					onClick={function(){UserApiUtil.removeFavorite(self.props.id)}}
-					/>
-			</div>
-			);
-	},
-	notFavorite: function(){
-		var self = this;
-				return(
-			<div>
-				<img src="http://res.cloudinary.com/swell/image/upload/v1451331329/not_fav.png"
-					onClick={function(){UserApiUtil.addFavorite(self.props.id)}}
-					/>
-			</div>
-			);
+
+		return _button;
 	},
 	render: function(){
 		return (
-			<div>
-				{JSON.stringify(this.state.favorites)}
+			<div onClick={this.toggle}>
 				{this.button()}
-				}
 			</div>
 			);
 	}

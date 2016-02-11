@@ -80,7 +80,7 @@ var UserAPIUtil = {
 	},
 	removeFavorite: function(spotId){
 		var user = UserStore.currentUser();
-		if (!user.id){return;}
+		if (!user.id){ return; }
 
 		var favorite = {user_id: user.id, spot_id: spotId};
 

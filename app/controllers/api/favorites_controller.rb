@@ -1,20 +1,16 @@
 class Api::FavoritesController < ApplicationController
 	def create
-		@favorite = Favorite.new(
-			user_id: params[:favorite][:user_id],
-			spot_id: params[:favorite][:spot_id])
-
-		if @favorite.save
-			@user = User.find(params[:favorite][:user_id])
-			render 'api/users/show/', user: @user
-		end
+		@favorite = Favorite.new(fav_params)
+		debugger
+		@favorite.save!
+		render 'api/users/show/', user: @favorite.user 
 	end
 
 	def destroy
-		if Favorite.destroy(Favorite.find_by(spot_id: params[:id]))
-			@user = User.find(params[:favorite][:user_id])
-			render 'api/users/show/', user: @user
-		end
+		@user = User.find(params[:favorite][:user_id])
+		@favorite = Favorite.find_by(spot_id: params[:id])
+		Favorite.destroy!( @favorite )
+		render 'api/users/show/', user: @user
 	end
 
 	private

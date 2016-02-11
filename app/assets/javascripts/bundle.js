@@ -32670,6 +32670,11 @@
 	var UserStore = __webpack_require__(211);
 	var UserApiUtil = __webpack_require__(233);
 	
+	var Image = {
+		not_fav: "http://res.cloudinary.com/swell/image/upload/v1451331329/not_fav.png",
+		fav: "http://res.cloudinary.com/swell/image/upload/v1451331378/fav.png"
+	};
+	
 	var FavoriteButton = React.createClass({
 		displayName: 'FavoriteButton',
 	
@@ -32681,58 +32686,34 @@
 		componentWillMount: function () {
 			UserStore.addListener(this.updateFavorites);
 		},
-		updateFavorites: function () {
-			this.setState({ favorites: UserStore.currentUser().favorites });
+		toggle: function (event) {
+			event.stopPropagation();
+			if (this.state.favorites.includes(this.props.id)) {
+				UserApiUtil.removeFavorite(this.props.id);
+			} else {
+				UserApiUtil.addFavorite(this.props.id);
+			}
 		},
 		button: function () {
-			var thisIsFav = false;
-			if (this.state.favorites.length < 1) {
-				return "BUTTON";
-			}
-			var self = this;
-			this.state.favorites.forEach(function (fav) {
-				if (fav === self.props.id) {
-					thisIsFav = true;
-				}
-			});
+			if (!this.state.favorites || !this.props.user) {
+				return 'loading fav button';
+			};
 	
-			if (thisIsFav) {
-				return this.favorite();
+			var _button;
+	
+			if (this.state.favorites.includes(this.props.id)) {
+				_button = React.createElement('img', { src: Image['fav'] });
 			} else {
-				return this.notFavorite();
+				_button = React.createElement('img', { src: Image['not_fav'] });
 			}
-		},
-		favorite: function () {
-			var self = this;
-			return React.createElement(
-				'div',
-				null,
-				React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/v1451331378/fav.png',
-					onClick: function () {
-						UserApiUtil.removeFavorite(self.props.id);
-					}
-				})
-			);
-		},
-		notFavorite: function () {
-			var self = this;
-			return React.createElement(
-				'div',
-				null,
-				React.createElement('img', { src: 'http://res.cloudinary.com/swell/image/upload/v1451331329/not_fav.png',
-					onClick: function () {
-						UserApiUtil.addFavorite(self.props.id);
-					}
-				})
-			);
+	
+			return _button;
 		},
 		render: function () {
 			return React.createElement(
 				'div',
-				null,
-				JSON.stringify(this.state.favorites),
-				this.button(),
-				'}'
+				{ onClick: this.toggle },
+				this.button()
 			);
 		}
 	});
